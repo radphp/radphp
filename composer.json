@@ -1,0 +1,19 @@
+{
+    "name": "Radly/radphp",
+    "description": "RadPHP is an experimental RESTful framework",
+    "authors": [
+        {
+            "name": "Mohammad Abdoli Rad",
+            "email": "m.abdolirad@gmail.com"
+        },
+        {
+            "name": "Omid Mottaghi Rad",
+            "email": "omidmr@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Rad\\": "src"
+        }
+    }
+}
