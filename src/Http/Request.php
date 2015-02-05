@@ -28,11 +28,9 @@ class Request
     protected $serverAddress;
     protected $serverName;
     protected $httpHost;
-    protected $contentType;
     protected $input;
     protected $body;
     protected $jsonBody;
-    private $superGlobals = [];
 
     /**
      * Whether or not to trust HTTP_X headers set by most load balancers.
@@ -42,6 +40,7 @@ class Request
      * @var bool
      */
     public $trustProxy = false;
+    private $superGlobals = [];
 
     const METHOD_POST = 'POST';
     const METHOD_GET = 'GET';
@@ -66,7 +65,7 @@ class Request
         ];
 
         $this->method = $this->superGlobals['server']['REQUEST_METHOD'];
-        $this->contentType = $this->superGlobals['server']['CONTENT_TYPE'];
+        $this->uri = $this->superGlobals['server']['REQUEST_URI'];
         $this->userAgent = $this->superGlobals['server']['HTTP_USER_AGENT'];
         $this->serverAddress = $this->superGlobals['server']['SERVER_ADDR'];
         $this->serverName = $this->superGlobals['server']['SERVER_NAME'];
@@ -273,7 +272,7 @@ class Request
             return $this->body;
         }
 
-        $fh = fopen(STDIN, 'r');
+        $fh = fopen('php://input', 'r');
         $this->body = stream_get_contents($fh);
         fclose($fh);
 
@@ -305,7 +304,7 @@ class Request
      */
     public function getContentType()
     {
-        return $this->contentType;
+        return $this->getServer('CONTENT_TYPE');
     }
 
     /**
