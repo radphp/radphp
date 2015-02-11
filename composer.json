@@ -11,9 +11,15 @@
             "email": "omidmr@gmail.com"
         }
     ],
+    "require-dev": {
+        "phpunit/phpunit": "dev-master"
+    },
     "autoload": {
         "psr-4": {
-            "Rad\\": "src"
+            "Rad\\": [
+                "src",
+                "tests"
+            ]
         }
     }
 }
