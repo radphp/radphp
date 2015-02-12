@@ -2,12 +2,14 @@
 
 namespace Rad\Http;
 
+use Rad\Http\Request\File;
+
 /**
  * Http Request
  *
  * @package Rad\Http
  */
-class Request
+class Request implements RequestInterface
 {
     /**
      * Which request method was used to access the page; i.e. 'GET', 'HEAD', 'POST', 'PUT'.
@@ -16,15 +18,6 @@ class Request
      */
     protected $method;
     protected $uri;
-
-    /**
-     * Contents of the User-Agent: header from the current request,
-     * if there is one. This is a string denoting the user agent being which is accessing the page.
-     * A typical example is: Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586).
-     *
-     * @var string
-     */
-    protected $userAgent;
     protected $serverAddress;
     protected $serverName;
     protected $httpHost;
@@ -66,7 +59,6 @@ class Request
 
         $this->method = $this->superGlobals['server']['REQUEST_METHOD'];
         $this->uri = $this->superGlobals['server']['REQUEST_URI'];
-        $this->userAgent = $this->superGlobals['server']['HTTP_USER_AGENT'];
         $this->serverAddress = $this->superGlobals['server']['SERVER_ADDR'];
         $this->serverName = $this->superGlobals['server']['SERVER_NAME'];
         $this->httpHost = $this->superGlobals['server']['HTTP_HOST'];
@@ -227,6 +219,18 @@ class Request
     }
 
     /**
+     * Gets HTTP header from request data
+     *
+     * @param string $header HTTP header
+     *
+     * @return string
+     */
+    public function getHeader($header)
+    {
+        //TODO: Implement getHeader() method
+    }
+
+    /**
      * Gets HTTP schema (http/https)
      *
      * @return string
@@ -249,6 +253,16 @@ class Request
     public function isAjax()
     {
         return (getenv('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest');
+    }
+
+    /**
+     * Checks whether request has been made using SOAP
+     *
+     * @return bool
+     */
+    public function isSoapRequested()
+    {
+        //TODO: Implement isSoapRequested() method
     }
 
     /**
@@ -295,16 +309,6 @@ class Request
         } else {
             return $this->jsonBody = '';
         }
-    }
-
-    /**
-     * Get request content type
-     *
-     * @return string
-     */
-    public function getContentType()
-    {
-        return $this->getServer('CONTENT_TYPE');
     }
 
     /**
@@ -379,7 +383,7 @@ class Request
      */
     public function getUserAgent()
     {
-        return $this->userAgent;
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
     }
 
     /**
@@ -466,6 +470,128 @@ class Request
     public function isOptions()
     {
         return ($this->getMethod() == self::METHOD_OPTIONS);
+    }
+
+    /**
+     * Checks whether request includes attached files
+     *
+     * @return bool
+     */
+    public function hasFiles()
+    {
+        return isset($this->superGlobals['files']);
+    }
+
+    /**
+     * Gets attached files as Rad\Http\Request\File instance
+     *
+     * @return File[]
+     */
+    public function getUploadedFiles()
+    {
+        $output = [];
+
+        foreach ($this->superGlobals['files'] as $fieldName => $file) {
+            // When multiple files upload
+            if (is_array($file['name'])) {
+                for ($index = 0; $index <= (count($file['name']) - 1); $index++) {
+                    $output[] = new File($fieldName, [
+                        'name' => $file['name'][$index],
+                        'type' => $file['type'][$index],
+                        'tmp_name' => $file['tmp_name'][$index],
+                        'error' => $file['error'][$index],
+                        'size' => $file['size'][$index]
+                    ]);
+                }
+            } else {
+                $output[] = new File($fieldName, $file);
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Gets web page that refers active request. ie: http://www.google.com
+     *
+     * @return string|null
+     */
+    public function getHTTPReferer()
+    {
+        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+    }
+
+    /**
+     * Gets array with mime/types and their quality accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
+     *
+     * @return array
+     */
+    public function getAcceptableContent()
+    {
+        //TODO: Prepare result without parameters
+        return isset($_SERVER['HTTP_ACCEPT']) ? explode(',', $_SERVER['HTTP_ACCEPT']) : [];
+    }
+
+    /**
+     * Gets best mime/type accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
+     *
+     * @return array
+     */
+    public function getBestAccept()
+    {
+        //TODO: Implement getBestAccept() method
+    }
+
+    /**
+     * Gets charsets array and their quality accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_CHARSET’]
+     *
+     * @return array
+     */
+    public function getClientCharsets()
+    {
+        //TODO: Prepare result without parameters
+        return isset($_SERVER['HTTP_ACCEPT_CHARSET']) ? explode(',', $_SERVER['HTTP_ACCEPT_CHARSET']) : [];
+    }
+
+    /**
+     * Gets best charset accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_CHARSET’]
+     *
+     * @return string
+     */
+    public function getBestCharset()
+    {
+        //TODO: Implement getBestCharset() method
+    }
+
+    /**
+     * Gets languages array and their quality accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_LANGUAGE’]
+     *
+     * @return array
+     */
+    public function getLanguages()
+    {
+        //TODO: Prepare result without parameters
+        return isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) : [];
+    }
+
+    /**
+     * Gets best language accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_LANGUAGE’]
+     *
+     * @return string
+     */
+    public function getBestLanguage()
+    {
+        //TODO: Implement getBestLanguage() method
+    }
+
+    /**
+     * Get request content type
+     *
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->getServer('CONTENT_TYPE');
     }
 
     /**
