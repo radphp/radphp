@@ -1,14 +1,15 @@
 <?php
 
-namespace Rad\Event;
+namespace Rad\Test\Event;
 
 use PHPUnit_Framework_TestCase;
-use Rad\TestEvent;
+use Rad\Event\EventDispatcher;
+use Rad\Test\TestEvent;
 
 /**
- * Class EventTest
+ * Event Test
  *
- * @package Rad
+ * @package Rad\Test\Event
  */
 class EventTest extends PHPUnit_Framework_TestCase
 {
