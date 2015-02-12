@@ -1,25 +1,31 @@
 {
     "name": "Radly/radphp",
     "description": "RadPHP is an experimental RESTful framework",
+    "keywords": ["RadPHP", "RESTful", "framework"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Mohammad Abdoli Rad",
-            "email": "m.abdolirad@gmail.com"
+            "email": "m.abdolirad@gmail.com",
+            "role": "Project Founder"
         },
         {
             "name": "Omid Mottaghi Rad",
-            "email": "omidmr@gmail.com"
+            "email": "omidmr@gmail.com",
+            "role": "Project Founder"
         }
     ],
     "require-dev": {
-        "phpunit/phpunit": "dev-master"
+        "phpunit/phpunit": "4.5.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rad\\Test\\": "tests"
+        }
     },
     "autoload": {
         "psr-4": {
-            "Rad\\": [
-                "src",
-                "tests"
-            ]
+            "Rad\\": "src"
         }
     }
 }
