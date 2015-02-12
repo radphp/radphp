@@ -23,7 +23,8 @@ abstract class EventListener implements SplObserver
      * Adds a new state.
      *
      * @param    mixed $state
-     * @param    int $stateValue
+     * @param    int   $stateValue
+     *
      * @return    void
      */
     public function addState($state, $stateValue = 1)
@@ -32,9 +33,10 @@ abstract class EventListener implements SplObserver
     }
 
     /**
-     * @Removes   a state.
+     * Removes a state.
      *
      * @param    mixed $state
+     *
      * @return    bool
      */
     public function removeState($state)
@@ -50,6 +52,7 @@ abstract class EventListener implements SplObserver
      * Checks if a given state exists.
      *
      * @param    mixed $state
+     *
      * @return    bool
      */
     public function hasState($state)
@@ -61,8 +64,9 @@ abstract class EventListener implements SplObserver
      * Implementation of SplObserver::update().
      *
      * @param    SplSubject $subject
-     * @param    mixed $triggersMethod
-     * @param    mixed &$arg Any passed in arguments
+     * @param    mixed      $triggersMethod
+     * @param    mixed      &$arg Any passed in arguments
+     *
      * @throws Exception
      */
     public function update(SplSubject $subject, $triggersMethod = null, &$arg = null)

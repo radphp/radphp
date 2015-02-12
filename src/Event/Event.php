@@ -6,8 +6,8 @@ use SplObjectStorage;
 use SplObserver;
 use SplSubject;
 
-class Event implements SplSubject {
-
+class Event implements SplSubject
+{
     // stores all attached observers
     private $observers;
 
@@ -23,10 +23,10 @@ class Event implements SplSubject {
      * Wrapper for the attach method, allowing for the addition
      * of a method name to call within the observer.
      *
-     * @access	public
-     * @param	SplObserver	$event
-     * @param	mixed		$triggersMethod
-     * @return	Event
+     * @param    SplObserver $event
+     * @param    mixed       $triggersMethod
+     *
+     * @return    Event
      */
     public function attach(SplObserver $event, $triggersMethod = null)
     {
@@ -37,9 +37,9 @@ class Event implements SplSubject {
     /**
      * Detach an existing observer from the particular event.
      *
-     * @access	public
-     * @param	SplObserver	$event
-     * @return	Event
+     * @param    SplObserver $event
+     *
+     * @return    Event
      */
     public function detach(SplObserver $event)
     {
@@ -50,8 +50,7 @@ class Event implements SplSubject {
     /**
      * Notify all event observers that the event was triggered.
      *
-     * @access	public
-     * @param	mixed	&$args
+     * @param    mixed &$args
      */
     public function notify(&$args = null)
     {
