@@ -1,4 +1,3 @@
 <?php
 
-$loader = include __DIR__ . '/../vendor/autoload.php';
-$loader->add('Rad\\', __DIR__);
+require_once __DIR__ . '/../vendor/autoload.php';

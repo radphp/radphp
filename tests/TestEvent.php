@@ -1,6 +1,6 @@
 <?php
 
-namespace Rad;
+namespace Rad\Test;
 
 use Rad\Event\EventListener;
 

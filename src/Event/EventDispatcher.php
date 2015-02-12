@@ -2,6 +2,11 @@
 
 namespace Rad\Event;
 
+/**
+ * Event Dispatcher
+ *
+ * @package Rad\Event
+ */
 class EventDispatcher
 {
     // stores all created events
