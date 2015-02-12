@@ -13,9 +13,9 @@ use Rad\TestEvent;
 class EventTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Test Event
+     * Test Event Magic Method
      */
-    public function testEvent()
+    public function testEventMagicMethod()
     {
         // load up an instance of the event handler
         $EventDispatcher = new EventDispatcher();
@@ -26,6 +26,24 @@ class EventTest extends PHPUnit_Framework_TestCase
         // trigger!
         $string = 'test';
         $EventDispatcher->onTest->notify($string);
+
+        $this->assertEquals($string, 'your requested string is: test');
+    }
+
+    /**
+     * Test Event
+     */
+    public function testEvent()
+    {
+        // load up an instance of the event handler
+        $EventDispatcher = new EventDispatcher();
+
+        // watch for event
+        $EventDispatcher->get('onTest')->attach(new TestEvent(), 'trigger');
+
+        // trigger!
+        $string = 'test';
+        $EventDispatcher->get('onTest')->notify($string);
 
         $this->assertEquals($string, 'your requested string is: test');
     }

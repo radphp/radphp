@@ -5,7 +5,7 @@ namespace Rad\Event;
 class EventDispatcher
 {
     // stores all created events
-    private $events = array();
+    private $events = [];
 
     /**
      * Determine the total number of events.
@@ -44,10 +44,7 @@ class EventDispatcher
      */
     public function get($name)
     {
-        if (!isset($this->events[$name])) {
-            return $this->add($name);
-        }
-        return $this->events[$name];
+        return $this->add($name);
     }
 
     /**
