@@ -13,7 +13,6 @@ class Request implements RequestInterface
 {
     /**
      * Which request method was used to access the page; i.e. 'GET', 'HEAD', 'POST', 'PUT'.
-     *
      * @var string
      */
     protected $method;
@@ -29,7 +28,6 @@ class Request implements RequestInterface
      * Whether or not to trust HTTP_X headers set by most load balancers.
      * Only set to true if your application runs behind load balancers/proxies
      * that you control.
-     *
      * @var bool
      */
     public $trustProxy = false;
@@ -49,13 +47,16 @@ class Request implements RequestInterface
     public function __construct()
     {
         $this->superGlobals = [
-            'post' => $_POST,
-            'query' => $_GET,
-            'request' => $_REQUEST,
-            'server' => $_SERVER,
-            'environment' => $_ENV,
-            'files' => $_FILES
+            'post' => &$_POST,
+            'query' => &$_GET,
+            'request' => &$_REQUEST,
+            'server' => &$_SERVER,
+            'environment' => &$_ENV,
+            'files' => &$_FILES
         ];
+
+        // unset all parameters to remove regular access to them
+        unset($_GET, $_POST, $_REQUEST, $_SERVER, $_ENV, $_FILES);
 
         $this->method = $this->superGlobals['server']['REQUEST_METHOD'];
         $this->uri = $this->superGlobals['server']['REQUEST_URI'];
@@ -148,14 +149,19 @@ class Request implements RequestInterface
      * Gets variable from $_SERVER super global
      *
      * @param string $name
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */
-    public function getServer($name)
+    public function getServer($name = null, $defaultValue = null)
     {
         if (array_key_exists($name, $this->superGlobals['server'])) {
             return $this->superGlobals['server'][$name];
+        } elseif ($defaultValue) {
+            return $defaultValue;
         }
+
+        return $this->superGlobals['server'];
     }
 
     /**
@@ -232,7 +238,6 @@ class Request implements RequestInterface
 
     /**
      * Gets HTTP schema (http/https)
-     *
      * @return string
      */
     public function getScheme()
@@ -247,7 +252,6 @@ class Request implements RequestInterface
     /**
      * Checks whether request has been made using ajax.
      * Checks if $_SERVER[‘HTTP_X_REQUESTED_WITH’]==’XMLHttpRequest’
-     *
      * @return bool
      */
     public function isAjax()
@@ -267,7 +271,6 @@ class Request implements RequestInterface
 
     /**
      * Checks whether request has been made using any secure layer
-     *
      * @return bool
      */
     public function isSecureRequest()
@@ -277,7 +280,6 @@ class Request implements RequestInterface
 
     /**
      * Gets HTTP raw request body
-     *
      * @return string
      */
     public function getRawBody()
@@ -295,7 +297,6 @@ class Request implements RequestInterface
 
     /**
      * Gets decoded JSON HTTP raw request body
-     *
      * @return array|mixed
      */
     public function getJsonRawBody()
@@ -383,7 +384,7 @@ class Request implements RequestInterface
      */
     public function getUserAgent()
     {
-        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        return (getenv('HTTP_USER_AGENT') ? getenv('HTTP_USER_AGENT') : null);
     }
 
     /**
@@ -518,7 +519,7 @@ class Request implements RequestInterface
      */
     public function getHTTPReferer()
     {
-        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+        return getenv('HTTP_REFERER') ? getenv('HTTP_REFERER') : null;
     }
 
     /**
@@ -529,7 +530,7 @@ class Request implements RequestInterface
     public function getAcceptableContent()
     {
         //TODO: Prepare result without parameters
-        return isset($_SERVER['HTTP_ACCEPT']) ? explode(',', $_SERVER['HTTP_ACCEPT']) : [];
+        return getenv('HTTP_ACCEPT') ? explode(',', getenv('HTTP_ACCEPT')) : [];
     }
 
     /**
@@ -550,7 +551,7 @@ class Request implements RequestInterface
     public function getClientCharsets()
     {
         //TODO: Prepare result without parameters
-        return isset($_SERVER['HTTP_ACCEPT_CHARSET']) ? explode(',', $_SERVER['HTTP_ACCEPT_CHARSET']) : [];
+        return getenv('HTTP_ACCEPT_CHARSET') ? explode(',', getenv('HTTP_ACCEPT_CHARSET')) : [];
     }
 
     /**
@@ -571,7 +572,7 @@ class Request implements RequestInterface
     public function getLanguages()
     {
         //TODO: Prepare result without parameters
-        return isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) : [];
+        return getenv('HTTP_ACCEPT_LANGUAGE') ? explode(',', getenv('HTTP_ACCEPT_LANGUAGE')) : [];
     }
 
     /**
