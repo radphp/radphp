@@ -4,14 +4,12 @@ namespace Rad\Http;
 
 /**
  * Http Request
- *
  * @package Rad\Http
  */
 class Request
 {
     /**
      * Which request method was used to access the page; i.e. 'GET', 'HEAD', 'POST', 'PUT'.
-     *
      * @var string
      */
     protected $method;
@@ -21,7 +19,6 @@ class Request
      * Contents of the User-Agent: header from the current request,
      * if there is one. This is a string denoting the user agent being which is accessing the page.
      * A typical example is: Mozilla/4.5 [en] (X11; U; Linux 2.2.9 i586).
-     *
      * @var string
      */
     protected $userAgent;
@@ -36,7 +33,6 @@ class Request
      * Whether or not to trust HTTP_X headers set by most load balancers.
      * Only set to true if your application runs behind load balancers/proxies
      * that you control.
-     *
      * @var bool
      */
     public $trustProxy = false;
@@ -56,13 +52,16 @@ class Request
     public function __construct()
     {
         $this->superGlobals = [
-            'post' => $_POST,
-            'query' => $_GET,
-            'request' => $_REQUEST,
-            'server' => $_SERVER,
-            'environment' => $_ENV,
-            'files' => $_FILES
+            'post' => &$_POST,
+            'query' => &$_GET,
+            'request' => &$_REQUEST,
+            'server' => &$_SERVER,
+            'environment' => &$_ENV,
+            'files' => &$_FILES
         ];
+
+        // unset all parameters to remove regular access to them
+        unset($_GET, $_POST, $_REQUEST, $_SERVER, $_ENV, $_FILES);
 
         $this->method = $this->superGlobals['server']['REQUEST_METHOD'];
         $this->uri = $this->superGlobals['server']['REQUEST_URI'];
@@ -156,14 +155,19 @@ class Request
      * Gets variable from $_SERVER super global
      *
      * @param string $name
+     * @param mixed  $defaultValue
      *
      * @return mixed
      */
-    public function getServer($name)
+    public function getServer($name = null, $defaultValue = null)
     {
         if (array_key_exists($name, $this->superGlobals['server'])) {
             return $this->superGlobals['server'][$name];
+        } elseif ($defaultValue) {
+            return $defaultValue;
         }
+
+        return $this->superGlobals['server'];
     }
 
     /**
@@ -228,7 +232,6 @@ class Request
 
     /**
      * Gets HTTP schema (http/https)
-     *
      * @return string
      */
     public function getScheme()
@@ -243,7 +246,6 @@ class Request
     /**
      * Checks whether request has been made using ajax.
      * Checks if $_SERVER[‘HTTP_X_REQUESTED_WITH’]==’XMLHttpRequest’
-     *
      * @return bool
      */
     public function isAjax()
@@ -253,7 +255,6 @@ class Request
 
     /**
      * Checks whether request has been made using any secure layer
-     *
      * @return bool
      */
     public function isSecureRequest()
@@ -263,7 +264,6 @@ class Request
 
     /**
      * Gets HTTP raw request body
-     *
      * @return string
      */
     public function getRawBody()
@@ -281,7 +281,6 @@ class Request
 
     /**
      * Gets decoded JSON HTTP raw request body
-     *
      * @return array|mixed
      */
     public function getJsonRawBody()
@@ -299,7 +298,6 @@ class Request
 
     /**
      * Get request content type
-     *
      * @return string
      */
     public function getContentType()
@@ -309,7 +307,6 @@ class Request
 
     /**
      * Gets active server address IP
-     *
      * @return string
      */
     public function getServerAddress()
@@ -319,7 +316,6 @@ class Request
 
     /**
      * Gets active server name
-     *
      * @return string
      */
     public function getServerName()
@@ -329,7 +325,6 @@ class Request
 
     /**
      * Gets information about schema, host and port used by the request
-     *
      * @return string
      */
     public function getHttpHost()
@@ -340,7 +335,6 @@ class Request
     /**
      * Gets most possible client IPv4 Address.
      * This method search in $_SERVER[‘REMOTE_ADDR’] and optionally in $_SERVER[‘HTTP_X_FORWARDED_FOR’]
-     *
      * @return string
      */
     public function getClientAddress()
@@ -354,7 +348,6 @@ class Request
 
     /**
      * Gets HTTP method which request has been made
-     *
      * @return string
      */
     public function getMethod()
@@ -364,7 +357,6 @@ class Request
 
     /**
      * Gets HTTP URI which request has been made
-     *
      * @return string
      */
     public function getURI()
@@ -374,7 +366,6 @@ class Request
 
     /**
      * Gets HTTP user agent used to made the request
-     *
      * @return string
      */
     public function getUserAgent()
@@ -400,7 +391,6 @@ class Request
 
     /**
      * Checks whether HTTP method is POST.
-     *
      * @return bool
      */
     public function isPost()
@@ -410,7 +400,6 @@ class Request
 
     /**
      * Checks whether HTTP method is GET.
-     *
      * @return bool
      */
     public function isGet()
@@ -420,7 +409,6 @@ class Request
 
     /**
      * Checks whether HTTP method is PUT.
-     *
      * @return bool
      */
     public function isPut()
@@ -430,7 +418,6 @@ class Request
 
     /**
      * Checks whether HTTP method is PATCH.
-     *
      * @return bool
      */
     public function isPatch()
@@ -440,7 +427,6 @@ class Request
 
     /**
      * Checks whether HTTP method is HEAD.
-     *
      * @return bool
      */
     public function isHead()
@@ -450,7 +436,6 @@ class Request
 
     /**
      * Checks whether HTTP method is DELETE.
-     *
      * @return bool
      */
     public function isDelete()
@@ -460,7 +445,6 @@ class Request
 
     /**
      * Checks whether HTTP method is OPTIONS.
-     *
      * @return bool
      */
     public function isOptions()
@@ -470,7 +454,6 @@ class Request
 
     /**
      * Prepare input
-     *
      * @return mixed|string
      */
     protected function prepareInput()
