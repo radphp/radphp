@@ -133,13 +133,6 @@ interface RequestInterface
     public function isAjax();
 
     /**
-     * Checks whether request has been made using SOAP
-     *
-     * @return bool
-     */
-    public function isSoapRequested();
-
-    /**
      * Checks whether request has been made using any secure layer
      *
      * @return bool
@@ -266,7 +259,7 @@ interface RequestInterface
      *
      * @return string|null
      */
-    public function getHTTPReferer();
+    public function getReferer();
 
     /**
      * Gets array with mime/types and their quality accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
