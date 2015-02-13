@@ -260,16 +260,6 @@ class Request implements RequestInterface
     }
 
     /**
-     * Checks whether request has been made using SOAP
-     *
-     * @return bool
-     */
-    public function isSoapRequested()
-    {
-        //TODO: Implement isSoapRequested() method
-    }
-
-    /**
      * Checks whether request has been made using any secure layer
      * @return bool
      */
@@ -517,7 +507,7 @@ class Request implements RequestInterface
      *
      * @return string|null
      */
-    public function getHTTPReferer()
+    public function getReferer()
     {
         return getenv('HTTP_REFERER') ? getenv('HTTP_REFERER') : null;
     }
