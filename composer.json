@@ -23,6 +23,9 @@
             "Rad\\Test\\": "tests"
         }
     },
+    "require": {
+        "php": ">=5.5.21"
+    },
     "autoload": {
         "psr-4": {
             "Rad\\": "src"
