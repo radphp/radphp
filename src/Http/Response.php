@@ -197,7 +197,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Returns coookies set by the user
+     * Returns cookies set by the user
      *
      * @return CookiesInterface
      */
@@ -236,7 +236,7 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Resets all the stablished headers
+     * Resets all the established headers
      *
      * @return ResponseInterface
      */

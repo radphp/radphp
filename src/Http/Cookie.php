@@ -71,7 +71,7 @@ class Cookie
 
     public $cipher = MCRYPT_RIJNDAEL_256;
     public $cipherMode = MCRYPT_MODE_ECB;
-    public $secretKey = "This is my secret key";
+    public $secretKey = 'This is my secret key';
 
     /**
      * Cookie constructor
@@ -171,7 +171,7 @@ class Cookie
         return setcookie(
             $this->name,
             null,
-            time() - 691200,
+            1,
             $this->path,
             $this->domain,
             $this->secure,
