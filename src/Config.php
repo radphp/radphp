@@ -105,12 +105,19 @@ class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, C
      * Get config
      *
      * @param string $identifier Parameter name.
+     * @param null   $default    Default value
      *
      * @return array|null
      */
-    public static function get($identifier)
+    public static function get($identifier, $default = null)
     {
-        return self::getInternal($identifier);
+        $value = self::getInternal($identifier);
+
+        if (is_null($value)) {
+            return $default;
+        }
+
+        return $value;
     }
 
     /**
