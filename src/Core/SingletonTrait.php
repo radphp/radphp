@@ -1,6 +1,6 @@
 <?php
 
-namespace Rad\Core\Pattern;
+namespace Rad\Core;
 
 /**
  * Singleton trait
