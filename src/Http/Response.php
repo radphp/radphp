@@ -433,7 +433,6 @@ class Response implements ResponseInterface
      */
     public function send()
     {
-        $this->sendHeaders();
         if ($this->sent === false) {
             $this->sendHeaders();
             $this->sendCookies();
