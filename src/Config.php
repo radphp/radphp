@@ -9,7 +9,7 @@ use JsonSerializable;
 use Rad\Config\Engine\PhpConfig;
 use Rad\Config\EngineInterface;
 use Rad\Config\Exception;
-use Rad\Core\Pattern\SingletonTrait;
+use Rad\Core\SingletonTrait;
 use Serializable;
 
 /**
@@ -150,7 +150,7 @@ class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, C
      *
      * @return bool|EngineInterface
      */
-    protected function getEngine($name)
+    protected static function getEngine($name)
     {
         if (!isset(self::$engines[$name])) {
             if ($name !== 'default') {
