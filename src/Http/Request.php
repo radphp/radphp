@@ -55,9 +55,6 @@ class Request implements RequestInterface
             'files' => &$_FILES
         ];
 
-        // unset all parameters to remove regular access to them
-        unset($_GET, $_POST, $_REQUEST, $_SERVER, $_ENV, $_FILES);
-
         $this->method = $this->superGlobals['server']['REQUEST_METHOD'];
         $this->uri = $this->superGlobals['server']['REQUEST_URI'];
         $this->serverAddress = $this->superGlobals['server']['SERVER_ADDR'];
