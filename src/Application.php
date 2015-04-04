@@ -44,6 +44,7 @@ class Application
      * @var ResponseInterface
      */
     protected $response;
+    protected $isRun = false;
 
     /**
      * Init application
@@ -75,8 +76,12 @@ class Application
      */
     public function run()
     {
-        $this->di->get('router')->handle();
-        $this->callAction();
+        if (!$this->isRun) {
+            $this->di->get('router')->handle();
+            $this->callAction();
+        } else {
+            throw new Exception('Application is run.');
+        }
     }
 
     /**
