@@ -15,44 +15,48 @@ interface RequestInterface
      * Gets a variable from the $_REQUEST super global.
      * If no parameters are given the $_REQUEST super global is returned
      *
-     * @param string|null $name
-     * @param mixed       $defaultValue
+     * @param string $name
+     * @param mixed  $defaultValue
+     * @param bool   $notAllowEmpty
      *
      * @return mixed
      */
-    public function get($name = null, $defaultValue = null);
+    public function get($name = null, $defaultValue = null, $notAllowEmpty = false);
 
     /**
      * Gets a variable from the $_POST super global.
      * If no parameters are given the $_POST super global is returned
      *
-     * @param string|null $name
-     * @param mixed       $defaultValue
+     * @param string $name
+     * @param mixed  $defaultValue
+     * @param bool   $notAllowEmpty
      *
      * @return mixed
      */
-    public function getPost($name = null, $defaultValue = null);
+    public function getPost($name = null, $defaultValue = null, $notAllowEmpty = false);
 
     /**
      * Gets a variable from put request
      *
      * @param string|null $name
      * @param mixed       $defaultValue
+     * @param bool        $notAllowEmpty
      *
      * @return mixed
      */
-    public function getPut($name = null, $defaultValue = null);
+    public function getPut($name = null, $defaultValue = null, $notAllowEmpty = false);
 
     /**
      * Gets variable from $_GET super global.
      * If no parameters are given the $_GET super global is returned
      *
-     * @param string|null $name
-     * @param mixed       $defaultValue
+     * @param string $name
+     * @param mixed  $defaultValue
+     * @param bool   $notAllowEmpty
      *
      * @return mixed
      */
-    public function getQuery($name = null, $defaultValue = null);
+    public function getQuery($name = null, $defaultValue = null, $notAllowEmpty = false);
 
     /**
      * Gets variable from $_SERVER super global
