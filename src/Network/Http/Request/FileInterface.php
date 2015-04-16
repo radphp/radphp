@@ -1,11 +1,11 @@
 <?php
 
-namespace Rad\Http\Request;
+namespace Rad\Network\Http\Request;
 
 /**
  * File Interface
  *
- * @package Rad\Http\Request
+ * @package Rad\Network\Http\Request
  */
 interface FileInterface
 {

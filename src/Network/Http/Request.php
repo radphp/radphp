@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Http;
+namespace Rad\Network\Http;
 
-use Rad\Http\Request\File;
+use Rad\Network\Http\Request\File;
 
 /**
  * Http Request
  *
- * @package Rad\Http
+ * @package Rad\Network\Http
  */
 class Request implements RequestInterface
 {
@@ -564,7 +564,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * Gets attached files as Rad\Http\Request\File instance
+     * Gets attached files as Rad\Network\Http\Request\File instance
      *
      * @return File[]
      */

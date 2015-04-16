@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Http;
+namespace Rad\Network\Http;
 
-use Rad\Http\Request\File;
+use Rad\Network\Http\Request\File;
 
 /**
  * Request Interface
  *
- * @package Rad\Http
+ * @package Rad\Network\Http
  */
 interface RequestInterface
 {
@@ -252,7 +252,7 @@ interface RequestInterface
     public function hasFiles();
 
     /**
-     * Gets attached files as Rad\Http\Request\File instance
+     * Gets attached files as Rad\Network\Http\Request\File instance
      *
      * @return File[]
      */

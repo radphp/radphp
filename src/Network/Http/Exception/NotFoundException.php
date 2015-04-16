@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Http\Exception;
+namespace Rad\Network\Http\Exception;
 
 use Rad\Exception;
 
 /**
  * NotFoundException
  *
- * @package Rad\Http\Exception
+ * @package Rad\Network\Http\Exception
  */
 class NotFoundException extends Exception
 {

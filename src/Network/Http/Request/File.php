@@ -1,6 +1,6 @@
 <?php
 
-namespace Rad\Http\Request;
+namespace Rad\Network\Http\Request;
 
 use finfo;
 use SplFileInfo;
@@ -8,7 +8,7 @@ use SplFileInfo;
 /**
  * Class File
  *
- * @package Rad\Http\Request
+ * @package Rad\Network\Http\Request
  */
 class File extends SplFileInfo implements FileInterface
 {

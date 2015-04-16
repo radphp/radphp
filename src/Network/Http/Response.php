@@ -1,19 +1,19 @@
 <?php
 
-namespace Rad\Http;
+namespace Rad\Network\Http;
 
 use DateTime;
 use DateTimeZone;
 use InvalidArgumentException;
-use Rad\Http\Response\CookiesInterface;
-use Rad\Http\Response\Exception;
-use Rad\Http\Response\Headers;
-use Rad\Http\Response\HeadersInterface;
+use Rad\Network\Http\Response\CookiesInterface;
+use Rad\Network\Http\Response\Exception;
+use Rad\Network\Http\Response\Headers;
+use Rad\Network\Http\Response\HeadersInterface;
 
 /**
  * Http Response
  *
- * @package Rad\Http
+ * @package Rad\Network\Http
  */
 class Response implements ResponseInterface
 {

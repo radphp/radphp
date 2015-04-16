@@ -2,8 +2,8 @@
 
 namespace Rad\Core;
 
-use Rad\Http\RequestInterface;
-use Rad\Http\ResponseInterface;
+use Rad\Network\Http\RequestInterface;
+use Rad\Network\Http\ResponseInterface;
 
 /**
  * Responder

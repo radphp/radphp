@@ -1,15 +1,15 @@
 <?php
 
-namespace Rad\Http;
+namespace Rad\Network\Http;
 
 use DateTime;
-use Rad\Http\Response\Exception;
-use Rad\Http\Response\HeadersInterface;
+use Rad\Network\Http\Response\Exception;
+use Rad\Network\Http\Response\HeadersInterface;
 
 /**
  * Response Interface
  *
- * @package Rad\Http
+ * @package Rad\Network\Http
  */
 interface ResponseInterface
 {

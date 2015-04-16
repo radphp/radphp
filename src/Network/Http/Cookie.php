@@ -1,11 +1,11 @@
 <?php
 
-namespace Rad\Http;
+namespace Rad\Network\Http;
 
 /**
  * Provide OO wrappers to manage a HTTP cookie
  *
- * @package Rad\Http
+ * @package Rad\Network\Http
  */
 class Cookie
 {

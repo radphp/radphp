@@ -1,11 +1,11 @@
 <?php
 
-namespace Rad\Http\Cookie;
+namespace Rad\Network\Http\Cookie;
 
 /**
  * Cookie Exception
  *
- * @package Rad\Http\Cookie
+ * @package Rad\Network\Http\Cookie
  */
 class Exception extends \Rad\Exception
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Rad\Http\Response;
+namespace Rad\Network\Http\Response;
 
 /**
  * Response Exception
  *
- * @package Rad\Http\Response
+ * @package Rad\Network\Http\Response
  */
 class Exception extends \Rad\Exception
 {

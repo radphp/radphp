@@ -3,9 +3,9 @@
 namespace Rad\Core;
 
 use Rad\DependencyInjection\Injectable;
-use Rad\Http\RequestInterface;
-use Rad\Http\Response\CookiesInterface;
-use Rad\Http\ResponseInterface;
+use Rad\Network\Http\RequestInterface;
+use Rad\Network\Http\Response\CookiesInterface;
+use Rad\Network\Http\ResponseInterface;
 use Rad\Routing\Router;
 
 /**

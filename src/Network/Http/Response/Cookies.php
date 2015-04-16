@@ -1,8 +1,8 @@
 <?php
 
-namespace Rad\Http\Response;
+namespace Rad\Network\Http\Response;
 
-use Rad\Http\Cookie;
+use Rad\Network\Http\Cookie;
 
 /**
  * Cookies
@@ -10,7 +10,7 @@ use Rad\Http\Cookie;
  * This class is a bag to manage the cookies A cookies bag is automatically
  * registered as part of the ‘response’
  *
- * @package Rad\Http\Response
+ * @package Rad\Network\Http\Response
  */
 class Cookies implements CookiesInterface
 {

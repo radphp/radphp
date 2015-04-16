@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Http\Response;
+namespace Rad\Network\Http\Response;
 
-use Rad\Http\Cookie;
+use Rad\Network\Http\Cookie;
 
 /**
  * Cookies Interface
  *
- * @package Rad\Http\Response
+ * @package Rad\Network\Http\Response
  */
 interface CookiesInterface
 {
