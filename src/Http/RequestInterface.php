@@ -273,11 +273,11 @@ interface RequestInterface
     public function getAcceptableContent();
 
     /**
-     * Gets best mime/type accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
+     * Gets preferred mime/type accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
      *
      * @return array
      */
-    public function getBestAccept();
+    public function getPreferredAccept();
 
     /**
      * Gets charsets array and their quality accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_CHARSET’]
@@ -287,11 +287,11 @@ interface RequestInterface
     public function getClientCharsets();
 
     /**
-     * Gets best charset accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_CHARSET’]
+     * Gets preferred charset accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_CHARSET’]
      *
      * @return string
      */
-    public function getBestCharset();
+    public function getPreferredCharset();
 
     /**
      * Gets languages array and their quality accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_LANGUAGE’]
@@ -301,9 +301,9 @@ interface RequestInterface
     public function getLanguages();
 
     /**
-     * Gets best language accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_LANGUAGE’]
+     * Gets preferred language accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_LANGUAGE’]
      *
      * @return string
      */
-    public function getBestLanguage();
+    public function getPreferredLanguage();
 }

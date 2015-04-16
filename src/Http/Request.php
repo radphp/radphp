@@ -639,13 +639,13 @@ class Request implements RequestInterface
     }
 
     /**
-     * Gets best mime/type accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
+     * Gets preferred mime/type accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
      *
      * @return array
      */
-    public function getBestAccept()
+    public function getPreferredAccept()
     {
-        return $this->getBestQuality($this->getAcceptableContent(), 'accept');
+        return $this->getPreferredQuality($this->getAcceptableContent(), 'accept');
     }
 
     /**
@@ -659,13 +659,13 @@ class Request implements RequestInterface
     }
 
     /**
-     * Gets best charset accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_CHARSET’]
+     * Gets preferred charset accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_CHARSET’]
      *
      * @return string
      */
-    public function getBestCharset()
+    public function getPreferredCharset()
     {
-        return $this->getBestQuality($this->getClientCharsets(), 'charset');
+        return $this->getPreferredQuality($this->getClientCharsets(), 'charset');
     }
 
     /**
@@ -679,13 +679,13 @@ class Request implements RequestInterface
     }
 
     /**
-     * Gets best language accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_LANGUAGE’]
+     * Gets preferred language accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT_LANGUAGE’]
      *
      * @return string
      */
-    public function getBestLanguage()
+    public function getPreferredLanguage()
     {
-        return $this->getBestQuality($this->getLanguages(), 'language');
+        return $this->getPreferredQuality($this->getLanguages(), 'language');
     }
 
     /**
@@ -730,14 +730,14 @@ class Request implements RequestInterface
     }
 
     /**
-     * Process a request header and return the one with best quality
+     * Process a request header and return the one with preferred quality
      *
      * @param array  $qualityParts
      * @param string $name
      *
      * @return string
      */
-    protected function getBestQuality(array $qualityParts, $name)
+    protected function getPreferredQuality(array $qualityParts, $name)
     {
         $i = 0;
         $quality = 0;
@@ -749,9 +749,9 @@ class Request implements RequestInterface
                 $selectedName = $accept[$name];
             } else {
                 $acceptQuality = $accept['quality'];
-                $bestQuality = ($quality < $acceptQuality);
+                $preferredQuality = ($quality < $acceptQuality);
 
-                if ($bestQuality === true) {
+                if ($preferredQuality === true) {
                     $quality = $acceptQuality;
                     $selectedName = $accept[$name];
                 }
