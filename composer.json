@@ -24,7 +24,8 @@
         }
     },
     "require": {
-        "php": ">=5.5.21"
+        "php": ">=5.5.21",
+        "ext-mcrypt" : "*"
     },
     "autoload": {
         "psr-4": {
