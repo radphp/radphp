@@ -6,6 +6,7 @@ use Rad\DependencyInjection\Injectable;
 use Rad\Network\Http\RequestInterface;
 use Rad\Network\Http\Response\CookiesInterface;
 use Rad\Network\Http\ResponseInterface;
+use Rad\Network\Session;
 use Rad\Routing\Router;
 
 /**
@@ -15,6 +16,7 @@ use Rad\Routing\Router;
  * @property ResponseInterface $response
  * @property Router            $router
  * @property CookiesInterface  $cookies
+ * @property Session           $session
  * @property Responder         $responder
  *
  * @package Rad\Core\Arch\ADR
