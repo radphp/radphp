@@ -3,9 +3,10 @@
 namespace Rad\Routing;
 
 use Rad\Config;
+use Rad\Core\Bundles;
 
 /**
- * Router
+ * RadPHP Router
  *
  * @package Rad\Routing
  */
@@ -48,42 +49,61 @@ class Router
 
     /**
      * Handles routing information received from the rewrite engine
+     *
+     * @param string $uri
+     *
+     * @throws \Rad\Exception
      */
-    public function handle()
+    public function handle($uri = null)
     {
-        $rewriteUri = trim($this->getRewriteUri(), '/');
-        $parts = explode('/', $rewriteUri);
+        if ($uri) {
+            $realUri = $uri;
+        } else {
+            $realUri = $this->getRewriteUri();
+        }
+
+        $realUri = trim($realUri, '/');
+        $parts = explode('/', $realUri);
 
         // Cleaning route parts & Rebase array keys
         $parts = array_values(array_filter($parts, 'trim'));
+        $module = str_replace(' ', '', ucwords(str_replace('_', ' ', reset($parts))));
 
         // Assign module if exist
-        if (array_key_exists($module = strtolower(reset($parts)), Config::get('bundles', []))) {
+        if (array_key_exists($module, Config::get('bundles', []))) {
             $this->module = $module;
-            array_shift($parts);
+            $namespaces[$this->module] = [
+                'action' => Bundles::getNamespace($this->module) . 'Action',
+                'responder' => Bundles::getNamespace($this->module) . 'Responder'
+            ];
         }
 
-        if ($this->module) {
-            //TODO Implement bundles namespace
-        } else {
-            $appActionNS = 'App\\Action';
-            $appResponderNS = 'App\\Responder';
-        }
+        $namespaces['app'] = [
+            'action' => 'App\\Action',
+            'responder' => 'App\\Responder'
+        ];
 
         $matchedRoutes = [];
-        foreach ($parts as $key => $part) {
-            $appActionNS .= '\\' . ucfirst($part);
-            $appResponderNS .= '\\' . ucfirst($part);
-            $namespace = $appActionNS . 'Action';
-            $responderNS = $appResponderNS . 'Responder';
+        foreach ($namespaces as $moduleName => $ns) {
+            foreach ($parts as $key => $part) {
+                if ($moduleName !== 'app' && $key == 0) {
+                    continue;
+                }
 
-            if (class_exists($namespace)) {
-                $matchedRoutes[] = [
-                    'namespace' => $namespace,
-                    'responder' => $responderNS,
-                    'action' => $part,
-                    'params' => array_slice($parts, $key + 1)
-                ];
+                $camel = str_replace(' ', '', ucwords(str_replace('_', ' ', $part)));
+                $ns['action'] .= '\\' . $camel;
+                $ns['responder'] .= '\\' . $camel;
+                $namespace = $ns['action'] . 'Action';
+                $responderNS = $ns['responder'] . 'Responder';
+
+                if (class_exists($namespace)) {
+                    $matchedRoutes[] = [
+                        'namespace' => $namespace,
+                        'responder' => $responderNS,
+                        'action' => $part,
+                        'params' => array_slice($parts, $key + 1)
+                    ];
+                }
             }
         }
 
@@ -99,11 +119,21 @@ class Router
         }
     }
 
+    /**
+     * Set uri source
+     *
+     * @param $uriSource
+     */
     public function setUriSource($uriSource)
     {
         $this->uriSource = $uriSource;
     }
 
+    /**
+     * Get module
+     *
+     * @return mixed
+     */
     public function getModule()
     {
         return $this->module;
