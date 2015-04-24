@@ -154,7 +154,7 @@ class Application
 
                 $climate = new CLImate();
 
-                if (!(method_exists($actionNamespace, $cliConfig) || is_callable([$actionNamespace, $cliConfig]))) {
+                if (method_exists($actionNamespace, $cliConfig) && is_callable([$actionNamespace, $cliConfig])) {
                     $argumentManager = new Manager();
                     $climate->setArgumentManager($argumentManager);
 
