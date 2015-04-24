@@ -12,6 +12,7 @@ use Rad\Core\Responder;
 use Rad\Core\SingletonTrait;
 use Rad\DependencyInjection\Di;
 use Rad\DependencyInjection\DiInterface;
+use Rad\Event\EventDispatcher;
 use Rad\Network\Http\Exception\NotFoundException;
 use Rad\Network\Http\Request;
 use Rad\Network\Http\RequestInterface;
@@ -48,7 +49,24 @@ class Application
      * @var ResponseInterface
      */
     protected $response;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $event;
+
     protected $run = false;
+
+    const EVENT_BEFORE_LOAD_BUNDLES = 'App.beforeLoadBundles';
+    const EVENT_AFTER_LOAD_BUNDLES = 'App.afterLoadBundles';
+    const EVENT_BEFORE_WEB_METHOD = 'Action.beforeWebMethod';
+    const EVENT_AFTER_WEB_METHOD = 'Action.afterWebMethod';
+    const EVENT_BEFORE_RESPONDER = 'Action.beforeResponder';
+    const EVENT_AFTER_RESPONDER = 'Action.afterResponder';
+    const EVENT_BEFORE_CLI_METHOD = 'Action.beforeCliMethod';
+    const EVENT_AFTER_CLI_METHOD = 'Action.afterCliMethod';
+    const EVENT_BEFORE_CLI_CONFIG = 'Action.beforeCliConfig';
+    const EVENT_AFTER_CLI_CONFIG = 'Action.afterCliConfig';
 
     /**
      * Init application
@@ -64,6 +82,7 @@ class Application
 
         $this->di = new Di();
         $this->di->setShared('router', $this->router = new Router());
+        $this->di->setShared('event', $this->event = new EventDispatcher());
         $this->di->setShared(
             'session',
             function () {
@@ -77,7 +96,9 @@ class Application
         $appBootstrap = new Bootstrap();
         $appBootstrap->setDi($this->di);
 
+        $this->event->trigger(self::EVENT_BEFORE_LOAD_BUNDLES, $this->di);
         $this->loadBundles();
+        $this->event->trigger(self::EVENT_AFTER_LOAD_BUNDLES, $this->di);
     }
 
     /**
@@ -158,7 +179,9 @@ class Application
                     $argumentManager = new Manager();
                     $climate->setArgumentManager($argumentManager);
 
+                    $this->event->trigger(self::EVENT_BEFORE_CLI_CONFIG, $this->di);
                     call_user_func([$instance, 'cliConfig'], $argumentManager);
+                    $this->event->trigger(self::EVENT_AFTER_CLI_CONFIG, $this->di);
 
                     try {
                         $argumentManager->parse($argv);
@@ -168,11 +191,15 @@ class Application
                     }
                 }
 
+                $this->event->trigger(self::EVENT_BEFORE_CLI_METHOD, $this->di);
                 call_user_func([$instance, $cliMethod], $climate);
+                $this->event->trigger(self::EVENT_AFTER_CLI_METHOD, $this->di);
 
                 // Check Responder::cliMethod exist or callable
                 if (method_exists($responder, $cliMethod) && is_callable([$responder, $cliMethod])) {
+                    $this->event->trigger(self::EVENT_BEFORE_RESPONDER, $this->di);
                     call_user_func([$responder, $cliMethod]);
+                    $this->event->trigger(self::EVENT_AFTER_RESPONDER, $this->di);
                 }
             } else {
                 throw new MissingMethodException(
@@ -208,10 +235,15 @@ class Application
                 $responder = $this->callResponder();
                 $instance = new $actionNamespace($responder);
                 $instance->setDi($this->di);
+
+                $this->event->trigger(self::EVENT_BEFORE_WEB_METHOD, $this->di);
                 call_user_func_array([$instance, $method], $this->router->getParams());
+                $this->event->trigger(self::EVENT_AFTER_WEB_METHOD, $this->di);
 
                 if (method_exists($responder, $method) && is_callable([$responder, $method])) {
+                    $this->event->trigger(self::EVENT_BEFORE_RESPONDER, $this->di);
                     call_user_func([$responder, $method]);
+                    $this->event->trigger(self::EVENT_AFTER_RESPONDER, $this->di);
                 }
 
                 $this->response->send();
