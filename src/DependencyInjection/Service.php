@@ -2,41 +2,56 @@
 
 namespace Rad\DependencyInjection;
 
-use BadMethodCallException;
 use Closure;
 use ReflectionClass;
+use Rad\DependencyInjection\Service\Exception;
 
 /**
  * Service
  *
- * Represents individually a service in the services container
- *
  * @package Rad\DependencyInjection
  */
-class Service implements ServiceInterface
+class Service
 {
     protected $name;
     protected $definition;
-    protected $shared;
-    protected $sharedInstance;
+    protected $locked = false;
+    protected $shared = false;
     protected $resolved = false;
+    protected $resolvedDefinition;
 
     /**
-     * Rad\DependencyInjection\Service
+     * Rad\DependencyInjection\Service constructor
      *
-     * @param string  $name
-     * @param mixed   $definition
-     * @param boolean $shared
+     * @param string                 $name
+     * @param callable|object|string $definition
+     * @param bool                   $shared
+     * @param bool                   $locked
      */
-    public function __construct($name, $definition, $shared = false)
+    public function __construct($name, $definition, $shared = false, $locked = false)
     {
         $this->name = $name;
         $this->definition = $definition;
         $this->shared = (bool)$shared;
+        $this->locked = (bool)$locked;
     }
 
     /**
-     * Returns the service's name
+     * Set service name
+     *
+     * @param string $name
+     *
+     * @return Service
+     */
+    public function setName($name)
+    {
+        $this->name = (string)$name;
+
+        return $this;
+    }
+
+    /**
+     * Get service name
      *
      * @return string
      */
@@ -46,17 +61,69 @@ class Service implements ServiceInterface
     }
 
     /**
-     * Sets if the service is shared or not
+     * Set service definition
+     *
+     * @param callable|object|string $definition
+     *
+     * @return Service
+     */
+    public function setDefinition($definition)
+    {
+        $this->definition = $definition;
+
+        return $this;
+    }
+
+    /**
+     * Get service definition
+     *
+     * @return callable|object|string
+     */
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
+
+    /**
+     * Set locked
+     *
+     * @param boolean $locked
+     *
+     * @return Service
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = (bool)$locked;
+
+        return $this;
+    }
+
+    /**
+     * Check service is locked
+     *
+     * @return boolean
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Set shared
      *
      * @param boolean $shared
+     *
+     * @return Service
      */
     public function setShared($shared)
     {
         $this->shared = (bool)$shared;
+
+        return $this;
     }
 
     /**
-     * Check whether the service is shared or not
+     * Check service is shared
      *
      * @return boolean
      */
@@ -66,125 +133,23 @@ class Service implements ServiceInterface
     }
 
     /**
-     * Sets/Resets the shared instance related to the service
+     * Set resolved
      *
-     * @param mixed $sharedInstance
+     * @param boolean $resolved
+     *
+     * @return Service
      */
-    public function setSharedInstance($sharedInstance)
+    public function setResolved($resolved)
     {
-        $this->sharedInstance = $sharedInstance;
+        $this->resolved = (bool)$resolved;
+
+        return $this;
     }
 
     /**
-     * Set the service definition
+     * Check service is resolved
      *
-     * @param mixed $definition
-     */
-    public function setDefinition($definition)
-    {
-        $this->definition = $definition;
-    }
-
-    /**
-     * Returns the service definition
-     *
-     * @return mixed
-     */
-    public function getDefinition()
-    {
-        return $this->definition;
-    }
-
-    /**
-     * Resolves the service
-     *
-     * @param array $parameters
-     *
-     * @return object
-     * @throws Exception
-     */
-    public function resolve(array $parameters = [])
-    {
-        $instance = null;
-        $found = false;
-
-        if ($this->shared && $this->sharedInstance) {
-            return $this->sharedInstance;
-        }
-
-        if (is_string($this->definition)) {
-            $found = true;
-            if (class_exists($this->definition)) {
-                $class = new ReflectionClass($this->definition);
-                if ($parameters) {
-                    $instance = $class->newInstanceArgs($parameters);
-                    //TODO On version 5.6 use this method:
-                    //return new $this->definition(...$parameters);
-                } else {
-                    $instance = $class->newInstance();
-                }
-            }
-        } elseif (is_object($this->definition)) {
-            $found = true;
-            if ($this->definition instanceof Closure) {
-                if ($parameters) {
-                    $instance = call_user_func_array($this->definition, $parameters);
-                } else {
-                    $instance = call_user_func($this->definition);
-                }
-            } else {
-                $instance = $this->definition;
-            }
-        } elseif (is_array($this->definition)) {
-            //TODO Implement service builder
-        }
-
-        if ($found === false) {
-            throw new Exception(sprintf('Service "%s" cannot be resolved', $this->name));
-        }
-
-        if (!is_object($instance)) {
-            throw new Exception('You must save an object in DI');
-        }
-
-        if ($this->shared === true) {
-            $this->sharedInstance = $instance;
-        }
-
-        $this->resolved = true;
-
-        return $instance;
-    }
-
-    /**
-     * Changes a parameter in the definition without resolve the service
-     *
-     * @param long  $position
-     * @param array $parameter
-     *
-     * @return Service;
-     */
-    public function setParameter($position, $parameter)
-    {
-        //TODO Implement after service builder is created
-    }
-
-    /**
-     * Returns a parameter in a specific position
-     *
-     * @param int $position
-     *
-     * @return array
-     */
-    public function getParameter($position)
-    {
-        //TODO Implement after service builder is created
-    }
-
-    /**
-     * Returns true if the service was resolved
-     *
-     * @return bool
+     * @return boolean
      */
     public function isResolved()
     {
@@ -192,18 +157,40 @@ class Service implements ServiceInterface
     }
 
     /**
-     * Restore the internal state of a service
+     * Resolve service
      *
-     * @param array $attributes
+     * @param array $args
      *
-     * @return Service
+     * @return mixed|object
+     * @throws Exception
      */
-    public static function __set_state($attributes)
+    public function resolve(array $args = null)
     {
-        if (!isset($attributes['name']) || !isset($attributes['definition']) || !isset($attributes['shared'])) {
-            throw new BadMethodCallException('Bad parameters passed to Rad\DependencyInjectionService::__set_state()');
+        if ($this->resolvedDefinition && $this->shared === true) {
+            return $this->resolvedDefinition;
         }
 
-        return self::__construct($attributes['name'], $attributes['definition'], $attributes['shared']);
+        if ($this->definition instanceof Closure) {
+            if ($args) {
+                $this->resolvedDefinition = call_user_func_array($this->definition, $args);
+            } else {
+                $this->resolvedDefinition = call_user_func($this->definition);
+            }
+        } elseif (is_object($this->definition)) {
+            $this->resolvedDefinition = $this->definition;
+        } elseif (is_string($this->definition)) {
+            if (class_exists($this->definition)) {
+                $reflectionObj = new ReflectionClass($this->definition);
+                $this->resolvedDefinition = $reflectionObj->newInstanceArgs($args);
+            } else {
+                throw new Exception(sprintf('Class "%s" does not exist.', $this->definition));
+            }
+        } else {
+            throw new Exception('Class "%s" does not exist.');
+        }
+
+        $this->resolved = true;
+
+        return $this->resolvedDefinition;
     }
 }
