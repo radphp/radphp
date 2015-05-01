@@ -1,9 +1,9 @@
 <?php
 
-namespace Rad\DependencyInjection\Service;
+namespace Rad\DependencyInjection;
 
 /**
- * Service Exception
+ * DependencyInjection Exception
  *
  * @package Rad\DependencyInjection\Service
  */

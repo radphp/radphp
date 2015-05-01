@@ -4,7 +4,6 @@ namespace Rad\DependencyInjection;
 
 use Closure;
 use ReflectionClass;
-use Rad\DependencyInjection\Service\Exception;
 
 /**
  * Service

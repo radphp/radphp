@@ -51,12 +51,26 @@ abstract class ContainerAware implements ContainerAwareInterface
      */
     public function __call($method, $args)
     {
-        if (stripos($method, 'get', 0) !== false && substr($method, -7) === 'Service') {
-            return $this->getContainer()->getService(Inflection::underscore(substr($method, 3, -7)), $args);
-        } elseif (stripos($method, 'get', 0) !== false) {
-            return $this->getContainer()->get(Inflection::underscore(substr($method, 3)));
+        if (stripos($method, 'get', 0) !== false) {
+            return $this->getContainer()->get(Inflection::underscore(substr($method, 3)), $args);
         } else {
             throw new BadMethodCallException(sprintf('Method "%s" does not exist.', $method));
         }
+    }
+
+    /**
+     * Magic get
+     *
+     * @param string $property
+     *
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        if ($this->getContainer()->has($property)) {
+            return $this->getContainer()->get($property);
+        }
+
+        return null;
     }
 }

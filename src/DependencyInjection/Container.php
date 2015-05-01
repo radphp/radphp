@@ -2,79 +2,73 @@
 
 namespace Rad\DependencyInjection;
 
-use Rad\DependencyInjection\Service\Locator;
+use ArrayAccess;
 
 /**
  * Container
  *
  * @package Rad\DependencyInjection
  */
-class Container
+class Container implements ArrayAccess
 {
     /**
-     * @var Locator
+     * @var Service[]
      */
-    protected $serviceLocator;
-
-    /**
-     * @var Registry
-     */
-    protected $registry;
-
-    /**
-     * Rad\DependencyInjection\Container constructor
-     */
-    public function __construct()
-    {
-        $this->serviceLocator = Locator::getInstance();
-        $this->registry = Registry::getInstance();
-    }
+    protected static $services = [];
 
     /**
      * Set service
      *
-     * @param string          $name
-     * @param callable|string $definition
-     * @param bool            $shared
-     * @param bool            $locked
+     * @param string                 $name
+     * @param callable|object|string $definition
+     * @param bool                   $shared
+     * @param bool                   $locked
      *
-     * @return Container
+     * @throws Exception
      */
-    public function setService($name, $definition, $shared = false, $locked = false)
+    public static function set($name, $definition, $shared = false, $locked = false)
     {
-        $this->serviceLocator->set($name, $definition, $shared, $locked);
+        if (isset(self::$services[$name]) && self::$services[$name]->isLocked()) {
+            throw new Exception(sprintf('Service "%s" does exist and locked.', $name));
+        }
 
-        return $this;
+        self::$services[$name] = new Service($name, $definition, $shared, $locked);
     }
 
     /**
-     * Set shared service
+     * Set service as shared
      *
-     * @param string          $name
-     * @param callable|string $definition
-     * @param bool            $locked
+     * @param string                 $name
+     * @param callable|object|string $definition
+     * @param bool                   $locked
      *
-     * @return Container
-     * @throws Service\Exception
+     * @throws Exception
      */
-    public function setSharedService($name, $definition, $locked = false)
+    public static function setShared($name, $definition, $locked = false)
     {
-        $this->serviceLocator->setShared($name, $definition, $locked);
+        if (isset(self::$services[$name]) && self::$services[$name]->isLocked()) {
+            throw new Exception(sprintf('Service "%s" does exist and locked.', $name));
+        }
 
-        return $this;
+        self::$services[$name] = new Service($name, $definition, true, $locked);
     }
 
     /**
-     * Get service
+     * Get and resolve service
      *
      * @param string $name
      * @param array  $args
      *
      * @return mixed|object
+     * @throws Exception
      */
-    public function getService($name, array $args = null)
+    public static function get($name, array $args = null)
     {
-        return $this->serviceLocator->get($name, $args);
+        if (!isset(self::$services[$name])) {
+            throw new Exception(sprintf('Service "%s" does not exist.', $name));
+        }
+
+        return self::$services[$name]->resolve($args);
     }
 
     /**
@@ -84,71 +78,78 @@ class Container
      *
      * @return bool
      */
-    public function hasService($name)
+    public static function has($name)
     {
-        return $this->serviceLocator->has($name);
+        return isset(self::$services[$name]);
     }
 
     /**
      * Remove service
      *
      * @param string $name
+     *
+     * @throws Exception
      */
-    public function removeService($name)
+    public static function remove($name)
     {
-        $this->serviceLocator->remove($name);
+        if (isset(self::$services[$name]) && self::$services[$name]->isLocked()) {
+            throw new Exception(sprintf('You can not remove locked service.', $name));
+        }
+
+        unset(self::$services[$name]);
     }
 
     /**
-     * Store in registry
+     * Whether a offset exists
      *
-     * @param string $key
-     * @param mixed  $value
-     * @param string $scope
+     * @param string $offset An offset to check for.
      *
-     * @return Container
+     * @link            http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @return boolean true on success or false on failure.
+     *                  The return value will be casted to boolean if non-boolean was returned.
      */
-    public function set($key, $value, $scope = Registry::DEFAULT_SCOPE)
+    public function offsetExists($offset)
     {
-        $this->registry->set($key, $value, $scope);
-
-        return $this;
+        return $this->has($offset);
     }
 
     /**
-     * Get key from registry
+     * Offset to retrieve
      *
-     * @param string $key
-     * @param string $scope
+     * @param mixed $offset The offset to retrieve.
      *
-     * @return mixed
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     * @return mixed Can return all value types.
      */
-    public function get($key, $scope = Registry::DEFAULT_SCOPE)
+    public function offsetGet($offset)
     {
-        return $this->registry->get($key, $scope);
+        return $this->get($offset);
     }
 
     /**
-     * Check exist key
+     * Offset to set
      *
-     * @param string $key
-     * @param string $scope
+     * @param mixed $offset The offset to assign the value to.
+     * @param mixed $value  The value to set.
      *
-     * @return bool
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     * @return void
      */
-    public function has($key, $scope = Registry::DEFAULT_SCOPE)
+    public function offsetSet($offset, $value)
     {
-        return $this->registry->has($key, $scope);
+        $this->set($offset, $value);
     }
 
     /**
-     * Remove key from registry
+     * Offset to unset
      *
-     * @param string $key
-     * @param string $scope
+     * @param mixed $offset The offset to unset.
+     *
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @return void
      */
-    public function remove($key, $scope = Registry::DEFAULT_SCOPE)
+    public function offsetUnset($offset)
     {
-        $this->registry->remove($key, $scope);
+        $this->remove($offset);
     }
 }
