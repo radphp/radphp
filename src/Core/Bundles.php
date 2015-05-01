@@ -7,6 +7,7 @@ use Rad\Core\Exception\MissingBundleException;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
 use Rad\Exception;
+use Rad\Utility\Inflection;
 
 /**
  * Bundles Loader
@@ -38,7 +39,7 @@ class Bundles
             'bootstrap' => false
         ];
 
-        $bundleName = self::toCamelCase($bundleName);
+        $bundleName = Inflection::camelize($bundleName);
         $bundlePath = BUNDLES . DS . $bundleName . DS . $options['baseDir'];
 
         if (is_dir($bundlePath)) {
@@ -81,7 +82,7 @@ class Bundles
      */
     public static function isLoaded($bundleName)
     {
-        $bundleName = self::toCamelCase($bundleName);
+        $bundleName = Inflection::camelize($bundleName);
 
         return isset(self::$bundlesLoaded[$bundleName]);
     }
@@ -106,7 +107,7 @@ class Bundles
      */
     public static function getNamespace($bundleName)
     {
-        $bundleName = self::toCamelCase($bundleName);
+        $bundleName = Inflection::camelize($bundleName);
 
         if (isset(self::$bundlesLoaded[$bundleName])) {
             return self::$bundlesLoaded[$bundleName]['namespace'];
@@ -125,24 +126,12 @@ class Bundles
      */
     public static function getPath($bundleName)
     {
-        $bundleName = self::toCamelCase($bundleName);
+        $bundleName = Inflection::camelize($bundleName);
 
         if (isset(self::$bundlesLoaded[$bundleName])) {
             return self::$bundlesLoaded[$bundleName]['path'];
         }
 
         throw new MissingBundleException(sprintf('Bundle "%s" could not be found.', $bundleName));
-    }
-
-    /**
-     * Convert snake_case to CamelCase
-     *
-     * @param string $text Snake case string
-     *
-     * @return mixed
-     */
-    protected static function toCamelCase($text)
-    {
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $text)));
     }
 }
