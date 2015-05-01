@@ -4,6 +4,8 @@ namespace Rad\Core;
 
 use Composer\Autoload\ClassLoader;
 use Rad\Core\Exception\MissingBundleException;
+use Rad\DependencyInjection\Container;
+use Rad\DependencyInjection\ContainerAwareInterface;
 use Rad\Exception;
 
 /**
@@ -57,7 +59,10 @@ class Bundles
             if ($options['bootstrap'] === true) {
                 $bootstrapClass = $namespace . 'Bootstrap';
                 if (class_exists($bootstrapClass)) {
-                    new $bootstrapClass();
+                    $bootstrapInstance = new $bootstrapClass();
+                    if ($bootstrapInstance instanceof ContainerAwareInterface) {
+                        $bootstrapInstance->setContainer(new Container());
+                    }
                 } else {
                     throw new Exception(sprintf('Class "%s" does not exist.', $bootstrapClass));
                 }
