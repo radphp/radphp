@@ -2,26 +2,35 @@
 
 namespace Rad\Core;
 
-use Rad\DependencyInjection\Injectable;
-use Rad\Network\Http\RequestInterface;
-use Rad\Network\Http\Response\CookiesInterface;
-use Rad\Network\Http\ResponseInterface;
+use Rad\DependencyInjection\ContainerAware;
+use Rad\Error\ErrorHandler;
+use Rad\Event\EventDispatcher;
+use Rad\Network\Http\Request;
+use Rad\Network\Http\Response;
+use Rad\Network\Http\Response\Cookies;
 use Rad\Network\Session;
 use Rad\Routing\Router;
 
 /**
  * Action
  *
- * @property RequestInterface  $request
- * @property ResponseInterface $response
- * @property Router            $router
- * @property CookiesInterface  $cookies
- * @property Session           $session
- * @property Responder         $responder
+ * @property Request   $request
+ * @property Response  $response
+ * @property Router    $router
+ * @property Cookies   $cookies
+ * @property Session   $session
+ * @property Responder $responder
  *
- * @package Rad\Core\Arch\ADR
+ * @method Request         getRequest()  Get Http request
+ * @method Response        getResponse() Get Http response
+ * @method Router          getRouter()   Get router
+ * @method Cookies         getCookies()  Get cookies
+ * @method EventDispatcher getEvent()    Get event dispatcher
+ * @method ErrorHandler    getError()    Get error handler
+ *
+ * @package Rad\Core
  */
-abstract class Action extends Injectable
+abstract class Action extends ContainerAware
 {
     protected $responder;
 
