@@ -2,7 +2,6 @@
 
 namespace Rad\Database;
 
-use Cake\Database\Exception;
 use Rad\Database\Driver\DriverInterface;
 
 /**
@@ -19,6 +18,7 @@ class DriverFactory
      * @param array  $config
      *
      * @return DriverInterface
+     * @throws Exception
      */
     public static function get($name, array $config)
     {
@@ -28,10 +28,6 @@ class DriverFactory
             throw new Exception(sprintf('Driver "%s" does not exist.', $driverClass));
         }
 
-        /** @var DriverInterface $driverInstance */
-        $driverInstance = new $driverClass();
-        $driverInstance->setConfig($config);
-
-        return $driverInstance;
+        return new $driverClass($config);
     }
 }

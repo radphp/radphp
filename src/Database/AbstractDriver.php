@@ -19,6 +19,16 @@ abstract class AbstractDriver implements DriverInterface
     protected $connection;
 
     /**
+     * Rad\Database\AbstractDriver constructor
+     *
+     * @param array $config
+     */
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * @return bool
      */
     abstract public function connect();
@@ -37,13 +47,5 @@ abstract class AbstractDriver implements DriverInterface
     public function getConnection()
     {
         return $this->connection;
-    }
-
-    /**
-     * @param array $config
-     */
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
     }
 }

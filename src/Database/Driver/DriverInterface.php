@@ -18,11 +18,4 @@ interface DriverInterface
      * @return void
      */
     public function disconnect();
-
-    /**
-     * @param array $config
-     *
-     * @return void
-     */
-    public function setConfig(array $config);
 }
