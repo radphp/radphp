@@ -22,7 +22,7 @@ use Rad\Network\Session;
 use Rad\Routing\Router;
 
 /**
- * Application
+ * RadPHP Application
  *
  * @package Rad
  */
