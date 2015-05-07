@@ -14,12 +14,13 @@ use Rad\Routing\Router;
 /**
  * Action
  *
- * @property Request   $request
- * @property Response  $response
- * @property Router    $router
- * @property Cookies   $cookies
- * @property Session   $session
- * @property Responder $responder
+ * @property Request      $request
+ * @property Response     $response
+ * @property Router       $router
+ * @property Cookies      $cookies
+ * @property Session      $session
+ * @property Responder    $responder
+ * @property ErrorHandler $error
  *
  * @method Request         getRequest()  Get Http request
  * @method Response        getResponse() Get Http response
