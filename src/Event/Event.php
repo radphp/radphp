@@ -2,66 +2,115 @@
 
 namespace Rad\Event;
 
-use SplObjectStorage;
-use SplObserver;
-use SplSubject;
-
-class Event implements SplSubject
+/**
+ * RadPHP Event
+ *
+ * @package Rad\Event
+ */
+class Event
 {
-    // stores all attached observers
-    private $observers;
+    protected $type;
+    protected $subject;
+    protected $data;
+    protected $result;
+    protected $cancelable = true;
+    protected $immediateStopped = false;
 
     /**
-     * Default constructor to initialize the observers.
+     * Rad\Event\Event constructor
+     *
+     * @param string $type       Event type
+     * @param null   $subject    Subject
+     * @param mixed  $data       Data
+     * @param bool   $cancelable Event is cancelable
      */
-    public function __construct()
+    function __construct($type, $subject = null, $data = null, $cancelable = true)
     {
-        $this->observers = new SplObjectStorage();
+        $this->type = $type;
+        $this->subject = $subject;
+        $this->data = $data;
+        $this->cancelable = (bool)$cancelable;
     }
 
     /**
-     * Wrapper for the attach method, allowing for the addition
-     * of a method name to call within the observer.
+     * Check event is cancelable
      *
-     * @param    SplObserver $event
-     * @param    mixed       $triggersMethod
-     *
-     * @return    Event
+     * @return boolean
      */
-    public function attach(SplObserver $event, $triggersMethod = null)
+    public function isCancelable()
     {
-        $this->observers->attach($event, $triggersMethod);
-        return $this;
+        return $this->cancelable;
     }
 
     /**
-     * Detach an existing observer from the particular event.
+     * Keeps the rest of the handlers from being executed and prevents the event
      *
-     * @param    SplObserver $event
-     *
-     * @return    Event
+     * @throws Exception
      */
-    public function detach(SplObserver $event)
+    public function stopImmediatePropagation()
     {
-        $this->observers->detach($event);
-        return $this;
-    }
-
-    /**
-     * Notify all event observers that the event was triggered.
-     *
-     * @param    mixed &$args
-     */
-    public function notify(&$args = null)
-    {
-        $this->observers->rewind();
-        while ($this->observers->valid()) {
-            $triggersMethod = $this->observers->getInfo();
-            $observer = $this->observers->current();
-            $observer->update($this, $triggersMethod, $args);
-
-            // on to the next observer for notification
-            $this->observers->next();
+        if ($this->isCancelable() === false) {
+            throw new Exception(sprintf('Event "%s" not cancelable.', $this->name));
         }
+
+        $this->immediateStopped = true;
+    }
+
+    /**
+     * Returns whether Event::stopImmediatePropagation() was ever called on this event object.
+     *
+     * @return bool
+     */
+    public function isImmediatePropagationStopped()
+    {
+        return $this->immediateStopped;
+    }
+
+    /**
+     * Set the last value returned by an event handler that was triggered by this event.
+     *
+     * @param mixed $result
+     */
+    public function setResult($result)
+    {
+        $this->result = $result;
+    }
+
+    /**
+     * Get the last value returned by an event handler that was triggered by this event.
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
+     * Get event type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Get event subject
+     *
+     * @return null
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     * Get event data
+     *
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 }
