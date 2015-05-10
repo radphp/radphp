@@ -12,7 +12,8 @@ use Rad\Core\Responder;
 use Rad\Core\SingletonTrait;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
-use Rad\Event\EventDispatcher;
+use Rad\Events\EventManager;
+use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\Exception\NotFoundException;
 use Rad\Network\Http\Request;
 use Rad\Network\Http\RequestInterface;
@@ -51,9 +52,9 @@ class Application
     protected $response;
 
     /**
-     * @var EventDispatcher
+     * @var EventManager
      */
-    protected $event;
+    protected $eventManager;
 
     protected $run = false;
 
@@ -83,7 +84,7 @@ class Application
         $this->container = new Container();
 
         $this->container->setShared('router', $this->router = new Router(), true);
-        $this->container->setShared('event', $this->event = new EventDispatcher(), true);
+        $this->container->setShared('event_manager', $this->eventManager = new EventManager(), true);
         $this->container->setShared(
             'session',
             function () {
@@ -98,9 +99,9 @@ class Application
         $appBootstrap = new Bootstrap();
         $appBootstrap->setContainer($this->container);
 
-        $this->event->trigger(self::EVENT_BEFORE_LOAD_BUNDLES, $this->container);
+        $this->eventManager->dispatch(self::EVENT_BEFORE_LOAD_BUNDLES);
         $this->loadBundles();
-        $this->event->trigger(self::EVENT_AFTER_LOAD_BUNDLES, $this->container);
+        $this->eventManager->dispatch(self::EVENT_AFTER_LOAD_BUNDLES);
     }
 
     /**
@@ -176,15 +177,19 @@ class Application
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
 
+                if ($actionInstance instanceof EventSubscriberInterface) {
+                    $actionInstance->subscribe($this->eventManager);
+                }
+
                 $climate = new CLImate();
 
                 if (method_exists($actionNamespace, $cliConfig) && is_callable([$actionNamespace, $cliConfig])) {
                     $argumentManager = new Manager();
                     $climate->setArgumentManager($argumentManager);
 
-                    $this->event->trigger(self::EVENT_BEFORE_CLI_CONFIG, $this->container);
+                    $this->eventManager->dispatch(self::EVENT_BEFORE_CLI_CONFIG);
                     call_user_func([$actionInstance, 'cliConfig'], $argumentManager);
-                    $this->event->trigger(self::EVENT_AFTER_CLI_CONFIG, $this->container);
+                    $this->eventManager->dispatch(self::EVENT_AFTER_CLI_CONFIG);
 
                     try {
                         $argumentManager->parse($argv);
@@ -194,15 +199,15 @@ class Application
                     }
                 }
 
-                $this->event->trigger(self::EVENT_BEFORE_CLI_METHOD, $this->container);
+                $this->eventManager->dispatch(self::EVENT_BEFORE_CLI_METHOD);
                 call_user_func([$actionInstance, $cliMethod], $climate);
-                $this->event->trigger(self::EVENT_AFTER_CLI_METHOD, $this->container);
+                $this->eventManager->dispatch(self::EVENT_AFTER_CLI_METHOD);
 
                 // Check Responder::cliMethod exist or callable
                 if (method_exists($responder, $cliMethod) && is_callable([$responder, $cliMethod])) {
-                    $this->event->trigger(self::EVENT_BEFORE_RESPONDER, $this->container);
+                    $this->eventManager->dispatch(self::EVENT_BEFORE_RESPONDER);
                     call_user_func([$responder, $cliMethod]);
-                    $this->event->trigger(self::EVENT_AFTER_RESPONDER, $this->container);
+                    $this->eventManager->dispatch(self::EVENT_AFTER_RESPONDER);
                 }
             } else {
                 throw new MissingMethodException(
@@ -240,14 +245,18 @@ class Application
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
 
-                $this->event->trigger(self::EVENT_BEFORE_WEB_METHOD, $this->container);
+                if ($actionInstance instanceof EventSubscriberInterface) {
+                    $actionInstance->subscribe($this->eventManager);
+                }
+
+                $this->eventManager->dispatch(self::EVENT_BEFORE_WEB_METHOD);
                 call_user_func_array([$actionInstance, $method], $this->router->getParams());
-                $this->event->trigger(self::EVENT_AFTER_WEB_METHOD, $this->container);
+                $this->eventManager->dispatch(self::EVENT_AFTER_WEB_METHOD);
 
                 if (method_exists($responder, $method) && is_callable([$responder, $method])) {
-                    $this->event->trigger(self::EVENT_BEFORE_RESPONDER, $this->container);
+                    $this->eventManager->dispatch(self::EVENT_BEFORE_RESPONDER);
                     call_user_func([$responder, $method]);
-                    $this->event->trigger(self::EVENT_AFTER_RESPONDER, $this->container);
+                    $this->eventManager->dispatch(self::EVENT_AFTER_RESPONDER);
                 }
 
                 $this->response->send();
