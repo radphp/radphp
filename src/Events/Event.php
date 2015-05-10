@@ -1,6 +1,6 @@
 <?php
 
-namespace Rad\Event;
+namespace Rad\Events;
 
 /**
  * RadPHP Event
