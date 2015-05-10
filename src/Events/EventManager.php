@@ -63,7 +63,7 @@ class EventManager
      *
      * @return Event
      */
-    public function dispatch($eventType, $subject, $data = null, $cancelable = true)
+    public function dispatch($eventType, $subject = null, $data = null, $cancelable = true)
     {
         $event = new Event($eventType, $subject, $data, $cancelable);
 
