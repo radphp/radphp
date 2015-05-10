@@ -1,6 +1,6 @@
 <?php
 
-namespace Rad\Event;
+namespace Rad\Events;
 
 use Closure;
 use SplPriorityQueue;
@@ -23,6 +23,8 @@ class EventManager
      * @param string               $eventType
      * @param array|Closure|object $callable
      * @param int                  $priority
+     *
+     * @return EventManager
      */
     public function attach($eventType, $callable, $priority = 10)
     {
@@ -31,6 +33,8 @@ class EventManager
         }
 
         self::$listener[$eventType]->insert($callable, $priority);
+
+        return $this;
     }
 
     /**
@@ -51,6 +55,18 @@ class EventManager
     public function detachAll()
     {
         self::$listener = [];
+    }
+
+    /**
+     * Detach all listener
+     *
+     * @param string $eventType
+     *
+     * @return bool
+     */
+    public function hasListener($eventType)
+    {
+        return isset(self::$listener[$eventType]);
     }
 
     /**
@@ -94,7 +110,7 @@ class EventManager
     protected function callListener($callable, Event $event)
     {
         if ($callable instanceof Closure || is_array($callable)) {
-            $result = call_user_func_array($callable, [$event, $event->getSubject(), $event->getData()]);
+            $result = call_user_func_array($callable, array_filter([$event, $event->getSubject(), $event->getData()]));
             $event->setResult($result);
         } elseif (is_object($callable)) {
             $result = $callable->{$event->getType()}($event, $event->getSubject(), $event->getData());
