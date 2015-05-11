@@ -2,6 +2,8 @@
 
 namespace Rad\Core;
 
+use Rad\Events\EventManager;
+use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\RequestInterface;
 use Rad\Network\Http\ResponseInterface;
 
@@ -10,7 +12,7 @@ use Rad\Network\Http\ResponseInterface;
  *
  * @package Rad\Core
  */
-abstract class Responder
+abstract class Responder implements EventSubscriberInterface
 {
     protected $request;
     protected $response;
@@ -53,5 +55,17 @@ abstract class Responder
         }
 
         return null;
+    }
+
+    /**
+     * Subscribe event listener
+     *
+     * @param EventManager $eventManager
+     *
+     * @return mixed
+     */
+    public function subscribe(EventManager $eventManager)
+    {
+
     }
 }
