@@ -173,13 +173,10 @@ class Application
             // Check Action::cliMethod exist or callable
             if (method_exists($actionNamespace, $cliMethod) && is_callable([$actionNamespace, $cliMethod])) {
                 $responder = $this->callResponder();
-                /** @var ContainerAwareInterface $actionInstance */
+                /** @var ContainerAwareInterface|EventSubscriberInterface $actionInstance */
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
-
-                if ($actionInstance instanceof EventSubscriberInterface) {
-                    $actionInstance->subscribe($this->eventManager);
-                }
+                $this->eventManager->addSubscriber($actionInstance);
 
                 $climate = new CLImate();
 
@@ -241,13 +238,10 @@ class Application
 
             if (method_exists($actionNamespace, $method) && is_callable([$actionNamespace, $method])) {
                 $responder = $this->callResponder();
-                /** @var ContainerAwareInterface $actionInstance */
+                /** @var ContainerAwareInterface|EventSubscriberInterface $actionInstance */
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
-
-                if ($actionInstance instanceof EventSubscriberInterface) {
-                    $actionInstance->subscribe($this->eventManager);
-                }
+                $this->eventManager->addSubscriber($actionInstance);
 
                 $this->eventManager->dispatch(self::EVENT_BEFORE_WEB_METHOD);
                 call_user_func_array([$actionInstance, $method], $this->router->getParams());

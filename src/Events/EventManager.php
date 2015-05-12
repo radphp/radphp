@@ -70,6 +70,20 @@ class EventManager
     }
 
     /**
+     * Add subscriber
+     *
+     * @param EventSubscriberInterface $subscriber
+     *
+     * @return EventManager
+     */
+    public function addSubscriber(EventSubscriberInterface $subscriber)
+    {
+        $subscriber->subscribe($this);
+
+        return $this;
+    }
+
+    /**
      * Dispatch event
      *
      * @param string $eventType
