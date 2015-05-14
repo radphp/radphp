@@ -23,14 +23,12 @@ use Rad\Routing\Router;
  * @property Cookies      $cookies
  * @property Session      $session
  * @property Responder    $responder
- * @property ErrorHandler $error
  *
  * @method Request         getRequest()      Get Http request
  * @method Response        getResponse()     Get Http response
  * @method Router          getRouter()       Get router
  * @method Cookies         getCookies()      Get cookies
  * @method EventManager    getEventManager() Get event dispatcher
- * @method ErrorHandler    getError()        Get error handler
  *
  * @package Rad\Core
  */
