@@ -65,7 +65,7 @@ class Request implements MessageInterface, RequestInterface
             $host .= !is_null($this->uri->getPort()) ? ':' . $this->uri->getPort() : '';
 
             $this->headerNames['host'] = 'Host';
-            $this->headerValues['host'] = $host;
+            $this->headerValues['host'] = [$host];
         }
 
         if ($body) {
