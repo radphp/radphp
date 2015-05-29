@@ -98,7 +98,7 @@ class Response implements MessageInterface, ResponseInterface
      * @param string                          $version
      */
     public function __construct(
-        $body = 'php://memory',
+        $body = 'php://temp',
         $status = 200,
         $reason = '',
         array $headers = [],
