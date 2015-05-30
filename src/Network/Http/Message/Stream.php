@@ -66,7 +66,7 @@ class Stream implements StreamInterface
      *
      * @throws Exception
      */
-    public function __construct($stream, $mode = 'r', $useIncludePath = false, $context = null)
+    public function __construct($stream, $mode = 'r+', $useIncludePath = false, $context = null)
     {
         if (is_string($stream)) {
             set_error_handler([$this, 'connectionErrorHandler']);
