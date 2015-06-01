@@ -20,4 +20,32 @@ class Exception extends \Exception
     {
         parent::__construct($message, $code, $previous);
     }
+
+    /**
+     * Set file
+     *
+     * @param string $file
+     *
+     * @return self
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * Set line
+     *
+     * @param int $line
+     *
+     * @return self
+     */
+    public function setLine($line)
+    {
+        $this->line = $line;
+
+        return $this;
+    }
 }
