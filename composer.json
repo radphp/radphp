@@ -25,6 +25,7 @@
     },
     "require": {
         "php": ">=5.5.21",
+        "radphp/composer-installer": "dev-master",
         "psr/http-message": "~0.9",
         "psr/log": "~1.0",
         "ext-mcrypt" : "*"
