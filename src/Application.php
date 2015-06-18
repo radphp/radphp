@@ -12,6 +12,8 @@ use Rad\Core\Responder;
 use Rad\Core\SingletonTrait;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
+use Rad\Error\ErrorHandler;
+use Rad\Error\Handler\JsonHandler;
 use Rad\Events\EventManager;
 use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\Exception\NotFoundException;
@@ -76,6 +78,11 @@ class Application
      */
     protected function init()
     {
+        $error = (new ErrorHandler())
+            ->setHandler(new JsonHandler())
+            ->setDebug(true)
+            ->register();
+
         DotEnv::load(ROOT);
         if (!getenv('RAD_ENV')) {
             putenv('RAD_ENV=production');
@@ -83,6 +90,7 @@ class Application
 
         $this->container = new Container();
 
+        $this->container->setShared('error_handler', $error, true);
         $this->container->setShared('router', $this->router = new Router(), true);
         $this->container->setShared('event_manager', $this->eventManager = new EventManager(), true);
         $this->container->setShared(
