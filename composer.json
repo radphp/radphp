@@ -15,6 +15,7 @@
             "role": "Project Founder"
         }
     ],
+    "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "4.5.0"
     },
