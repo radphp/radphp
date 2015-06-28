@@ -2,7 +2,7 @@
 
 namespace Rad\Network\Http\Message;
 
-use Rad\Exception;
+use Rad\Core\Exception\BaseException;
 use RuntimeException;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
@@ -64,7 +64,7 @@ class Stream implements StreamInterface
      * @param bool            $useIncludePath
      * @param null|resource   $context
      *
-     * @throws Exception
+     * @throws BaseException
      */
     public function __construct($stream, $mode = 'r+', $useIncludePath = false, $context = null)
     {
@@ -79,7 +79,7 @@ class Stream implements StreamInterface
 
             if ($this->connectionErrors) {
                 $lastError = end($this->connectionErrors);
-                $exc = new Exception($lastError['message']);
+                $exc = new BaseException($lastError['message']);
                 $exc->setFile($lastError['file'])
                     ->setLine($lastError['line']);
 

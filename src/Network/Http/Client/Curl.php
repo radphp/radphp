@@ -2,7 +2,7 @@
 
 namespace Rad\Network\Http\Client;
 
-use Rad\Exception;
+use Rad\Core\Exception\BaseException;
 use Rad\Network\Http\ClientInterface;
 use Rad\Network\Http\Message\Response;
 use Psr\Http\Message\RequestInterface;
@@ -43,7 +43,7 @@ class Curl implements ClientInterface
         $result = curl_exec($this->handle);
 
         if ($result === false) {
-            throw new Exception(curl_error($this->handle));
+            throw new BaseException(curl_error($this->handle));
         }
 
         return $this->createResponse($result);

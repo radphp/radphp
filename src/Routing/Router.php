@@ -51,8 +51,6 @@ class Router
      * Handles routing information received from the rewrite engine
      *
      * @param string $uri
-     *
-     * @throws \Rad\Exception
      */
     public function handle($uri = null)
     {

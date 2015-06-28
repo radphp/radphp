@@ -3,10 +3,10 @@
 namespace Rad\Core;
 
 use Composer\Autoload\ClassLoader;
+use Rad\Core\Exception\BaseException;
 use Rad\Core\Exception\MissingBundleException;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
-use Rad\Exception;
 use Rad\Utility\Inflection;
 
 /**
@@ -29,7 +29,8 @@ class Bundles
      * @param string $namespace  Bundle namespace
      * @param array  $options    Bundle options
      *
-     * @throws Exception
+     * @throws BaseException
+     * @throws MissingBundleException
      */
     public static function load($bundleName, $namespace, array $options = [])
     {
@@ -65,7 +66,7 @@ class Bundles
                         $bootstrapInstance->setContainer(new Container());
                     }
                 } else {
-                    throw new Exception(sprintf('Class "%s" does not exist.', $bootstrapClass));
+                    throw new BaseException(sprintf('Class "%s" does not exist.', $bootstrapClass));
                 }
             }
         } else {
@@ -103,7 +104,7 @@ class Bundles
      * @param string $bundleName Bundle name
      *
      * @return string
-     * @throws Exception
+     * @throws MissingBundleException
      */
     public static function getNamespace($bundleName)
     {
@@ -122,7 +123,7 @@ class Bundles
      * @param string $bundleName Bundle name
      *
      * @return string
-     * @throws Exception
+     * @throws MissingBundleException
      */
     public static function getPath($bundleName)
     {

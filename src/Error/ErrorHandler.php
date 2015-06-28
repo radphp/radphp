@@ -100,7 +100,12 @@ class ErrorHandler
                 ob_end_clean();
             }
 
-            http_response_code($exception->getCode());
+            $code = 500;
+            if (is_subclass_of($exception, 'Rad\\Core\\Exception\\BaseNetworkException')) {
+                $code = $exception->getCode();
+            }
+
+            http_response_code($code);
             echo $this->handler->handle($exception);
 
             return;

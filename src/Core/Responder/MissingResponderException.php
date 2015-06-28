@@ -2,14 +2,14 @@
 
 namespace Rad\Core\Responder;
 
-use Rad\Exception;
+use Rad\Core\Exception\BaseException;
 
 /**
  * Missing Responder Exception
  *
  * @package Rad\Core\Responder
  */
-class MissingResponderException extends Exception
+class MissingResponderException extends BaseException
 {
 
 }

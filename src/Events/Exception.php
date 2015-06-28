@@ -2,12 +2,14 @@
 
 namespace Rad\Event;
 
+use Rad\Core\Exception\BaseException;
+
 /**
  * Event Exception
  *
  * @package Rad\Event
  */
-class Exception extends \Rad\Exception
+class Exception extends BaseException
 {
 
 }

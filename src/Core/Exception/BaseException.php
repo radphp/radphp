@@ -1,20 +1,22 @@
 <?php
 
-namespace Rad;
+namespace Rad\Core\Exception;
+
+use Exception;
 
 /**
- * RadPHP Exception
+ * Base Exception
  *
- * @package Rad
+ * @package Rad\Core\Exception
  */
-class Exception extends \Exception
+class BaseException extends Exception
 {
     /**
-     * Rad\Exception constructor
+     * Rad\Core\Exception\BaseException constructor
      *
-     * @param string $message
-     * @param int    $code
-     * @param null   $previous
+     * @param string $message  Exception message
+     * @param int    $code     Exception code
+     * @param null   $previous Previous exception
      */
     public function __construct($message, $code = 500, $previous = null)
     {

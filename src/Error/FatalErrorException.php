@@ -2,14 +2,14 @@
 
 namespace Rad\Error;
 
-use Rad\Exception;
+use Rad\Core\Exception\BaseException;
 
 /**
  * Fatal Error Exception
  *
  * @package Rad\Error
  */
-class FatalErrorException extends Exception
+class FatalErrorException extends BaseException
 {
     /**
      * Rad\Error\FatalErrorException Constructor

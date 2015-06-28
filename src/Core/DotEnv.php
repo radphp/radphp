@@ -3,7 +3,7 @@
 namespace Rad\Core;
 
 use Rad\Config;
-use Rad\Exception;
+use Rad\Core\Exception\BaseException;
 
 /**
  * DotEnv loader
@@ -17,7 +17,7 @@ class DotEnv
      *
      * @param string $path Directory path
      *
-     * @throws Exception
+     * @throws BaseException
      */
     public static function load($path)
     {
@@ -31,7 +31,7 @@ class DotEnv
                 }
             }
         } else {
-            throw new Exception('Your path does not directory.');
+            throw new BaseException('Your path does not directory.');
         }
     }
 }

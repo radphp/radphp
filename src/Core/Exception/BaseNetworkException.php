@@ -3,11 +3,11 @@
 namespace Rad\Core\Exception;
 
 /**
- * Missing Bundle Exception
+ * Base Network Exception
  *
  * @package Rad\Core\Exception
  */
-class MissingBundleException extends BaseException
+class BaseNetworkException extends BaseException
 {
 
 }

@@ -2,23 +2,23 @@
 
 namespace Rad\Core\Action;
 
-use Rad\Exception;
+use Rad\Core\Exception\BaseException;
 
 /**
  * Missing Method Exception
  *
  * @package Rad\Core\Arch\ADR\Action
  */
-class MissingMethodException extends Exception
+class MissingMethodException extends BaseException
 {
     /**
      * MissingMethodException constructor
      *
-     * @param string     $message
-     * @param int        $code
-     * @param \Exception $previous
+     * @param string $message  Exception message
+     * @param int    $code     Exception code
+     * @param null   $previous Previous exception
      */
-    public function __construct($message = "", $code = 500, \Exception $previous = null)
+    public function __construct($message = '', $code = 500, $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
