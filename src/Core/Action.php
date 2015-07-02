@@ -17,18 +17,13 @@ use Rad\Routing\Router;
 /**
  * Action
  *
- * @property Request      $request
- * @property Response     $response
- * @property Router       $router
- * @property Cookies      $cookies
- * @property Session      $session
- * @property Responder    $responder
- *
  * @method Request         getRequest()      Get Http request
  * @method Response        getResponse()     Get Http response
  * @method Router          getRouter()       Get router
  * @method Cookies         getCookies()      Get cookies
- * @method EventManager    getEventManager() Get event dispatcher
+ * @method Session         getSession()      Get cookies
+ * @method Responder       getResponder()    Get responder
+ * @method EventManager    getEventManager() Get event manager
  *
  * @package Rad\Core
  */
