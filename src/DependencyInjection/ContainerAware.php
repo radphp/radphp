@@ -61,14 +61,27 @@ abstract class ContainerAware implements ContainerAwareInterface
     /**
      * Magic get
      *
-     * @param string $property
+     * @param string $property Service name
      *
      * @return mixed
      */
     public function __get($property)
     {
-        if ($this->getContainer()->has($property)) {
-            return $this->getContainer()->get($property);
+        return $this->get($property);
+    }
+
+    /**
+     * Get service
+     *
+     * @param string $serviceName Service name
+     *
+     * @return mixed|null|object
+     * @throws Exception
+     */
+    public function get($serviceName)
+    {
+        if ($this->getContainer()->has($serviceName)) {
+            return $this->getContainer()->get($serviceName);
         }
 
         return null;
