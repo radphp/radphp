@@ -66,33 +66,22 @@ class Router
         // Cleaning route parts & Rebase array keys
         $parts = array_values(array_filter($parts, 'trim'));
         $module = str_replace(' ', '', ucwords(str_replace('_', ' ', reset($parts))));
-
-        // Assign module if exist
-        if (array_key_exists($module, Config::get('bundles', []))) {
-            $this->module = $module;
-            $namespaces[$this->module] = [
-                'action' => Bundles::getNamespace($this->module) . 'Action',
-                'responder' => Bundles::getNamespace($this->module) . 'Responder'
-            ];
-        }
-
-        $namespaces['app'] = [
-            'action' => 'App\\Action',
-            'responder' => 'App\\Responder'
-        ];
+        $bundles = array_intersect(['App', $module], Bundles::getLoaded());
 
         $matchedRoutes = [];
-        foreach ($namespaces as $moduleName => $ns) {
+        foreach ($bundles as $bundleName) {
+            $bundleNamespace['action'] = Bundles::getNamespace($bundleName) . 'Action';
+            $bundleNamespace['responder'] = Bundles::getNamespace($bundleName) . 'Responder';
             foreach ($parts as $key => $part) {
-                if ($moduleName !== 'app' && $key == 0) {
+                if ($bundleName !== 'App' && $key == 0) {
                     continue;
                 }
 
                 $camel = str_replace(' ', '', ucwords(str_replace('_', ' ', $part)));
-                $ns['action'] .= '\\' . $camel;
-                $ns['responder'] .= '\\' . $camel;
-                $namespace = $ns['action'] . 'Action';
-                $responderNS = $ns['responder'] . 'Responder';
+                $bundleNamespace['action'] .= '\\' . $camel;
+                $bundleNamespace['responder'] .= '\\' . $camel;
+                $namespace = $bundleNamespace['action'] . 'Action';
+                $responderNS = $bundleNamespace['responder'] . 'Responder';
 
                 if (class_exists($namespace)) {
                     $matchedRoutes[] = [
@@ -105,11 +94,12 @@ class Router
             }
         }
 
-        if ($lastRoute = array_pop($matchedRoutes)) {
-            $this->action = $lastRoute['action'];
-            $this->actionNamespace = $lastRoute['namespace'];
-            $this->responderNamespace = $lastRoute['responder'];
-            $this->params = $lastRoute['params'];
+        if ($firstRoute = reset($matchedRoutes)) {
+            unset($matchedRoutes);
+            $this->action = $firstRoute['action'];
+            $this->actionNamespace = $firstRoute['namespace'];
+            $this->responderNamespace = $firstRoute['responder'];
+            $this->params = $firstRoute['params'];
 
             $this->wasMatched = true;
         } else {

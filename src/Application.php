@@ -2,12 +2,12 @@
 
 namespace Rad;
 
-use App\Bootstrap;
 use League\CLImate\Argument\Manager;
 use League\CLImate\CLImate;
 use Rad\Core\Action\MissingMethodException;
 use Rad\Core\Bundles;
 use Rad\Core\DotEnv;
+use Rad\Core\Exception\BaseException;
 use Rad\Core\Responder;
 use Rad\Core\SingletonTrait;
 use Rad\DependencyInjection\Container;
@@ -74,7 +74,8 @@ class Application
     /**
      * Init application
      *
-     * @throws Exception
+     * @throws BaseException
+     * @throws DependencyInjection\Exception
      */
     protected function init()
     {
@@ -83,7 +84,7 @@ class Application
             ->setDebug(true)
             ->register();
 
-        DotEnv::load(ROOT);
+        DotEnv::load(ROOT_DIR);
         if (!getenv('RAD_ENV')) {
             putenv('RAD_ENV=production');
         }
@@ -104,8 +105,7 @@ class Application
             true
         );
 
-        $appBootstrap = new Bootstrap();
-        $appBootstrap->setContainer($this->container);
+        $this->loadConfig();
 
         $this->eventManager->dispatch(self::EVENT_BEFORE_LOAD_BUNDLES);
         $this->loadBundles();
@@ -129,7 +129,7 @@ class Application
             $this->callAction();
             $this->run = true;
         } else {
-            throw new Exception('Application is run.');
+            throw new BaseException('Application is run.');
         }
     }
 
@@ -155,7 +155,7 @@ class Application
             $this->callCli(array_values($argv));
             $this->run = true;
         } else {
-            throw new Exception('Application is run.');
+            throw new BaseException('Application is run.');
         }
     }
 
@@ -164,7 +164,7 @@ class Application
      *
      * @param array $argv
      *
-     * @throws Exception
+     * @throws BaseException
      * @throws MissingMethodException
      */
     private function callCli(array $argv)
@@ -175,7 +175,9 @@ class Application
             $actionNamespace = $this->router->getActionNamespace();
 
             if (!is_subclass_of($actionNamespace, 'App\\Action\\AppAction')) {
-                throw new Exception(sprintf('Action "%s" does not extend App\\Action\\AppAction', $actionNamespace));
+                throw new BaseException(
+                    sprintf('Action "%s" does not extend App\\Action\\AppAction', $actionNamespace)
+                );
             }
 
             // Check Action::cliMethod exist or callable
@@ -224,7 +226,7 @@ class Application
                 );
             }
         } else {
-            throw new Exception(sprintf('Route "%s" does not found', $argv[0]));
+            throw new BaseException(sprintf('Route "%s" does not found', $argv[0]));
         }
     }
 
@@ -241,7 +243,9 @@ class Application
             $actionNamespace = $this->router->getActionNamespace();
 
             if (!is_subclass_of($actionNamespace, 'App\\Action\\AppAction')) {
-                throw new Exception(sprintf('Action "%s" does not extend App\\Action\\AppAction', $actionNamespace));
+                throw new BaseException(
+                    sprintf('Action "%s" does not extend App\\Action\\AppAction', $actionNamespace)
+                );
             }
 
             if (method_exists($actionNamespace, $method) && is_callable([$actionNamespace, $method])) {
@@ -311,5 +315,15 @@ class Application
                 Config::get('bundles.' . $bundleName . '.options')
             );
         }
+    }
+
+    /**
+     * Load config
+     */
+    protected function loadConfig()
+    {
+        Config::load(CONFIG_DIR . DS . 'config.default.php');
+        Config::load(CONFIG_DIR . DS . sprintf('config.%s.php', getenv('RAD_ENV')));
+        Config::set('env', getenv('RAD_ENV'));
     }
 }
