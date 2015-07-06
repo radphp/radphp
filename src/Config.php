@@ -50,7 +50,7 @@ class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, C
     {
         if ($engine = self::getEngine($engineName)) {
             if ($merge) {
-                self::$container = array_merge(self::$container, $engine->load($config));
+                self::$container = array_merge_recursive($engine->load($config), self::$container);
             } else {
                 self::$container = $engine->load($config);
             }
