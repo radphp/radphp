@@ -36,12 +36,11 @@ class Bundles
     {
         $options += [
             'autoload' => false,
-            'baseDir' => 'src',
             'bootstrap' => false
         ];
 
         $bundleName = Inflection::camelize($bundleName);
-        $bundlePath = BUNDLES . DS . $bundleName . DS . $options['baseDir'];
+        $bundlePath = SRC . DS . $bundleName;
 
         if (is_dir($bundlePath)) {
             self::$bundlesLoaded[$bundleName] = [
