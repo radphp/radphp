@@ -35,8 +35,7 @@ class Bundles
     public static function load($bundleName, $namespace, array $options = [])
     {
         $options += [
-            'autoload' => false,
-            'bootstrap' => false
+            'autoload' => false
         ];
 
         $bundleName = Inflection::camelize($bundleName);
@@ -55,18 +54,6 @@ class Bundles
 
                 self::$classLoader->addPsr4($namespace, $bundlePath);
                 self::$classLoader->register();
-            }
-
-            if ($options['bootstrap'] === true) {
-                $bootstrapClass = $namespace . 'Bootstrap';
-                if (class_exists($bootstrapClass)) {
-                    $bootstrapInstance = new $bootstrapClass();
-                    if ($bootstrapInstance instanceof ContainerAwareInterface) {
-                        $bootstrapInstance->setContainer(new Container());
-                    }
-                } else {
-                    throw new BaseException(sprintf('Class "%s" does not exist.', $bootstrapClass));
-                }
             }
         } else {
             throw new MissingBundleException(sprintf('Bundle "%s" could not be found.', $bundleName));
