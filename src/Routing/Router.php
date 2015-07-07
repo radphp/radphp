@@ -18,7 +18,7 @@ class Router
     protected $actionNamespace;
     protected $responderNamespace;
     protected $params;
-    protected $wasMatched = false;
+    protected $isMatched = false;
 
     const URI_SOURCE_GET_URL = 'get_url_source';
     const URI_SOURCE_SERVER_REQUEST_URI = 'request_uri_source';
@@ -101,9 +101,9 @@ class Router
             $this->responderNamespace = $firstRoute['responder'];
             $this->params = $firstRoute['params'];
 
-            $this->wasMatched = true;
+            $this->isMatched = true;
         } else {
-            $this->wasMatched = false;
+            $this->isMatched = false;
         }
     }
 
@@ -132,9 +132,9 @@ class Router
      *
      * @return bool
      */
-    public function wasMatched()
+    public function isMatched()
     {
-        return $this->wasMatched;
+        return $this->isMatched;
     }
 
     /**

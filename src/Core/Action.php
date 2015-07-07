@@ -29,6 +29,7 @@ use Rad\Routing\Router;
  */
 abstract class Action extends ContainerAware implements EventSubscriberInterface
 {
+    /** @var Responder $responder */
     protected $responder;
 
     /**
