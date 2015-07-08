@@ -308,7 +308,10 @@ class Application
      */
     protected function loadBundles()
     {
-        foreach (Config::get('bundles', []) as $bundleName => $namespace) {
+        foreach (Config::get('bundles', []) as $bundleName => $bundle) {
+            $bundleBootstrap = $bundle['namespace'] . 'Bootstrap';
+            (new $bundleBootstrap())->startup();
+
             Bundles::load(
                 $bundleName,
                 Config::get('bundles.' . $bundleName . '.namespace'),
