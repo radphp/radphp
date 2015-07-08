@@ -136,8 +136,7 @@ class Application
     /**
      * Run application in cli request
      *
-     * @throws Exception
-     * @throws MissingMethodException
+     * @throws BaseException
      */
     public function runCli()
     {
@@ -169,20 +168,20 @@ class Application
      */
     private function callCli(array $argv)
     {
-        if ($this->router->wasMatched()) {
+        if ($this->router->isMatched()) {
             $cliMethod = 'cliMethod';
             $cliConfig = 'cliConfig';
             $actionNamespace = $this->router->getActionNamespace();
 
-            if (!is_subclass_of($actionNamespace, 'App\\Action\\AppAction')) {
+            if (!is_subclass_of($actionNamespace, 'App\Action\AppAction')) {
                 throw new BaseException(
-                    sprintf('Action "%s" does not extend App\\Action\\AppAction', $actionNamespace)
+                    sprintf('Action "%s" does not extend App\Action\AppAction', $actionNamespace)
                 );
             }
 
             // Check Action::cliMethod exist or callable
             if (method_exists($actionNamespace, $cliMethod) && is_callable([$actionNamespace, $cliMethod])) {
-                $responder = $this->callResponder();
+                $responder = $this->loadResponder();
                 /** @var ContainerAwareInterface|EventSubscriberInterface $actionInstance */
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
@@ -238,18 +237,18 @@ class Application
      */
     protected function callAction()
     {
-        if ($this->router->wasMatched()) {
+        if ($this->router->isMatched()) {
             $method = strtolower($this->request->getMethod()) . 'Method';
             $actionNamespace = $this->router->getActionNamespace();
 
-            if (!is_subclass_of($actionNamespace, 'App\\Action\\AppAction')) {
+            if (!is_subclass_of($actionNamespace, 'App\Action\AppAction')) {
                 throw new BaseException(
-                    sprintf('Action "%s" does not extend App\\Action\\AppAction', $actionNamespace)
+                    sprintf('Action "%s" does not extend App\Action\AppAction', $actionNamespace)
                 );
             }
 
             if (method_exists($actionNamespace, $method) && is_callable([$actionNamespace, $method])) {
-                $responder = $this->callResponder();
+                $responder = $this->loadResponder();
                 /** @var ContainerAwareInterface|EventSubscriberInterface $actionInstance */
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
@@ -286,15 +285,15 @@ class Application
     }
 
     /**
-     * Call Responder
+     * Load Responder
      *
      * @return null|Responder
      */
-    protected function callResponder()
+    protected function loadResponder()
     {
         $responderNamespace = $this->router->getResponderNamespace();
 
-        if (class_exists($responderNamespace) && is_subclass_of($responderNamespace, 'App\\Responder\\AppResponder')) {
+        if (class_exists($responderNamespace) && is_subclass_of($responderNamespace, 'App\Responder\AppResponder')) {
             return new $responderNamespace($this->request, $this->response);
         } else {
             return null;
@@ -303,8 +302,6 @@ class Application
 
     /**
      * Load bundles
-     *
-     * @throws Exception
      */
     protected function loadBundles()
     {
