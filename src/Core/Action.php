@@ -4,7 +4,6 @@ namespace Rad\Core;
 
 use Rad\Application;
 use Rad\DependencyInjection\ContainerAware;
-use Rad\Error\ErrorHandler;
 use Rad\Events\Event;
 use Rad\Events\EventManager;
 use Rad\Events\EventSubscriberInterface;
@@ -22,14 +21,15 @@ use Rad\Routing\Router;
  * @method Router          getRouter()       Get router
  * @method Cookies         getCookies()      Get cookies
  * @method Session         getSession()      Get cookies
- * @method Responder       getResponder()    Get responder
  * @method EventManager    getEventManager() Get event manager
  *
  * @package Rad\Core
  */
 abstract class Action extends ContainerAware implements EventSubscriberInterface
 {
-    /** @var Responder $responder */
+    /**
+     * @var Responder
+     */
     protected $responder;
 
     /**
@@ -40,6 +40,16 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
     public function __construct($responder)
     {
         $this->responder = $responder;
+    }
+
+    /**
+     * Get responder
+     *
+     * @return Responder
+     */
+    public function getResponder()
+    {
+        return $this->responder;
     }
 
     /**
