@@ -25,5 +25,11 @@ use Rad\Routing\Router;
  */
 abstract class Bundle extends ContainerAware
 {
+    /**
+     * Startup bundle
+     */
+    public function startup()
+    {
 
+    }
 }
