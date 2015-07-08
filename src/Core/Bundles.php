@@ -35,7 +35,7 @@ class Bundles
     public static function load($bundleName, $namespace, array $options = [])
     {
         $options += [
-            'autoload' => false
+            'autoload' => true
         ];
 
         $bundleName = Inflection::camelize($bundleName);
