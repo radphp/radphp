@@ -74,11 +74,11 @@ class Router
         }
 
         // check language
-        if (in_array($parts[0], Config::get('languages.possible'))) {
+        if (in_array($parts[0], Config::get('languages.possible', ['en']))) {
             // We found the language, so set it as current language
             $this->language = array_shift($parts);
         } else {
-            $this->language = Config::get('languages.default');
+            $this->language = Config::get('languages.default', 'en');
         }
 
         // Cleaning route parts & Rebase array keys
