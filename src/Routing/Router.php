@@ -2,6 +2,7 @@
 
 namespace Rad\Routing;
 
+use Exception;
 use Rad\Config;
 use Rad\Core\Bundles;
 
@@ -20,6 +21,7 @@ class Router
     protected $params;
     protected $isMatched = false;
 
+    const DEFAULT_ACTION = 'index';
     const URI_SOURCE_GET_URL = 'get_url_source';
     const URI_SOURCE_SERVER_REQUEST_URI = 'request_uri_source';
 
@@ -64,46 +66,65 @@ class Router
         $parts = explode('/', $realUri);
 
         // Cleaning route parts & Rebase array keys
-        $parts = array_values(array_filter($parts, 'trim'));
-        $module = str_replace(' ', '', ucwords(str_replace('_', ' ', reset($parts))));
+        $camelizedParts = $parts;
+        // I really need to add index to both of them separately! Because of "lazy copy" feature of PHP
+        $camelizedParts[] = self::DEFAULT_ACTION;
+        $parts[] = self::DEFAULT_ACTION;
+
+        array_values(array_filter($camelizedParts, [$this, 'camelize']));
+        $module = reset($parts);
+        $this->camelize($module);
         $bundles = array_intersect(['App', $module], Bundles::getLoaded());
 
-        $matchedRoutes = [];
+        $matchedRoute = null;
         foreach ($bundles as $bundleName) {
-            $bundleNamespace['action'] = Bundles::getNamespace($bundleName) . 'Action';
-            $bundleNamespace['responder'] = Bundles::getNamespace($bundleName) . 'Responder';
-            foreach ($parts as $key => $part) {
-                if ($bundleName !== 'App' && $key == 0) {
-                    continue;
+            // reset manipulation parameters
+            $dummyCamelizedParts = $camelizedParts;
+            $dummyParts = $parts;
+
+            if ($bundleName === 'App') {
+                array_unshift($dummyParts, $bundleName);
+                array_unshift($dummyCamelizedParts, $bundleName);
+            }
+
+            // add "Action" to array as second param
+            array_splice($dummyCamelizedParts, 1, 0, 'Action');
+
+            // Continue searching till you found any matching
+            // Or you have at least three elements in array (Bundle, "Action", Action)
+            for ($i = 0; count($dummyCamelizedParts) >= 3; $i++) {
+                $bundleNamespace['action'] = implode('\\', $dummyCamelizedParts);
+                $bundleNamespace['responder'] = implode('\\', $dummyCamelizedParts);
+                $actionNamespace = $bundleNamespace['action'] . 'Action';
+                $responderNamespace = $bundleNamespace['responder'] . 'Responder';
+
+                if (class_exists($actionNamespace)) {
+                    $matchedRoute = [
+                        'namespace' => $actionNamespace,
+                        'responder' => $responderNamespace,
+                        'action' => $dummyParts[count($dummyCamelizedParts) - 2],
+                        'params' => array_slice($dummyParts, count($dummyCamelizedParts) - 1, -1)
+                    ];
+
+                    break 2;
                 }
 
-                $camel = str_replace(' ', '', ucwords(str_replace('_', ' ', $part)));
-                $bundleNamespace['action'] .= '\\' . $camel;
-                $bundleNamespace['responder'] .= '\\' . $camel;
-                $namespace = $bundleNamespace['action'] . 'Action';
-                $responderNS = $bundleNamespace['responder'] . 'Responder';
+                array_pop($dummyCamelizedParts);
 
-                if (class_exists($namespace)) {
-                    $matchedRoutes[] = [
-                        'namespace' => $namespace,
-                        'responder' => $responderNS,
-                        'action' => $part,
-                        'params' => array_slice($parts, $key + 1)
-                    ];
+                // add index one in two iterates
+                if ($i % 2) {
+                    $dummyCamelizedParts[] = self::DEFAULT_ACTION;
                 }
             }
         }
 
-        if ($firstRoute = reset($matchedRoutes)) {
-            unset($matchedRoutes);
-            $this->action = $firstRoute['action'];
-            $this->actionNamespace = $firstRoute['namespace'];
-            $this->responderNamespace = $firstRoute['responder'];
-            $this->params = $firstRoute['params'];
+        if ($matchedRoute) {
+            $this->action = $matchedRoute['action'];
+            $this->actionNamespace = $matchedRoute['namespace'];
+            $this->responderNamespace = $matchedRoute['responder'];
+            $this->params = $matchedRoute['params'];
 
             $this->isMatched = true;
-        } else {
-            $this->isMatched = false;
         }
     }
 
@@ -165,5 +186,15 @@ class Router
     public function getResponderNamespace()
     {
         return $this->responderNamespace;
+    }
+
+    /**
+     * Camelize underscorized strings
+     *
+     * @param $string
+     */
+    private function camelize(&$string)
+    {
+        $string = str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', trim($string)))));
     }
 }
