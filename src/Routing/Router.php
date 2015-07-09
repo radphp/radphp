@@ -63,7 +63,14 @@ class Router
         }
 
         $realUri = trim($realUri, '/');
-        $parts = explode('/', $realUri);
+
+        // remove empty cells
+        $parts = [];
+        foreach (explode('/', $realUri) as $p) {
+            if (trim($p) !== '') {
+                $parts[] = $p;
+            }
+        }
 
         // Cleaning route parts & Rebase array keys
         $camelizedParts = $parts;
@@ -85,6 +92,10 @@ class Router
             if ($bundleName === 'App') {
                 array_unshift($dummyParts, $bundleName);
                 array_unshift($dummyCamelizedParts, $bundleName);
+            } else {
+                // get bundle namespace instead of its name
+                array_shift($dummyCamelizedParts);
+                array_unshift($dummyCamelizedParts, trim(Bundles::getNamespace($bundleName), '\\'));
             }
 
             // add "Action" to array as second param
@@ -93,12 +104,12 @@ class Router
             // Continue searching till you found any matching
             // Or you have at least three elements in array (Bundle, "Action", Action)
             for ($i = 0; count($dummyCamelizedParts) >= 3; $i++) {
-                $bundleNamespace['action'] = implode('\\', $dummyCamelizedParts);
-                $bundleNamespace['responder'] = implode('\\', $dummyCamelizedParts);
-                $actionNamespace = $bundleNamespace['action'] . 'Action';
-                $responderNamespace = $bundleNamespace['responder'] . 'Responder';
+                $actionNamespace = implode('\\', $dummyCamelizedParts) . 'Action';
 
                 if (class_exists($actionNamespace)) {
+                    array_splice($dummyCamelizedParts, 1, 1, 'Responder');
+                    $responderNamespace = implode('\\', $dummyCamelizedParts) . 'Responder';
+
                     $matchedRoute = [
                         'namespace' => $actionNamespace,
                         'responder' => $responderNamespace,
