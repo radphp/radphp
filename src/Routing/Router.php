@@ -19,6 +19,7 @@ class Router
     protected $actionNamespace;
     protected $responderNamespace;
     protected $params;
+    protected $language = null;
     protected $isMatched = false;
 
     const DEFAULT_ACTION = 'index';
@@ -70,6 +71,14 @@ class Router
             if (trim($p) !== '') {
                 $parts[] = $p;
             }
+        }
+
+        // check language
+        if (in_array($parts[0], Config::get('languages.possible'))) {
+            // We found the language, so set it as current language
+            $this->language = array_shift($parts);
+        } else {
+            $this->language = Config::get('languages.default');
         }
 
         // Cleaning route parts & Rebase array keys
@@ -197,6 +206,16 @@ class Router
     public function getResponderNamespace()
     {
         return $this->responderNamespace;
+    }
+
+    /**
+     * Get current language if supported, else return default
+     *
+     * @return mixed
+     */
+    public function getLanguage()
+    {
+        return $this->language;
     }
 
     /**
