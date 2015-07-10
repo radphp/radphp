@@ -2,7 +2,6 @@
 
 namespace Rad\Routing;
 
-use Exception;
 use Rad\Config;
 use Rad\Core\Bundles;
 
@@ -25,6 +24,14 @@ class Router
     const DEFAULT_ACTION = 'index';
     const URI_SOURCE_GET_URL = 'get_url_source';
     const URI_SOURCE_SERVER_REQUEST_URI = 'request_uri_source';
+
+    const GEN_OPT_LANGUAGE = 'gen_opt_language';
+    const GEN_OPT_WITH_PARAMS = 'gen_opt_with_params';
+
+    protected $generateDefaultOption = [
+        self::GEN_OPT_LANGUAGE => true,
+        self::GEN_OPT_WITH_PARAMS => true,
+    ];
 
     /**
      * Get rewrite info. This info is read from $_GET['_url'].
@@ -57,17 +64,15 @@ class Router
      */
     public function handle($uri = null)
     {
-        if ($uri) {
-            $realUri = $uri;
-        } else {
-            $realUri = $this->getRewriteUri();
+        if (!$uri) {
+            $uri = $this->getRewriteUri();
         }
 
-        $realUri = trim($realUri, '/');
+        $uri = trim($uri, '/');
 
         // remove empty cells
         $parts = [];
-        foreach (explode('/', $realUri) as $p) {
+        foreach (explode('/', $uri) as $p) {
             if (trim($p) !== '') {
                 $parts[] = $p;
             }
@@ -98,7 +103,7 @@ class Router
             $dummyCamelizedParts = $camelizedParts;
             $dummyParts = $parts;
 
-            if ($bundleName === 'App') {
+            if ($bundleName === 'App' && $dummyCamelizedParts[0] != 'App') {
                 array_unshift($dummyParts, $bundleName);
                 array_unshift($dummyCamelizedParts, $bundleName);
             } else {
@@ -123,6 +128,7 @@ class Router
                         'namespace' => $actionNamespace,
                         'responder' => $responderNamespace,
                         'action' => $dummyParts[count($dummyCamelizedParts) - 2],
+                        'module' => strtolower($bundleName),
                         'params' => array_slice($dummyParts, count($dummyCamelizedParts) - 1, -1)
                     ];
 
@@ -140,12 +146,84 @@ class Router
 
         if ($matchedRoute) {
             $this->action = $matchedRoute['action'];
+            $this->module = $matchedRoute['module'];
             $this->actionNamespace = $matchedRoute['namespace'];
             $this->responderNamespace = $matchedRoute['responder'];
             $this->params = $matchedRoute['params'];
 
             $this->isMatched = true;
         }
+    }
+
+    /**
+     * Generate link base on modules, with check for correct module and action
+     * Possible options:
+     *      Router::GEN_OPT_LANGUAGE to add language or not, default: true
+     *      Router::GEN_OPT_WITH_PARAMS to add parameters or not, default: true
+     *
+     * @param array $url     An array to represent list of URL elements
+     * @param array $options options to change generator behaviour
+     *
+     * @return string
+     */
+    public function generateUrl(
+        $url = [],
+        $options = [self::GEN_OPT_LANGUAGE => true, self::GEN_OPT_WITH_PARAMS => true]
+    ) {
+        if (!is_array($url)) {
+            $url = [];
+        }
+
+        $module = isset($url[0]) ? array_shift($url) : $this->module;
+        $action = isset($url[0]) ? array_shift($url) : $this->action;
+
+        $result = [strtolower($module), strtolower($action)];
+
+        // add additional parameters
+        if (isset($options[self::GEN_OPT_WITH_PARAMS])) {
+            $addParams = $options[self::GEN_OPT_WITH_PARAMS];
+        } else {
+            $addParams = $this->generateDefaultOption[self::GEN_OPT_WITH_PARAMS];
+        }
+
+        if ($addParams) {
+            $result = array_merge($result, $this->params);
+        }
+
+        // add language
+        if (isset($options[self::GEN_OPT_LANGUAGE])) {
+            $addLanguage = $options[self::GEN_OPT_LANGUAGE];
+        } else {
+            $addLanguage = $this->generateDefaultOption[self::GEN_OPT_LANGUAGE];
+        }
+
+        if ($addLanguage) {
+            array_unshift($result, $this->language);
+        }
+
+        $result = '/' . implode('/', $result);
+
+        return $result;
+    }
+
+    /**
+     * Change default behaviour of adding language to URL
+     *
+     * @param $bool
+     */
+    public function setGenerateUrlOptionLanguage($bool)
+    {
+        $this->generateDefaultOption[self::GEN_OPT_LANGUAGE] = $bool;
+    }
+
+    /**
+     * Change default behaviour of adding parameters to the end of URL
+     *
+     * @param $bool
+     */
+    public function setGenerateUrlOptionParams($bool)
+    {
+        $this->generateDefaultOption[self::GEN_OPT_WITH_PARAMS] = $bool;
     }
 
     /**
@@ -166,6 +244,16 @@ class Router
     public function getModule()
     {
         return $this->module;
+    }
+
+    /**
+     * Get action
+     *
+     * @return mixed
+     */
+    public function getAction()
+    {
+        return $this->action;
     }
 
     /**
