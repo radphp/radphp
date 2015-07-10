@@ -2,7 +2,6 @@
 
 namespace Rad\Routing;
 
-use Exception;
 use Rad\Config;
 use Rad\Core\Bundles;
 
