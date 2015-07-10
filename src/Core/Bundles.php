@@ -32,16 +32,16 @@ class Bundles
      * @throws BaseException
      * @throws MissingBundleException
      */
-    public static function load($bundleName, $namespace, array $options = [])
+    public static function load($bundleName, array $options = [])
     {
         $options += [
             'autoload' => true
         ];
 
-        $bundleName = Inflection::camelize($bundleName);
         $bundlePath = SRC . DS . $bundleName;
 
         if (is_dir($bundlePath)) {
+            $namespace = $bundleName . '\\';
             self::$bundlesLoaded[$bundleName] = [
                 'namespace' => $namespace,
                 'path' => $bundlePath
@@ -94,8 +94,6 @@ class Bundles
      */
     public static function getNamespace($bundleName)
     {
-        $bundleName = Inflection::camelize($bundleName);
-
         if (isset(self::$bundlesLoaded[$bundleName])) {
             return self::$bundlesLoaded[$bundleName]['namespace'];
         }
@@ -113,8 +111,6 @@ class Bundles
      */
     public static function getPath($bundleName)
     {
-        $bundleName = Inflection::camelize($bundleName);
-
         if (isset(self::$bundlesLoaded[$bundleName])) {
             return self::$bundlesLoaded[$bundleName]['path'];
         }

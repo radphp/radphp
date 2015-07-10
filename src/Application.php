@@ -305,15 +305,11 @@ class Application
      */
     protected function loadBundles()
     {
-        foreach (Config::get('bundles', []) as $bundleName => $bundle) {
-            $bundleBootstrap = $bundle['namespace'] . 'Bootstrap';
-            (new $bundleBootstrap())->startup();
+        foreach (Config::get('bundles', []) as $bundleName => $options) {
+            Bundles::load($bundleName, $options);
 
-            Bundles::load(
-                $bundleName,
-                Config::get('bundles.' . $bundleName . '.namespace'),
-                Config::get('bundles.' . $bundleName . '.options')
-            );
+            $bundleBootstrap = Bundles::getNamespace($bundleName) . 'Bootstrap';
+            (new $bundleBootstrap())->startup();
         }
     }
 
