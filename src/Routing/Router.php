@@ -64,17 +64,15 @@ class Router
      */
     public function handle($uri = null)
     {
-        if ($uri) {
-            $realUri = $uri;
-        } else {
-            $realUri = $this->getRewriteUri();
+        if (!$uri) {
+            $uri = $this->getRewriteUri();
         }
 
-        $realUri = trim($realUri, '/');
+        $uri = trim($uri, '/');
 
         // remove empty cells
         $parts = [];
-        foreach (explode('/', $realUri) as $p) {
+        foreach (explode('/', $uri) as $p) {
             if (trim($p) !== '') {
                 $parts[] = $p;
             }
