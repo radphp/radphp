@@ -103,7 +103,7 @@ class Router
             $dummyCamelizedParts = $camelizedParts;
             $dummyParts = $parts;
 
-            if ($bundleName === 'App') {
+            if ($bundleName === 'App' && $dummyCamelizedParts[0] != 'App') {
                 array_unshift($dummyParts, $bundleName);
                 array_unshift($dummyCamelizedParts, $bundleName);
             } else {
