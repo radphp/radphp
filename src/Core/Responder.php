@@ -2,6 +2,7 @@
 
 namespace Rad\Core;
 
+use Rad\DependencyInjection\ContainerAware;
 use Rad\Events\EventManager;
 use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\RequestInterface;
@@ -12,7 +13,7 @@ use Rad\Network\Http\ResponseInterface;
  *
  * @package Rad\Core
  */
-abstract class Responder implements EventSubscriberInterface
+abstract class Responder extends ContainerAware implements EventSubscriberInterface
 {
     protected $request;
     protected $response;
