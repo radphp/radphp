@@ -2,11 +2,9 @@
 
 namespace Rad\Core;
 
-use Rad\DependencyInjection\ContainerAware;
 use Rad\Events\EventManager;
 use Rad\Events\EventSubscriberInterface;
-use Rad\Network\Http\RequestInterface;
-use Rad\Network\Http\ResponseInterface;
+use Rad\DependencyInjection\ContainerAware;
 
 /**
  * Responder
@@ -15,21 +13,7 @@ use Rad\Network\Http\ResponseInterface;
  */
 abstract class Responder extends ContainerAware implements EventSubscriberInterface
 {
-    protected $request;
-    protected $response;
     protected $data = [];
-
-    /**
-     * Responder constructor
-     *
-     * @param RequestInterface  $request
-     * @param ResponseInterface $response
-     */
-    public function __construct(RequestInterface $request, ResponseInterface $response)
-    {
-        $this->request = $request;
-        $this->response = $response;
-    }
 
     /**
      * Set data

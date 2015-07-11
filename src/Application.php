@@ -294,7 +294,7 @@ class Application
         $responderNamespace = $this->router->getResponderNamespace();
 
         if (class_exists($responderNamespace) && is_subclass_of($responderNamespace, 'App\Responder\AppResponder')) {
-            return new $responderNamespace($this->request, $this->response);
+            return new $responderNamespace();
         } else {
             return null;
         }
