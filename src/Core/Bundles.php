@@ -38,7 +38,7 @@ class Bundles
             'autoload' => true
         ];
 
-        $bundlePath = SRC . DS . $bundleName;
+        $bundlePath = SRC_DIR . DS . $bundleName;
 
         if (is_dir($bundlePath)) {
             $namespace = $bundleName . '\\';
