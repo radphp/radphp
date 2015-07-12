@@ -202,6 +202,7 @@ class Router
         }
 
         $result = '/' . implode('/', $result);
+        $result = $this->getScheme() . $result;
 
         return $result;
     }
@@ -314,5 +315,26 @@ class Router
     private function camelize(&$string)
     {
         $string = str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', trim($string)))));
+    }
+
+    /**
+     * Gets HTTP schema (http/https)
+     *
+     * @todo remove this function and use request, when DI is fixed
+     * @return string
+     */
+    private function getScheme()
+    {
+        if ($_SERVER['HTTPS']) {
+            if (is_string($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'off') {
+                $schema = 'http';
+            } else {
+                $schema = 'https';
+            }
+        } else {
+            $schema = 'http';
+        }
+
+        return $schema . '://' . $_SERVER['HTTP_HOST'];
     }
 }
