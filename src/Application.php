@@ -89,7 +89,7 @@ class Application
             putenv('RAD_ENV=production');
         }
 
-        $this->container = new Container();
+        $this->container = Container::getInstance();
 
         $this->container->setShared('error_handler', $error, true);
         $this->container->setShared('router', $this->router = new Router(), true);

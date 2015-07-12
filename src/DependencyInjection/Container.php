@@ -3,6 +3,7 @@
 namespace Rad\DependencyInjection;
 
 use ArrayAccess;
+use Rad\Core\SingletonTrait;
 
 /**
  * Container
@@ -11,6 +12,8 @@ use ArrayAccess;
  */
 class Container implements ArrayAccess
 {
+    use SingletonTrait;
+
     /**
      * @var Service[]
      */
@@ -68,7 +71,13 @@ class Container implements ArrayAccess
             throw new Exception(sprintf('Service "%s" does not exist.', $name));
         }
 
-        return self::$services[$name]->resolve($args);
+        $instance = self::$services[$name]->resolve($args);
+
+        if ($instance instanceof ContainerAwareInterface) {
+            $instance->setContainer(self::getInstance());
+        }
+
+        return $instance;
     }
 
     /**

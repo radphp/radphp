@@ -35,7 +35,7 @@ abstract class ContainerAware implements ContainerAwareInterface
     public function getContainer()
     {
         if (!is_object($this->container)) {
-            return $this->container = new Container();
+            return $this->container = Container::getInstance();
         }
 
         return $this->container;
