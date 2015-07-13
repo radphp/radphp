@@ -21,7 +21,7 @@ class Router
     protected $language = null;
     protected $isMatched = false;
 
-    const DEFAULT_ACTION = 'index';
+    const DEFAULT_ACTION = 'Index';
     const URI_SOURCE_GET_URL = 'get_url_source';
     const URI_SOURCE_SERVER_REQUEST_URI = 'request_uri_source';
 
@@ -95,7 +95,7 @@ class Router
         array_values(array_filter($camelizedParts, [$this, 'camelize']));
         $module = reset($parts);
         $this->camelize($module);
-        $bundles = array_intersect(['App', $module], Bundles::getLoaded());
+        $bundles = array_intersect([$module, 'App'], Bundles::getLoaded());
 
         $matchedRoute = null;
         foreach ($bundles as $bundleName) {

@@ -40,17 +40,18 @@ abstract class Responder extends ContainerAware implements EventSubscriberInterf
     /**
      * Get data
      *
-     * @param string $name Data name
+     * @param string $name    Data name
+     * @param mixed  $default Default value to return
      *
      * @return mixed
      */
-    public function getData($name)
+    public function getData($name, $default = null)
     {
         if (isset($this->data[$name])) {
             return $this->data[$name];
         }
 
-        return null;
+        return $default;
     }
 
     /**
