@@ -5,8 +5,6 @@ namespace Rad\Core;
 use Composer\Autoload\ClassLoader;
 use Rad\Core\Exception\BaseException;
 use Rad\Core\Exception\MissingBundleException;
-use Rad\DependencyInjection\Container;
-use Rad\DependencyInjection\ContainerAwareInterface;
 use Rad\Utility\Inflection;
 
 /**
@@ -26,7 +24,6 @@ class Bundles
      * Load bundle
      *
      * @param string $bundleName Bundle name
-     * @param string $namespace  Bundle namespace
      * @param array  $options    Bundle options
      *
      * @throws BaseException

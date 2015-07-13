@@ -309,7 +309,11 @@ class Application
             Bundles::load($bundleName, $options);
 
             $bundleBootstrap = Bundles::getNamespace($bundleName) . 'Bootstrap';
-            (new $bundleBootstrap())->startup();
+
+            // check if Bootstrap file is there!
+            if(class_exists($bundleBootstrap)) {
+                (new $bundleBootstrap())->startup();
+            }
         }
     }
 
