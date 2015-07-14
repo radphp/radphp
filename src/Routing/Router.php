@@ -4,13 +4,16 @@ namespace Rad\Routing;
 
 use Rad\Config;
 use Rad\Core\Bundles;
+use Rad\DependencyInjection\Container;
+use Rad\DependencyInjection\ContainerAwareInterface;
+use Rad\Network\Http\Request;
 
 /**
  * RadPHP Router
  *
  * @package Rad\Routing
  */
-class Router
+class Router implements ContainerAwareInterface
 {
     protected $uriSource = self::URI_SOURCE_SERVER_REQUEST_URI;
     protected $module;
@@ -20,6 +23,7 @@ class Router
     protected $params;
     protected $language = null;
     protected $isMatched = false;
+    protected $container;
 
     const DEFAULT_ACTION = 'Index';
     const URI_SOURCE_GET_URL = 'get_url_source';
@@ -201,8 +205,10 @@ class Router
             array_unshift($result, $this->language);
         }
 
+        /** @var Request $request */
+        $request = $this->getContainer()->get('request');
         $result = '/' . implode('/', $result);
-        $result = $this->getScheme() . $result;
+        $result = $request->getScheme() . '://' . $request->getHttpHost() . $result;
 
         return $result;
     }
@@ -318,23 +324,22 @@ class Router
     }
 
     /**
-     * Gets HTTP schema (http/https)
+     * Set container
      *
-     * @todo remove this function and use request, when DI is fixed
-     * @return string
+     * @param Container $container
      */
-    private function getScheme()
+    public function setContainer(Container $container)
     {
-        if ($_SERVER['HTTPS']) {
-            if (is_string($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'off') {
-                $schema = 'http';
-            } else {
-                $schema = 'https';
-            }
-        } else {
-            $schema = 'http';
-        }
+        $this->container = $container;
+    }
 
-        return $schema . '://' . $_SERVER['HTTP_HOST'];
+    /**
+     * Get container
+     *
+     * @return Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 }
