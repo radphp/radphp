@@ -295,24 +295,7 @@ class Request implements RequestInterface
             return $this->rawBody;
         }
 
-        $stream = fopen('php://input', 'rb');
-        $tempStream = fopen("php://temp", "w+b");
-        $len = stream_copy_to_stream($stream, $tempStream);
-
-        if ($stream === false) {
-            return false;
-        }
-
-        if ($len > 0) {
-            $this->rawBody = stream_get_contents($stream);
-        } elseif (!$len) {
-            $this->rawBody = '';
-        } else {
-            return false;
-        }
-
-        fclose($stream);
-        fclose($tempStream);
+        $this->rawBody = file_get_contents('php://input', 'rb');
 
         return $this->rawBody;
     }
