@@ -4,6 +4,7 @@ namespace Rad\Security\Authentication;
 
 use Rad\Security\Authentication\OAuth\Config;
 use Rad\Security\Authentication\OAuth\ConfigManager;
+use Rad\Security\Authentication\OAuth\Exception;
 
 /**
  * OAuth
