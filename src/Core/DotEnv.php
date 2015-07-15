@@ -2,7 +2,6 @@
 
 namespace Rad\Core;
 
-use Rad\Config;
 use Rad\Core\Exception\BaseException;
 
 /**
