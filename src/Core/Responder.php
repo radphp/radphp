@@ -65,4 +65,22 @@ abstract class Responder extends ContainerAware implements EventSubscriberInterf
     {
 
     }
+
+    protected function setRawContent($content)
+    {
+        $this->getResponse()->setContent($content);
+    }
+
+    protected function setContent($template, $params)
+    {
+        if ($this->getRequest()->isAjax()) {
+            $content = json_encode($params);
+        } else {
+            /** @var \Twig_Environment $twig */
+            $twig = $this->getContainer()->get('twig');
+            $content = $twig->render($template, $params);
+        }
+
+        $this->getResponse()->setContent($content);
+    }
 }
