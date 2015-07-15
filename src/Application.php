@@ -141,7 +141,7 @@ class Application
     public function runCli()
     {
         if (!$this->run) {
-            global $argv;
+            $argv = $_SERVER['argv'];
 
             if (!(count($argv) >= 2)) {
                 return;
