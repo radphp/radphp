@@ -18,9 +18,7 @@ use Rad\Events\EventManager;
 use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\Exception\NotFoundException;
 use Rad\Network\Http\Request;
-use Rad\Network\Http\RequestInterface;
 use Rad\Network\Http\Response;
-use Rad\Network\Http\ResponseInterface;
 use Rad\Network\Session;
 use Rad\Routing\Router;
 
@@ -37,26 +35,6 @@ class Application
      * @var Container
      */
     protected $container;
-
-    /**
-     * @var Router
-     */
-    protected $router;
-
-    /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
-
-    /**
-     * @var EventManager
-     */
-    protected $eventManager;
 
     protected $run = false;
 
@@ -92,8 +70,8 @@ class Application
         $this->container = Container::getInstance();
 
         $this->container->setShared('error_handler', $error, true);
-        $this->container->setShared('router', $this->router = new Router(), true);
-        $this->container->setShared('event_manager', $this->eventManager = new EventManager(), true);
+        $this->container->setShared('router', new Router(), true);
+        $this->container->setShared('event_manager', new EventManager(), true);
         $this->container->setShared(
             'session',
             function () {
@@ -107,9 +85,9 @@ class Application
 
         $this->loadConfig();
 
-        $this->eventManager->dispatch(self::EVENT_BEFORE_LOAD_BUNDLES);
+        $this->getEventManager()->dispatch(self::EVENT_BEFORE_LOAD_BUNDLES);
         $this->loadBundles();
-        $this->eventManager->dispatch(self::EVENT_AFTER_LOAD_BUNDLES);
+        $this->getEventManager()->dispatch(self::EVENT_AFTER_LOAD_BUNDLES);
     }
 
     /**
@@ -121,11 +99,11 @@ class Application
     public function runWeb()
     {
         if (!$this->run) {
-            $this->container->setShared('request', $this->request = new Request(), true);
-            $this->container->setShared('response', $this->response = new Response(), true);
+            $this->container->setShared('request', new Request(), true);
+            $this->container->setShared('response', new Response(), true);
             $this->container->setShared('cookies', new Response\Cookies(), true);
 
-            $this->router->handle();
+            $this->getRouter()->handle();
             $this->callAction();
             $this->run = true;
         } else {
@@ -150,7 +128,7 @@ class Application
             $route = str_replace(':', '/', $argv[1]);
             unset($argv[0]);
 
-            $this->router->handle($route);
+            $this->getRouter()->handle($route);
             $this->callCli(array_values($argv));
             $this->run = true;
         } else {
@@ -168,10 +146,10 @@ class Application
      */
     private function callCli(array $argv)
     {
-        if ($this->router->isMatched()) {
+        if ($this->getRouter()->isMatched()) {
             $cliMethod = 'cliMethod';
             $cliConfig = 'cliConfig';
-            $actionNamespace = $this->router->getActionNamespace();
+            $actionNamespace = $this->getRouter()->getActionNamespace();
 
             if (!is_subclass_of($actionNamespace, 'App\Action\AppAction')) {
                 throw new BaseException(
@@ -185,7 +163,7 @@ class Application
                 /** @var ContainerAwareInterface|EventSubscriberInterface $actionInstance */
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
-                $this->eventManager->addSubscriber($actionInstance);
+                $this->getEventManager()->addSubscriber($actionInstance);
 
                 $climate = new CLImate();
 
@@ -193,9 +171,9 @@ class Application
                     $argumentManager = new Manager();
                     $climate->setArgumentManager($argumentManager);
 
-                    $this->eventManager->dispatch(self::EVENT_BEFORE_CLI_CONFIG);
+                    $this->getEventManager()->dispatch(self::EVENT_BEFORE_CLI_CONFIG);
                     call_user_func([$actionInstance, 'cliConfig'], $argumentManager);
-                    $this->eventManager->dispatch(self::EVENT_AFTER_CLI_CONFIG);
+                    $this->getEventManager()->dispatch(self::EVENT_AFTER_CLI_CONFIG);
 
                     try {
                         $argumentManager->parse($argv);
@@ -205,15 +183,15 @@ class Application
                     }
                 }
 
-                $this->eventManager->dispatch(self::EVENT_BEFORE_CLI_METHOD);
+                $this->getEventManager()->dispatch(self::EVENT_BEFORE_CLI_METHOD);
                 call_user_func([$actionInstance, $cliMethod], $climate);
-                $this->eventManager->dispatch(self::EVENT_AFTER_CLI_METHOD);
+                $this->getEventManager()->dispatch(self::EVENT_AFTER_CLI_METHOD);
 
                 // Check Responder::cliMethod exist or callable
                 if (method_exists($responder, $cliMethod) && is_callable([$responder, $cliMethod])) {
-                    $this->eventManager->dispatch(self::EVENT_BEFORE_RESPONDER);
+                    $this->getEventManager()->dispatch(self::EVENT_BEFORE_RESPONDER);
                     call_user_func([$responder, $cliMethod]);
-                    $this->eventManager->dispatch(self::EVENT_AFTER_RESPONDER);
+                    $this->getEventManager()->dispatch(self::EVENT_AFTER_RESPONDER);
                 }
             } else {
                 throw new MissingMethodException(
@@ -237,9 +215,9 @@ class Application
      */
     protected function callAction()
     {
-        if ($this->router->isMatched()) {
-            $method = strtolower($this->request->getMethod()) . 'Method';
-            $actionNamespace = $this->router->getActionNamespace();
+        if ($this->getRouter()->isMatched()) {
+            $method = strtolower($this->getRequest()->getMethod()) . 'Method';
+            $actionNamespace = $this->getRouter()->getActionNamespace();
 
             if (!is_subclass_of($actionNamespace, 'App\Action\AppAction')) {
                 throw new BaseException(
@@ -252,19 +230,19 @@ class Application
                 /** @var ContainerAwareInterface|EventSubscriberInterface $actionInstance */
                 $actionInstance = new $actionNamespace($responder);
                 $actionInstance->setContainer($this->container);
-                $this->eventManager->addSubscriber($actionInstance);
+                $this->getEventManager()->addSubscriber($actionInstance);
 
-                $this->eventManager->dispatch(self::EVENT_BEFORE_WEB_METHOD);
-                call_user_func_array([$actionInstance, $method], $this->router->getParams());
-                $this->eventManager->dispatch(self::EVENT_AFTER_WEB_METHOD);
+                $this->getEventManager()->dispatch(self::EVENT_BEFORE_WEB_METHOD);
+                call_user_func_array([$actionInstance, $method], $this->getRouter()->getParams());
+                $this->getEventManager()->dispatch(self::EVENT_AFTER_WEB_METHOD);
 
                 if (method_exists($responder, $method) && is_callable([$responder, $method])) {
-                    $this->eventManager->dispatch(self::EVENT_BEFORE_RESPONDER);
+                    $this->getEventManager()->dispatch(self::EVENT_BEFORE_RESPONDER);
                     call_user_func([$responder, $method]);
-                    $this->eventManager->dispatch(self::EVENT_AFTER_RESPONDER);
+                    $this->getEventManager()->dispatch(self::EVENT_AFTER_RESPONDER);
                 }
 
-                $this->response->send();
+                $this->getResponse()->send();
             } else {
                 throw new MissingMethodException(
                     sprintf(
@@ -278,7 +256,7 @@ class Application
             throw new NotFoundException(
                 sprintf(
                     'Route "%s" does not found',
-                    $this->request->getQuery('_url', $this->request->getServer('REQUEST_URI'), true)
+                    $this->getRequest()->getQuery('_url', $this->getRequest()->getServer('REQUEST_URI'), true)
                 )
             );
         }
@@ -291,7 +269,7 @@ class Application
      */
     protected function loadResponder()
     {
-        $responderNamespace = $this->router->getResponderNamespace();
+        $responderNamespace = $this->getRouter()->getResponderNamespace();
 
         if (class_exists($responderNamespace) && is_subclass_of($responderNamespace, 'App\Responder\AppResponder')) {
             return new $responderNamespace();
@@ -311,7 +289,7 @@ class Application
             $bundleBootstrap = Bundles::getNamespace($bundleName) . 'Bootstrap';
 
             // check if Bootstrap file is there!
-            if(class_exists($bundleBootstrap)) {
+            if (class_exists($bundleBootstrap)) {
                 (new $bundleBootstrap())->startup();
             }
         }
@@ -325,5 +303,49 @@ class Application
         Config::load(CONFIG_DIR . DS . 'config.default.php');
         Config::load(CONFIG_DIR . DS . sprintf('config.%s.php', getenv('RAD_ENV')));
         Config::set('env', getenv('RAD_ENV'));
+    }
+
+    /**
+     * Get Router
+     *
+     * @return Router
+     * @throws DependencyInjection\Exception
+     */
+    public function getRouter()
+    {
+        return $this->container->get('router');
+    }
+
+    /**
+     * Get Request
+     *
+     * @return Request
+     * @throws DependencyInjection\Exception
+     */
+    public function getRequest()
+    {
+        return $this->container->get('request');
+    }
+
+    /**
+     * Get Response
+     *
+     * @return Response
+     * @throws DependencyInjection\Exception
+     */
+    public function getResponse()
+    {
+        return $this->container->get('response');
+    }
+
+    /**
+     * Get Event Manager
+     *
+     * @return EventManager
+     * @throws DependencyInjection\Exception
+     */
+    public function getEventManager()
+    {
+        return $this->container->get('event_manager');
     }
 }
