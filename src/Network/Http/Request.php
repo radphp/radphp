@@ -20,6 +20,7 @@ class Request implements RequestInterface
      */
     public $trustProxy = false;
 
+    protected $post;
     protected $put;
     protected $rawBody;
 
@@ -70,19 +71,28 @@ class Request implements RequestInterface
      */
     public function getPost($name = null, $defaultValue = null, $notAllowEmpty = false)
     {
+        if ($this->isPost() && !$this->post) {
+            if($this->isAjax()) {
+                $this->post = json_decode($this->getRawBody(), true);
+            } else {
+                $this->post = $_POST;
+                unset($_POST);
+            }
+        }
+
         if (!is_null($name)) {
-            if (isset($_POST[$name])) {
-                if (empty($_POST[$name]) && $notAllowEmpty) {
+            if (isset($this->post[$name])) {
+                if (empty($this->post[$name]) && $notAllowEmpty) {
                     return $defaultValue;
                 }
 
-                return $_POST[$name];
+                return $this->post[$name];
             }
 
             return $defaultValue;
         }
 
-        return $_POST;
+        return $this->post;
     }
 
     /**
@@ -96,8 +106,10 @@ class Request implements RequestInterface
      */
     public function getPut($name = null, $defaultValue = null, $notAllowEmpty = false)
     {
-        if ($this->isPut()) {
-            if (!is_array($this->put)) {
+        if ($this->isPut() && !$this->put) {
+            if($this->isAjax()) {
+                $this->put = json_decode($this->getRawBody(), true);
+            } else {
                 parse_str($this->getRawBody(), $put);
                 $this->put = $put;
             }
@@ -295,7 +307,7 @@ class Request implements RequestInterface
             return $this->rawBody;
         }
 
-        $this->rawBody = file_get_contents('php://input', 'rb');
+        $this->rawBody = file_get_contents('php://input');
 
         return $this->rawBody;
     }
