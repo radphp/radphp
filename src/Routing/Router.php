@@ -76,7 +76,7 @@ class Router implements ContainerAwareInterface
     {
         /** @var Request $request */
         $request = $this->getContainer()->get('request');
-        $method = strtolower($request->getMethod()) . 'Method';
+        $method = ucfirst(strtolower($request->getMethod())) . 'Method';
 
         if (!$uri) {
             $uri = $this->getRewriteUri();
