@@ -7,6 +7,7 @@ use Rad\Core\Bundles;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
 use Rad\Network\Http\Request;
+use Rad\Utility\Inflection;
 
 /**
  * RadPHP Router
@@ -21,9 +22,14 @@ class Router implements ContainerAwareInterface
     protected $actionNamespace;
     protected $responderNamespace;
     protected $params;
-    protected $language = null;
+    protected $language;
     protected $isMatched = false;
     protected $container;
+    protected $routingPhase;
+
+    const ROUTING_PHASE_ACTION = 1;
+    const ROUTING_PHASE_METHOD = 2;
+    const ROUTING_PHASE_INDEX = 3;
 
     const DEFAULT_ACTION = 'Index';
     const URI_SOURCE_GET_URL = 'get_url_source';
@@ -68,6 +74,10 @@ class Router implements ContainerAwareInterface
      */
     public function handle($uri = null)
     {
+        /** @var Request $request */
+        $request = $this->getContainer()->get('request');
+        $method = strtolower($request->getMethod()) . 'Method';
+
         if (!$uri) {
             $uri = $this->getRewriteUri();
         }
@@ -96,9 +106,9 @@ class Router implements ContainerAwareInterface
         $camelizedParts[] = self::DEFAULT_ACTION;
         $parts[] = self::DEFAULT_ACTION;
 
-        array_values(array_filter($camelizedParts, [$this, 'camelize']));
-        $module = reset($parts);
-        $this->camelize($module);
+        $camelizedParts = array_values(array_map('Rad\Utility\Inflection::camelize', $camelizedParts));
+        $module = reset($camelizedParts);
+        Inflection::camelize($module);
         $bundles = array_intersect([$module, 'App'], Bundles::getLoaded());
 
         $matchedRoute = null;
@@ -119,6 +129,14 @@ class Router implements ContainerAwareInterface
             // add "Action" to array as second param
             array_splice($dummyCamelizedParts, 1, 0, 'Action');
 
+            /**
+             * routingPhase is sequence of three phases
+             * 1- direct call of action
+             * 2- direct call of method
+             * 3- direct call of index action
+             */
+            $this->routingPhase = 0;
+
             // Continue searching till you found any matching
             // Or you have at least three elements in array (Bundle, "Action", Action)
             for ($i = 0; count($dummyCamelizedParts) >= 3; $i++) {
@@ -126,14 +144,17 @@ class Router implements ContainerAwareInterface
 
                 if (class_exists($actionNamespace)) {
                     array_splice($dummyCamelizedParts, 1, 1, 'Responder');
-                    $responderNamespace = implode('\\', $dummyCamelizedParts) . 'Responder';
+                    $responderNamespace =
+                        implode('\\', $dummyCamelizedParts) . 'Responder';
 
                     $matchedRoute = [
                         'namespace' => $actionNamespace,
                         'responder' => $responderNamespace,
-                        'action' => $dummyParts[count($dummyCamelizedParts) - 2],
+                        'action' => ($this->routingPhase == self::ROUTING_PHASE_ACTION)
+                            ? $dummyParts[count($dummyCamelizedParts) - 2]
+                            : $method,
                         'module' => strtolower($bundleName),
-                        'params' => array_slice($dummyParts, count($dummyCamelizedParts) - 1, -1)
+                        'params' => array_slice($dummyParts, count($dummyCamelizedParts) - $this->routingPhase, -1)
                     ];
 
                     break 2;
@@ -141,10 +162,20 @@ class Router implements ContainerAwareInterface
 
                 array_pop($dummyCamelizedParts);
 
-                // add index one in two iterates
-                if ($i % 2) {
+                // change router for some other default paths
+                if ($this->routingPhase > ROUTING_PHASE_INDEX) {
+                    $this->routingPhase = self::ROUTING_PHASE_ACTION;
+                }
+
+                if ($this->routingPhase == self::ROUTING_PHASE_METHOD) {
                     $dummyCamelizedParts[] = self::DEFAULT_ACTION;
                 }
+
+                if ($this->routingPhase == self::ROUTING_PHASE_ACTION) {
+                    $dummyCamelizedParts[] = $method;
+                }
+
+                $this->routingPhase++;
             }
         }
 
@@ -178,10 +209,15 @@ class Router implements ContainerAwareInterface
             $url = [];
         }
 
-        $module = isset($url[0]) ? array_shift($url) : $this->module;
-        $action = isset($url[0]) ? array_shift($url) : $this->action;
+        $module = strtolower(isset($url[0]) ? array_shift($url) : $this->module);
+        $action = strtolower(isset($url[0]) ? array_shift($url) : $this->action);
 
-        $result = [strtolower($module), strtolower($action)];
+        $result = [$module];
+
+        // set action only if it is in action routing mode
+        if($this->routingPhase == self::ROUTING_PHASE_ACTION) {
+            $result[] = $action;
+        }
 
         // add additional parameters
         if (isset($options[self::GEN_OPT_WITH_PARAMS])) {
@@ -311,16 +347,6 @@ class Router implements ContainerAwareInterface
     public function getLanguage()
     {
         return $this->language;
-    }
-
-    /**
-     * Camelize underscorized strings
-     *
-     * @param $string
-     */
-    private function camelize(&$string)
-    {
-        $string = str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', trim($string)))));
     }
 
     /**

@@ -225,24 +225,16 @@ class Application
                 );
             }
 
-            if (method_exists($actionNamespace, $method) && is_callable([$actionNamespace, $method])) {
-                $responder = $this->loadResponder();
-                /** @var ContainerAwareInterface|EventSubscriberInterface $actionInstance */
-                $actionInstance = new $actionNamespace($responder);
-                $actionInstance->setContainer($this->container);
-                $this->getEventManager()->addSubscriber($actionInstance);
+            $responder = $this->loadResponder();
+            /** @var Callable|ContainerAwareInterface|EventSubscriberInterface $actionInstance */
+            $actionInstance = new $actionNamespace($responder);
 
-                $this->getEventManager()->dispatch(self::EVENT_BEFORE_WEB_METHOD);
-                call_user_func_array([$actionInstance, $method], $this->getRouter()->getParams());
-                $this->getEventManager()->dispatch(self::EVENT_AFTER_WEB_METHOD);
-
-                if (method_exists($responder, $method) && is_callable([$responder, $method])) {
-                    $this->getEventManager()->dispatch(self::EVENT_BEFORE_RESPONDER);
-                    call_user_func([$responder, $method]);
-                    $this->getEventManager()->dispatch(self::EVENT_AFTER_RESPONDER);
-                }
-
-                $this->getResponse()->send();
+            if (method_exists($actionInstance, $method) && is_callable([$actionInstance, $method])) {
+                $invokeAction = [$actionInstance, $method];
+                $invokeResponder = [$responder, $method];
+            } elseif (is_callable($actionInstance)) {
+                $invokeAction = $actionInstance;
+                $invokeResponder = $responder;
             } else {
                 throw new MissingMethodException(
                     sprintf(
@@ -252,6 +244,22 @@ class Application
                     )
                 );
             }
+
+            //$actionInstance->setContainer($this->container);
+            $this->getEventManager()->addSubscriber($actionInstance);
+
+            $this->getEventManager()->dispatch(self::EVENT_BEFORE_WEB_METHOD);
+            call_user_func_array($invokeAction, $this->getRouter()->getParams());
+            $this->getEventManager()->dispatch(self::EVENT_AFTER_WEB_METHOD);
+
+            if ((method_exists($responder, $method) && is_callable([$responder, $method]))
+                || is_callable($invokeResponder)) {
+                $this->getEventManager()->dispatch(self::EVENT_BEFORE_RESPONDER);
+                call_user_func($invokeResponder);
+                $this->getEventManager()->dispatch(self::EVENT_AFTER_RESPONDER);
+            }
+
+            $this->getResponse()->send();
         } else {
             throw new NotFoundException(
                 sprintf(
