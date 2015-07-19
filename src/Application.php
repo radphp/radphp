@@ -245,7 +245,6 @@ class Application
                 );
             }
 
-            //$actionInstance->setContainer($this->container);
             $this->getEventManager()->addSubscriber($actionInstance);
 
             $this->getEventManager()->dispatch(self::EVENT_BEFORE_WEB_METHOD);
