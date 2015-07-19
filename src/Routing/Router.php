@@ -37,10 +37,12 @@ class Router implements ContainerAwareInterface
 
     const GEN_OPT_LANGUAGE = 'gen_opt_language';
     const GEN_OPT_WITH_PARAMS = 'gen_opt_with_params';
+    const GEN_OPT_INC_DOMAIN = 'gen_opt_inc_domain';
 
     protected $generateDefaultOption = [
         self::GEN_OPT_LANGUAGE => true,
         self::GEN_OPT_WITH_PARAMS => true,
+        self::GEN_OPT_INC_DOMAIN => true,
     ];
 
     /**
@@ -201,7 +203,11 @@ class Router implements ContainerAwareInterface
      */
     public function generateUrl(
         $url = [],
-        $options = [self::GEN_OPT_LANGUAGE => true, self::GEN_OPT_WITH_PARAMS => true]
+        $options = [
+            self::GEN_OPT_LANGUAGE => true,
+            self::GEN_OPT_WITH_PARAMS => true,
+            self::GEN_OPT_INC_DOMAIN => true
+        ]
     ) {
         if (!is_array($url)) {
             $url = [];
@@ -239,10 +245,19 @@ class Router implements ContainerAwareInterface
             array_unshift($result, $this->language);
         }
 
+        // include domain
+        if (isset($options[self::GEN_OPT_INC_DOMAIN])) {
+            $incDomain = $options[self::GEN_OPT_INC_DOMAIN];
+        } else {
+            $incDomain = $this->generateDefaultOption[self::GEN_OPT_INC_DOMAIN];
+        }
+
         /** @var Request $request */
         $request = $this->getContainer()->get('request');
         $result = '/' . implode('/', $result);
-        $result = $request->getScheme() . '://' . $request->getHttpHost() . $result;
+        if ($incDomain) {
+            $result = $request->getScheme() . '://' . $request->getHttpHost() . $result;
+        }
 
         return $result;
     }
