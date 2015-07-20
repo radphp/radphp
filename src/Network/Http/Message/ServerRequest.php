@@ -24,6 +24,17 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $parsedBody;
     protected $attributes = [];
 
+    /**
+     * Rad\Network\Http\Message\ServerRequest constructor
+     *
+     * @param array                           $serverParams
+     * @param array                           $uploadedFiles
+     * @param StreamInterface|resource|string $uri
+     * @param array                           $method
+     * @param string                          $body
+     * @param array                           $headers
+     * @param string                          $protocol
+     */
     public function __construct(
         array $serverParams,
         array $uploadedFiles,
