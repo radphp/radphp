@@ -3,6 +3,7 @@
 namespace Rad\Network\Http\Message;
 
 use InvalidArgumentException;
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
 /**

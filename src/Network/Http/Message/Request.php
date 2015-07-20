@@ -43,13 +43,8 @@ class Request implements MessageInterface, RequestInterface
      * @param array                           $headers
      * @param string                          $protocol
      */
-    public function __construct(
-        $uri,
-        $method,
-        $body = null,
-        array $headers = [],
-        $protocol = '1.1'
-    ) {
+    public function __construct($uri, $method, $body = null, array $headers = [], $protocol = '1.1')
+    {
         if (is_string($uri)) {
             $this->uri = new Uri($uri);
         } elseif ($uri instanceof UriInterface) {
@@ -135,8 +130,10 @@ class Request implements MessageInterface, RequestInterface
      */
     public function withMethod($method)
     {
+        $this->validateMethod($method);
+
         $newInstance = clone $this;
-        $newInstance->method = strval($method);
+        $newInstance->method = $method;
 
         return $newInstance;
     }
@@ -161,7 +158,7 @@ class Request implements MessageInterface, RequestInterface
             return $newInstance;
         }
 
-        if ($uri->getHost()) {
+        if ($uri->getHost() && !$this->hasHeader('Host')) {
             $host = $uri->getHost();
             $host .= !is_null($uri->getPort()) ? ':' . $uri->getPort() : '';
 
@@ -170,5 +167,27 @@ class Request implements MessageInterface, RequestInterface
         }
 
         return $newInstance;
+    }
+
+    /**
+     * Validate the HTTP method
+     *
+     * @param null|string $method
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function validateMethod($method)
+    {
+        if (null === $method) {
+            return;
+        }
+
+        if (!is_string($method)) {
+            throw new InvalidArgumentException('HTTP method must be a string.');
+        }
+
+        if (!preg_match('/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i', $method)) {
+            throw new InvalidArgumentException(sprintf('Invalid HTTP method "%s"', $method));
+        }
     }
 }

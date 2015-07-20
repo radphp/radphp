@@ -2,14 +2,17 @@
 
 namespace Rad\Network\Http;
 
-use Rad\Network\Http\Request\File;
+use Rad\Network\Http\Message\ServerRequest;
+use Rad\Network\Http\Request\UploadedFile;
+use Rad\Network\Http\Message\Uri;
+use Rad\Network\Http\Request\ReformatUploadedFiles;
 
 /**
  * Http Request
  *
  * @package Rad\Network\Http
  */
-class Request implements RequestInterface
+class Request extends ServerRequest
 {
     /**
      * Whether or not to trust HTTP_X headers set by most load balancers.
@@ -20,118 +23,27 @@ class Request implements RequestInterface
      */
     public $trustProxy = false;
 
-    protected $post;
-    protected $put;
-    protected $rawBody;
-
-    const METHOD_POST = 'POST';
-    const METHOD_GET = 'GET';
-    const METHOD_PUT = 'PUT';
-    const METHOD_PATCH = 'PATCH';
-    const METHOD_HEAD = 'HEAD';
-    const METHOD_DELETE = 'DELETE';
-    const METHOD_OPTIONS = 'OPTIONS';
-
     /**
-     * Gets a variable from the $_REQUEST super global.
-     * If no parameters are given the $_REQUEST super global is returned
-     *
-     * @param string $name
-     * @param mixed  $defaultValue
-     * @param bool   $notAllowEmpty
-     *
-     * @return mixed
+     * Rad\Network\Http\Request constructor
      */
-    public function get($name = null, $defaultValue = null, $notAllowEmpty = false)
+    public function __construct()
     {
-        if (!is_null($name)) {
-            if (isset($_REQUEST[$name])) {
-                if (empty($_REQUEST[$name]) && $notAllowEmpty) {
-                    return $defaultValue;
-                }
+        parent::__construct(
+            $_SERVER,
+            $this->prepareUploadedFiles($_FILES),
+            $this->prepareUri($_SERVER),
+            isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET',
+            'php://input',
+            $this->prepareHeaders($_SERVER)
+        );
 
-                return $_REQUEST[$name];
-            }
-
-            return $defaultValue;
-        }
-
-        return $_REQUEST;
+        $this->cookieParams = $_COOKIE;
+        $this->queryParams = $_GET;
+        $this->parsedBody = $this->prepareParsedBody();
     }
 
     /**
-     * Gets a variable from the $_POST super global.
-     * If no parameters are given the $_POST super global is returned
-     *
-     * @param string $name
-     * @param mixed  $defaultValue
-     * @param bool   $notAllowEmpty
-     *
-     * @return mixed
-     */
-    public function getPost($name = null, $defaultValue = null, $notAllowEmpty = false)
-    {
-        if ($this->isPost() && !$this->post) {
-            if($this->isAjax()) {
-                $this->post = json_decode($this->getRawBody(), true);
-            } else {
-                $this->post = $_POST;
-                unset($_POST);
-            }
-        }
-
-        if (!is_null($name)) {
-            if (isset($this->post[$name])) {
-                if (empty($this->post[$name]) && $notAllowEmpty) {
-                    return $defaultValue;
-                }
-
-                return $this->post[$name];
-            }
-
-            return $defaultValue;
-        }
-
-        return $this->post;
-    }
-
-    /**
-     * Gets a variable from put request
-     *
-     * @param string|null $name
-     * @param mixed       $defaultValue
-     * @param bool        $notAllowEmpty
-     *
-     * @return mixed
-     */
-    public function getPut($name = null, $defaultValue = null, $notAllowEmpty = false)
-    {
-        if ($this->isPut() && !$this->put) {
-            if($this->isAjax()) {
-                $this->put = json_decode($this->getRawBody(), true);
-            } else {
-                parse_str($this->getRawBody(), $put);
-                $this->put = $put;
-            }
-        }
-
-        if (!is_null($name)) {
-            if (isset($this->put[$name])) {
-                if (empty($this->put[$name]) && $notAllowEmpty === true) {
-                    return $defaultValue;
-                } else {
-                    return $this->put[$name];
-                }
-            }
-
-            return $defaultValue;
-        }
-
-        return $this->put;
-    }
-
-    /**
-     * Gets variable from $_GET super global.
+     * Gets variable from query params.
      * If no parameters are given the $_GET super global is returned
      *
      * @param string $name
@@ -143,22 +55,22 @@ class Request implements RequestInterface
     public function getQuery($name = null, $defaultValue = null, $notAllowEmpty = false)
     {
         if (!is_null($name)) {
-            if (isset($_GET[$name])) {
-                if (empty($_GET[$name]) && $notAllowEmpty) {
+            if (isset($this->getQueryParams()[$name])) {
+                if (empty($this->getQueryParams()[$name]) && $notAllowEmpty) {
                     return $defaultValue;
                 }
 
-                return $_GET[$name];
+                return $this->getQueryParams()[$name];
             }
 
             return $defaultValue;
         }
 
-        return $_GET;
+        return $this->getQueryParams();
     }
 
     /**
-     * Gets variable from $_SERVER super global
+     * Gets variable from server params
      *
      * @param string $name
      *
@@ -166,47 +78,11 @@ class Request implements RequestInterface
      */
     public function getServer($name)
     {
-        if (isset($_SERVER[$name])) {
-            return $_SERVER[$name];
+        if ($this->hasServer($name)) {
+            return $this->getServerParams()[$name];
         }
 
         return null;
-    }
-
-    /**
-     * Checks whether $_REQUEST super global has certain index
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name)
-    {
-        return isset($_REQUEST[$name]);
-    }
-
-    /**
-     * Checks whether $_POST super global has certain index
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasPost($name)
-    {
-        return isset($_POST[$name]);
-    }
-
-    /**
-     * Checks whether put has certain index
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function hasPut($name)
-    {
-        return isset($this->getPut()[$name]);
     }
 
     /**
@@ -218,7 +94,7 @@ class Request implements RequestInterface
      */
     public function hasQuery($name)
     {
-        return isset($_GET[$name]);
+        return isset($this->getQueryParams()[$name]);
     }
 
     /**
@@ -230,49 +106,7 @@ class Request implements RequestInterface
      */
     public function hasServer($name)
     {
-        return isset($_SERVER[$name]);
-    }
-
-    /**
-     * Gets HTTP header from request data
-     *
-     * @param string $header HTTP header
-     *
-     * @return string
-     */
-    public function getHeader($header)
-    {
-        if (isset($_SERVER[$header])) {
-            return $_SERVER[$header];
-        }
-
-        if (isset($_SERVER['HTTP_' . $header])) {
-            return $_SERVER['HTTP_' . $header];
-        }
-
-        return '';
-    }
-
-    /**
-     * Gets HTTP schema (http/https)
-     *
-     * @return string
-     */
-    public function getScheme()
-    {
-        if ($this->trustProxy && $this->getServer('HTTP_X_FORWARDED_PROTO')) {
-            return $this->getServer('HTTP_X_FORWARDED_PROTO');
-        }
-
-        if ($this->getServer('HTTPS')) {
-            if (is_string($this->getServer('HTTPS')) && $this->getServer('HTTPS') == 'off') {
-                return 'http';
-            } else {
-                return 'https';
-            }
-        } else {
-            return 'http';
-        }
+        return isset($this->getServerParams()[$name]);
     }
 
     /**
@@ -283,7 +117,7 @@ class Request implements RequestInterface
      */
     public function isAjax()
     {
-        return ($this->getHeader('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest');
+        return ($this->getHeaderLine('X_REQUESTED_WITH') === 'XMLHttpRequest');
     }
 
     /**
@@ -293,39 +127,7 @@ class Request implements RequestInterface
      */
     public function isSecureRequest()
     {
-        return ($this->getScheme() === 'https');
-    }
-
-    /**
-     * Gets HTTP raw request body
-     *
-     * @return string
-     */
-    public function getRawBody()
-    {
-        if (is_string($this->rawBody)) {
-            return $this->rawBody;
-        }
-
-        $this->rawBody = file_get_contents('php://input');
-
-        return $this->rawBody;
-    }
-
-    /**
-     * Gets decoded JSON HTTP raw request body
-     *
-     * @param bool $assoc
-     *
-     * @return array|mixed
-     */
-    public function getJsonRawBody($assoc = false)
-    {
-        if (is_string($rawBody = $this->getRawBody())) {
-            return json_decode($rawBody, $assoc);
-        }
-
-        return [];
+        return ($this->getUri()->getScheme() === 'https');
     }
 
     /**
@@ -335,8 +137,8 @@ class Request implements RequestInterface
      */
     public function getServerAddress()
     {
-        if (isset($_SERVER['SERVER_ADDR'])) {
-            return $_SERVER['SERVER_ADDR'];
+        if ($this->getServer('SERVER_ADDR')) {
+            return $this->getServer('SERVER_ADDR');
         }
 
         return '127.0.0.1';
@@ -349,34 +151,11 @@ class Request implements RequestInterface
      */
     public function getServerName()
     {
-        if (isset($_SERVER['SERVER_NAME'])) {
-            return $_SERVER['SERVER_NAME'];
+        if ($this->getServer('SERVER_NAME')) {
+            return $this->getServer('SERVER_NAME');
         }
 
         return 'localhost';
-    }
-
-    /**
-     * Gets information about schema, host and port used by the request
-     *
-     * @return string
-     */
-    public function getHttpHost()
-    {
-        if (isset($_SERVER['HTTP_HOST'])) {
-            return $_SERVER['HTTP_HOST'];
-        }
-
-        $name = $this->getServer('SERVER_NAME');
-        $port = $this->getServer('SERVER_PORT');
-        $schema = $this->getScheme();
-
-        // Request is standard http or is standard a secure http return SERVER_NAME
-        if ((($port == '80') && ($schema == 'http')) || (($port == '443') && ($schema == 'https'))) {
-            return $name;
-        }
-
-        return $name . ':' . $port;
     }
 
     /**
@@ -388,50 +167,23 @@ class Request implements RequestInterface
     public function getClientAddress()
     {
         $address = null;
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $this->trustProxy) {
-            $address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        if ($this->getHeaderLine('X_FORWARDED_FOR') && $this->trustProxy) {
+            $address = $this->getHeaderLine('X_FORWARDED_FOR');
         }
 
-        if (is_null($address) && isset($_SERVER['REMOTE_ADDR'])) {
-            $address = $_SERVER['REMOTE_ADDR'];
+        if (is_null($address) && $this->getServer('REMOTE_ADDR')) {
+            $address = $this->getServer('REMOTE_ADDR');
         }
 
         if (is_string($address)) {
             if ($addresses = explode(',', $address)) {
                 return $addresses[0];
             }
+
             return $address;
         }
 
         return false;
-    }
-
-    /**
-     * Gets HTTP method which request has been made
-     *
-     * @return string
-     */
-    public function getMethod()
-    {
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            return $_SERVER['REQUEST_METHOD'];
-        }
-
-        return '';
-    }
-
-    /**
-     * Gets HTTP URI which request has been made
-     *
-     * @return string
-     */
-    public function getURI()
-    {
-        if (isset($_SERVER['REQUEST_URI'])) {
-            return $_SERVER['REQUEST_URI'];
-        }
-
-        return '';
     }
 
     /**
@@ -441,11 +193,7 @@ class Request implements RequestInterface
      */
     public function getUserAgent()
     {
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            return $_SERVER['HTTP_USER_AGENT'];
-        }
-
-        return '';
+        return $this->getHeaderLine('USER_AGENT');
     }
 
     /**
@@ -539,88 +287,13 @@ class Request implements RequestInterface
     }
 
     /**
-     * Checks whether request includes attached files
-     *
-     * @return bool
-     */
-    public function hasFiles()
-    {
-        if (!is_array($_FILES)) {
-            return false;
-        }
-
-        foreach ($_FILES as $fieldName => $file) {
-            if (isset($file['tmp_name'])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets attached files as Rad\Network\Http\Request\File instance
-     *
-     * @return File[]
-     */
-    public function getUploadedFiles()
-    {
-        $output = [];
-
-        foreach ($_FILES as $fieldName => $file) {
-            // When multiple files upload
-            if (is_array($file['name'])) {
-                for ($index = 0; $index <= (count($file['name']) - 1); $index++) {
-                    $output[] = new File($fieldName, [
-                        'name' => $file['name'][$index],
-                        'type' => $file['type'][$index],
-                        'tmp_name' => $file['tmp_name'][$index],
-                        'error' => $file['error'][$index],
-                        'size' => $file['size'][$index]
-                    ]);
-                }
-            } else {
-                $output[] = new File($fieldName, $file);
-            }
-        }
-
-        return $output;
-    }
-
-    /**
-     * Returns the available headers in the request
-     *
-     * @return array
-     */
-    public function getHeaders()
-    {
-        $output = [];
-
-        if (!is_array($_SERVER)) {
-            return $output;
-        }
-
-        foreach ($_SERVER as $key => $value) {
-            if (is_string($key) && strlen($key) > 5 && strpos($key, 'HTTP_') !== false) {
-                $output[substr($key, 5)] = $value;
-            }
-        }
-
-        return $output;
-    }
-
-    /**
      * Gets web page that refers active request. ie: http://www.google.com
      *
      * @return string
      */
     public function getReferer()
     {
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            return $_SERVER['HTTP_REFERER'];
-        }
-
-        return '';
+        return $this->getHeaderLine('REFERER');
     }
 
     /**
@@ -630,7 +303,7 @@ class Request implements RequestInterface
      */
     public function getAcceptableContent()
     {
-        return $this->getQualityHeader('HTTP_ACCEPT', 'accept');
+        return $this->getQualityHeader('ACCEPT', 'accept');
     }
 
     /**
@@ -650,7 +323,7 @@ class Request implements RequestInterface
      */
     public function getClientCharsets()
     {
-        return $this->getQualityHeader('HTTP_ACCEPT_CHARSET', 'charset');
+        return $this->getQualityHeader('ACCEPT_CHARSET', 'charset');
     }
 
     /**
@@ -670,7 +343,7 @@ class Request implements RequestInterface
      */
     public function getLanguages()
     {
-        return $this->getQualityHeader('HTTP_ACCEPT_LANGUAGE', 'language');
+        return $this->getQualityHeader('ACCEPT_LANGUAGE', 'language');
     }
 
     /**
@@ -694,6 +367,23 @@ class Request implements RequestInterface
     }
 
     /**
+     * Get request media type
+     *
+     * @return string
+     */
+    public function getMediaType()
+    {
+        $contentType = $this->getServer('CONTENT_TYPE');
+        if (!empty($contentType)) {
+            if ($parts = explode(';', $contentType)) {
+                return trim($parts[0]);
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * Process a request header and return an array of values with their qualities
      *
      * @param string $serverIndex
@@ -703,7 +393,7 @@ class Request implements RequestInterface
      */
     protected function getQualityHeader($serverIndex, $name)
     {
-        $httpServer = $this->getServer($serverIndex);
+        $httpServer = $this->getHeaderLine($serverIndex);
         $parts = preg_split('/,\\s*/', $httpServer);
 
         $output = [];
@@ -755,5 +445,123 @@ class Request implements RequestInterface
         }
 
         return $selectedName;
+    }
+
+    /**
+     * Prepare uploaded files
+     *
+     * @param $files
+     *
+     * @return array
+     */
+    protected function prepareUploadedFiles($files)
+    {
+        $fileKeys = ['error', 'name', 'size', 'tmp_name', 'type'];
+        $reformatFiles = new ReformatUploadedFiles($files);
+
+        $output = [];
+        foreach ($reformatFiles as $key => $value) {
+            $keys = array_keys($value);
+            sort($keys);
+
+            if ($fileKeys == $keys && is_array($value['tmp_name'])) {
+                $output[$key] = $this->prepareUploadedFiles($reformatFiles[$key]);
+                continue;
+            }
+
+            $output[$key] = new UploadedFile(
+                $value['tmp_name'],
+                $value['error'],
+                $value['name'],
+                $value['type'],
+                $value['size']
+            );
+        }
+
+        return $output;
+    }
+
+    /**
+     * Returns the available headers in the request
+     *
+     * @param array $server
+     *
+     * @return array
+     */
+    protected function prepareHeaders($server)
+    {
+        $output = [];
+
+        if (!is_array($server)) {
+            return $output;
+        }
+
+        foreach ($server as $key => $value) {
+            if (is_string($key) && strlen($key) > 5 && strpos($key, 'HTTP_') !== false) {
+                $output[substr($key, 5)] = $value;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Prepare Uri
+     *
+     * @param $server
+     *
+     * @return \Psr\Http\Message\UriInterface|Uri
+     */
+    protected function prepareUri($server)
+    {
+        $uri = new Uri('');
+
+        if ((isset($server['HTTPS']) && $server['HTTPS'] != 'off') ||
+            (isset($server['HTTP_X_FORWARDED_PROTO']) && $server['HTTP_X_FORWARDED_PROTO'] == 'https')
+        ) {
+            $schema = 'https';
+        } else {
+            $schema = 'http';
+        }
+
+        $parsedUrl = parse_url($server['REQUEST_URI']);
+        $username = isset($server['PHP_AUTH_USER']) ? $server['PHP_AUTH_USER'] : null;
+        $password = isset($server['PHP_AUTH_PW']) ? $server['PHP_AUTH_PW'] : null;
+
+        return $uri->withScheme($schema)
+            ->withHost($server['HTTP_HOST'])
+            ->withPort($server['SERVER_PORT'])
+            ->withPath(isset($parsedUrl['path']) ? $parsedUrl['path'] : '/')
+            ->withUserInfo($username, $password)
+            ->withQuery(isset($parsedUrl['query']) ? $parsedUrl['query'] : '');
+    }
+
+    /**
+     * Prepare parsed body
+     *
+     * @return mixed|\SimpleXMLElement
+     */
+    protected function prepareParsedBody()
+    {
+        if ($this->getMethod() == self::METHOD_POST &&
+            in_array($this->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
+        ) {
+            return $_POST;
+        } else {
+            $body = (string)$this->getBody();
+
+            switch ($this->getMediaType()) {
+                case 'application/json':
+                    return json_decode($body, true);
+
+                case 'application/xml':
+                    return simplexml_load_string($body);
+
+                default:
+                    parse_str($body, $output);
+
+                    return $output;
+            }
+        }
     }
 }

@@ -30,6 +30,22 @@ class Uri implements UriInterface
      */
     public function __construct($url)
     {
+        if (!is_string($url)) {
+            throw new InvalidArgumentException('Url must be string.');
+        }
+
+        if (!empty(trim($url))) {
+            $this->initialize($url);
+        }
+    }
+
+    /**
+     * Initialize
+     *
+     * @param string $url
+     */
+    protected function initialize($url)
+    {
         $url = filter_var($url, FILTER_SANITIZE_URL);
         $parsedUrl = parse_url($url);
 
@@ -78,10 +94,11 @@ class Uri implements UriInterface
     public function getAuthority()
     {
         $authority = '';
+        $port = ($this->port == 80) ? '' : $this->port;
 
         $authority .= !empty($this->userInfo) ? $this->userInfo . '@' : '';
         $authority .= !empty($this->host) ? $this->host : '';
-        $authority .= !empty($this->port) ? ':' . $this->port : '';
+        $authority .= !empty($port) ? ':' . $port : '';
 
         return $authority;
     }
@@ -328,15 +345,15 @@ class Uri implements UriInterface
             $path
         );
 
-        if (is_null($path)) {
-            throw new InvalidArgumentException(sprintf('Invalid path "%s".', $path));
+        if (empty($path)) {
+            return $path;
         }
 
         if (substr($path, 0, 1) !== '/') {
-            $path = '/' . $path;
+            return $path;
+        } else {
+            return '/' . ltrim($path, '/');
         }
-
-        return $path;
     }
 
     /**
