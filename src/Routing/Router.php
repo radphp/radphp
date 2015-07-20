@@ -27,9 +27,9 @@ class Router implements ContainerAwareInterface
     protected $container;
     protected $routingPhase;
 
-    const ROUTING_PHASE_ACTION = 1;
+    const ROUTING_PHASE_INDEX = 1;
     const ROUTING_PHASE_METHOD = 2;
-    const ROUTING_PHASE_INDEX = 3;
+    const ROUTING_PHASE_ACTION = 3;
 
     const DEFAULT_ACTION = 'Index';
     const URI_SOURCE_GET_URL = 'get_url_source';
@@ -37,10 +37,12 @@ class Router implements ContainerAwareInterface
 
     const GEN_OPT_LANGUAGE = 'gen_opt_language';
     const GEN_OPT_WITH_PARAMS = 'gen_opt_with_params';
+    const GEN_OPT_INC_DOMAIN = 'gen_opt_inc_domain';
 
     protected $generateDefaultOption = [
         self::GEN_OPT_LANGUAGE => true,
         self::GEN_OPT_WITH_PARAMS => true,
+        self::GEN_OPT_INC_DOMAIN => true,
     ];
 
     /**
@@ -101,10 +103,8 @@ class Router implements ContainerAwareInterface
         }
 
         // Cleaning route parts & Rebase array keys
+        $parts[] = strtolower(self::DEFAULT_ACTION);
         $camelizedParts = $parts;
-        // I really need to add index to both of them separately! Because of "lazy copy" feature of PHP
-        $camelizedParts[] = self::DEFAULT_ACTION;
-        $parts[] = self::DEFAULT_ACTION;
 
         $camelizedParts = array_values(array_map('Rad\Utility\Inflection::camelize', $camelizedParts));
         $module = reset($camelizedParts);
@@ -135,7 +135,7 @@ class Router implements ContainerAwareInterface
              * 2- direct call of method
              * 3- direct call of index action
              */
-            $this->routingPhase = 0;
+            $this->routingPhase = self::ROUTING_PHASE_INDEX;
 
             // Continue searching till you found any matching
             // Or you have at least three elements in array (Bundle, "Action", Action)
@@ -150,9 +150,9 @@ class Router implements ContainerAwareInterface
                     $matchedRoute = [
                         'namespace' => $actionNamespace,
                         'responder' => $responderNamespace,
-                        'action' => ($this->routingPhase == self::ROUTING_PHASE_ACTION)
-                            ? $dummyParts[count($dummyCamelizedParts) - 2]
-                            : $method,
+                        'action' => ($this->routingPhase == self::ROUTING_PHASE_METHOD)
+                            ? $method
+                            : $dummyParts[count($dummyCamelizedParts) - 2],
                         'module' => strtolower($bundleName),
                         'params' => array_slice($dummyParts, count($dummyCamelizedParts) - $this->routingPhase, -1)
                     ];
@@ -163,15 +163,15 @@ class Router implements ContainerAwareInterface
                 array_pop($dummyCamelizedParts);
 
                 // change router for some other default paths
-                if ($this->routingPhase > ROUTING_PHASE_INDEX) {
-                    $this->routingPhase = self::ROUTING_PHASE_ACTION;
+                if ($this->routingPhase > self::ROUTING_PHASE_ACTION) {
+                    $this->routingPhase = self::ROUTING_PHASE_INDEX;
                 }
 
                 if ($this->routingPhase == self::ROUTING_PHASE_METHOD) {
                     $dummyCamelizedParts[] = self::DEFAULT_ACTION;
                 }
 
-                if ($this->routingPhase == self::ROUTING_PHASE_ACTION) {
+                if ($this->routingPhase == self::ROUTING_PHASE_INDEX) {
                     $dummyCamelizedParts[] = $method;
                 }
 
@@ -203,7 +203,11 @@ class Router implements ContainerAwareInterface
      */
     public function generateUrl(
         $url = [],
-        $options = [self::GEN_OPT_LANGUAGE => true, self::GEN_OPT_WITH_PARAMS => true]
+        $options = [
+            self::GEN_OPT_LANGUAGE => true,
+            self::GEN_OPT_WITH_PARAMS => true,
+            self::GEN_OPT_INC_DOMAIN => true
+        ]
     ) {
         if (!is_array($url)) {
             $url = [];
@@ -241,10 +245,19 @@ class Router implements ContainerAwareInterface
             array_unshift($result, $this->language);
         }
 
+        // include domain
+        if (isset($options[self::GEN_OPT_INC_DOMAIN])) {
+            $incDomain = $options[self::GEN_OPT_INC_DOMAIN];
+        } else {
+            $incDomain = $this->generateDefaultOption[self::GEN_OPT_INC_DOMAIN];
+        }
+
         /** @var Request $request */
         $request = $this->getContainer()->get('request');
         $result = '/' . implode('/', $result);
-        $result = $request->getScheme() . '://' . $request->getHttpHost() . $result;
+        if ($incDomain) {
+            $result = $request->getScheme() . '://' . $request->getHttpHost() . $result;
+        }
 
         return $result;
     }
