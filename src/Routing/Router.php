@@ -76,9 +76,7 @@ class Router implements ContainerAwareInterface
      */
     public function handle($uri = null)
     {
-        /** @var Request $request */
-        $request = $this->getContainer()->get('request');
-        $method = ucfirst(strtolower($request->getMethod())) . 'Method';
+        $method = ucfirst(strtolower($this->container->get('registry')->get('method'))) . 'Method';
 
         if (!$uri) {
             $uri = $this->getRewriteUri();
@@ -252,11 +250,12 @@ class Router implements ContainerAwareInterface
             $incDomain = $this->generateDefaultOption[self::GEN_OPT_INC_DOMAIN];
         }
 
-        /** @var Request $request */
-        $request = $this->getContainer()->get('request');
         $result = '/' . implode('/', $result);
-        if ($incDomain) {
-            $result = $request->getScheme() . '://' . $request->getHttpHost() . $result;
+
+        if ($incDomain && $this->container->get('registry')->get('method') != 'cli') {
+            /** @var Request $request */
+            $request = $this->getContainer()->get('request');
+            $result = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost() . $result;
         }
 
         return $result;
