@@ -15,8 +15,6 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    use MessageTrait;
-
     protected $serverParams = [];
     protected $cookieParams = [];
     protected $queryParams = [];

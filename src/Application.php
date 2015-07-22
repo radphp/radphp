@@ -12,6 +12,7 @@ use Rad\Core\Responder;
 use Rad\Core\SingletonTrait;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
+use Rad\DependencyInjection\Registry;
 use Rad\Error\ErrorHandler;
 use Rad\Error\Handler\JsonHandler;
 use Rad\Events\EventManager;
@@ -70,6 +71,7 @@ class Application
         $this->container = Container::getInstance();
 
         $this->container->setShared('error_handler', $error, true);
+        $this->container->setShared('registry', Registry::getInstance(), true);
         $this->container->setShared('router', new Router(), true);
         $this->container->setShared('event_manager', new EventManager(), true);
         $this->container->setShared(
@@ -102,6 +104,7 @@ class Application
             $this->container->setShared('request', new Request(), true);
             $this->container->setShared('response', new Response(), true);
             $this->container->setShared('cookies', new Response\Cookies(), true);
+            $this->container->get('registry')->set('method', $this->getRequest()->getMethod());
 
             $this->getRouter()->handle();
             $this->callAction();
@@ -127,6 +130,8 @@ class Application
 
             $route = str_replace(':', '/', $argv[1]);
             unset($argv[0]);
+
+            $this->container->get('registry')->set('method', 'cli');
 
             $this->getRouter()->handle($route);
             $this->callCli(array_values($argv));
