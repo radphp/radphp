@@ -24,7 +24,7 @@ class DotEnv
             foreach (preg_grep('/^\.env$/', scandir($path)) as $filename) {
                 $filePath = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
                 if (is_readable($filePath)) {
-                    foreach(parse_ini_file($filePath) as $envKey => $envValue) {
+                    foreach (parse_ini_file($filePath) as $envKey => $envValue) {
                         putenv($envKey . '=' . $envValue);
                     }
                 }

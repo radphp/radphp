@@ -24,7 +24,7 @@ class Event
      * @param mixed  $data       Data
      * @param bool   $cancelable Event is cancelable
      */
-    function __construct($type, $subject = null, $data = null, $cancelable = true)
+    public function __construct($type, $subject = null, $data = null, $cancelable = true)
     {
         $this->type = $type;
         $this->subject = $subject;

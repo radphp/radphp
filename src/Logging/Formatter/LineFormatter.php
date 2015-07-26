@@ -21,7 +21,7 @@ class LineFormatter extends AbstractFormatter
      * @param string $logFormat  Log format
      * @param string $timeFormat Time format
      */
-    function __construct($logFormat = '', $timeFormat = '')
+    public function __construct($logFormat = '', $timeFormat = '')
     {
         if ($logFormat) {
             $this->logFormat = $logFormat;

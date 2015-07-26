@@ -129,7 +129,6 @@ class Cookie
     {
         if ($this->read === false) {
             if (isset($_COOKIE[$this->name])) {
-
                 if ($this->useEncryption === true) {
                     return $this->value = $this->decrypt($_COOKIE[$this->name]);
                 }

@@ -23,7 +23,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      *
      * @param SessionHandlerInterface $handler
      */
-    function __construct(SessionHandlerInterface $handler = null)
+    public function __construct(SessionHandlerInterface $handler = null)
     {
         if ($handler) {
             session_set_save_handler($handler);
@@ -178,7 +178,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      * @link http://php.net/manual/en/function.session-regenerate-id.php
      * @return bool true on success or false on failure.
      */
-    function regenerateId($deleteOldSession = false)
+    public function regenerateId($deleteOldSession = false)
     {
         return session_regenerate_id($deleteOldSession);
     }
@@ -198,7 +198,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      * @link http://php.net/manual/en/function.session-name.php
      * @return string the name of the current session.
      */
-    function setName($name)
+    public function setName($name)
     {
         session_name($name);
     }
@@ -209,7 +209,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      * @link http://php.net/manual/en/function.session-name.php
      * @return string the name of the current session.
      */
-    function getName()
+    public function getName()
     {
         return session_name();
     }
@@ -391,7 +391,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      * @return mixed data which can be serialized by json_encode,
      *       which is a value of any type other than a resource.
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $_SESSION;
     }

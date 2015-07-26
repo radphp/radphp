@@ -293,7 +293,8 @@ class Uri implements UriInterface
                 $host = strval($host);
             } elseif (preg_match(
                 '/^(?:[' . self::CHARACTERS_UNRESERVED . self::CHARACTERS_SUB_DELIMS . ':@\/\?]+|%[A-Fa-f0-9]{2})+$/',
-                $host)
+                $host
+            )
             ) {
                 $host = strval($host);
             } else {

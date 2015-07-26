@@ -22,7 +22,7 @@ class EncryptedSessionHandler extends SessionHandler
      * @param string $cipher
      * @param string $cipherMode
      */
-    function __construct($secretKey, $cipher = MCRYPT_RIJNDAEL_256, $cipherMode = MCRYPT_MODE_ECB)
+    public function __construct($secretKey, $cipher = MCRYPT_RIJNDAEL_256, $cipherMode = MCRYPT_MODE_ECB)
     {
         $this->secretKey = $secretKey;
         $this->cipher = $cipher;

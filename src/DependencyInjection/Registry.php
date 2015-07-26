@@ -155,7 +155,7 @@ class Registry implements ArrayAccess, Serializable, JsonSerializable
      * @return mixed data which can be serialized by json_encode,
      *                which is a value of any type other than a resource.
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return self::$storage;
     }
