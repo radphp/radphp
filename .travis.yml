@@ -10,6 +10,8 @@ matrix:
     - php: 7.0
 
 before_script:
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
   - composer self-update
   - composer install --prefer-dist --no-interaction
   - phpcs -p --extensions=php --standard=PSR2,PSR1 ./src ./tests
