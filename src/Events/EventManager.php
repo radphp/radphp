@@ -99,16 +99,19 @@ class EventManager
 
         if (isset(self::$listener[$eventType])) {
             $queue = self::$listener[$eventType];
-            $queue->top();
 
-            while ($queue->valid()) {
-                $this->callListener($queue->current(), $event);
+            if (!$queue->isEmpty()) {
+                $queue->top();
 
-                if ($event->isImmediatePropagationStopped()) {
-                    break;
+                while ($queue->valid()) {
+                    $this->callListener($queue->current(), $event);
+
+                    if ($event->isImmediatePropagationStopped()) {
+                        break;
+                    }
+
+                    $queue->next();
                 }
-
-                $queue->next();
             }
         }
 

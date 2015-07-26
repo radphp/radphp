@@ -17,7 +17,7 @@ use Rad\Utility\Inflection;
 class Router implements ContainerAwareInterface
 {
     protected $uriSource = self::URI_SOURCE_SERVER_REQUEST_URI;
-    protected $module;
+    protected $bundle;
     protected $action;
     protected $actionNamespace;
     protected $responderNamespace;
@@ -76,7 +76,15 @@ class Router implements ContainerAwareInterface
      */
     public function handle($uri = null)
     {
-        $method = ucfirst(strtolower($this->container->get('registry')->get('method'))) . 'Method';
+        if (PHP_SAPI === 'cli') {
+            $method = 'cli';
+        } else {
+            /** @var Request $request */
+            $request = $this->getContainer()->get('request');
+            $method = $request->getMethod();
+        }
+
+        $method = ucfirst(strtolower($method)) . 'Method';
 
         if (!$uri) {
             $uri = $this->getRewriteUri();
@@ -105,9 +113,9 @@ class Router implements ContainerAwareInterface
         $camelizedParts = $parts;
 
         $camelizedParts = array_values(array_map('Rad\Utility\Inflection::camelize', $camelizedParts));
-        $module = reset($camelizedParts);
-        Inflection::camelize($module);
-        $bundles = array_intersect([$module, 'App'], Bundles::getLoaded());
+        $bundle = reset($camelizedParts);
+        Inflection::camelize($bundle);
+        $bundles = array_intersect([$bundle, 'App'], Bundles::getLoaded());
 
         $matchedRoute = null;
         foreach ($bundles as $bundleName) {
@@ -151,7 +159,7 @@ class Router implements ContainerAwareInterface
                         'action' => ($this->routingPhase == self::ROUTING_PHASE_METHOD)
                             ? $method
                             : $dummyParts[count($dummyCamelizedParts) - 2],
-                        'module' => strtolower($bundleName),
+                        'bundle' => strtolower($bundleName),
                         'params' => array_slice($dummyParts, count($dummyCamelizedParts) - $this->routingPhase, -1)
                     ];
 
@@ -179,7 +187,7 @@ class Router implements ContainerAwareInterface
 
         if ($matchedRoute) {
             $this->action = $matchedRoute['action'];
-            $this->module = $matchedRoute['module'];
+            $this->bundle = $matchedRoute['bundle'];
             $this->actionNamespace = $matchedRoute['namespace'];
             $this->responderNamespace = $matchedRoute['responder'];
             $this->params = $matchedRoute['params'];
@@ -189,7 +197,7 @@ class Router implements ContainerAwareInterface
     }
 
     /**
-     * Generate link base on modules, with check for correct module and action
+     * Generate link base on bundles, with check for correct bundle and action
      * Possible options:
      *      Router::GEN_OPT_LANGUAGE to add language or not, default: true
      *      Router::GEN_OPT_WITH_PARAMS to add parameters or not, default: true
@@ -211,13 +219,13 @@ class Router implements ContainerAwareInterface
             $url = [];
         }
 
-        $module = strtolower(isset($url[0]) ? array_shift($url) : $this->module);
+        $bundle = strtolower(isset($url[0]) ? array_shift($url) : $this->bundle);
         $action = strtolower(isset($url[0]) ? array_shift($url) : $this->action);
 
-        $result = [$module];
+        $result = [$bundle];
 
         // set action only if it is in action routing mode
-        if($this->routingPhase == self::ROUTING_PHASE_ACTION) {
+        if ($this->routingPhase == self::ROUTING_PHASE_ACTION) {
             $result[] = $action;
         }
 
@@ -292,13 +300,13 @@ class Router implements ContainerAwareInterface
     }
 
     /**
-     * Get module
+     * Get bundle
      *
      * @return mixed
      */
-    public function getModule()
+    public function getBundle()
     {
-        return $this->module;
+        return $this->bundle;
     }
 
     /**
