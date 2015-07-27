@@ -23,12 +23,7 @@ class FatalErrorException extends BaseException
     {
         parent::__construct($message, $code);
 
-        if ($file) {
-            $this->file = $file;
-        }
-
-        if ($line) {
-            $this->line = $line;
-        }
+        $this->file = $file;
+        $this->line = $line;
     }
 }
