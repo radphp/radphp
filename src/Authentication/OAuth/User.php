@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Security\Authentication\OAuth;
+namespace Rad\Authentication\OAuth;
 
 use ArrayAccess;
 
 /**
  * User Detail
  *
- * @package Rad\Security\Authentication\OAuth
+ * @package Rad\Authentication\OAuth
  */
 class User implements ArrayAccess
 {
@@ -19,7 +19,7 @@ class User implements ArrayAccess
     protected $container = [];
 
     /**
-     * Rad\Security\Authentication\OAuth\User constructor
+     * Rad\Authentication\OAuth\User constructor
      *
      * @param string|array $data
      *

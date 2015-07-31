@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Security\Authentication\OAuth;
+namespace Rad\Authentication\OAuth;
 
 use Rad\Core\Exception\BaseException;
 
 /**
  * OAuth Exception
  *
- * @package Rad\Security\Authentication\OAuth
+ * @package Rad\Authentication\OAuth
  */
 class Exception extends BaseException
 {
