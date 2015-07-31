@@ -1,14 +1,12 @@
 <?php
 
-namespace Rad;
+namespace Rad\Configure;
 
 use ArrayAccess;
 use Countable;
 use Iterator;
 use JsonSerializable;
-use Rad\Config\Engine\PhpConfig;
-use Rad\Config\EngineInterface;
-use Rad\Config\Exception;
+use Rad\Configure\Engine\PhpConfig;
 use Rad\Core\SingletonTrait;
 use Serializable;
 
@@ -17,7 +15,7 @@ use Serializable;
  *
  * Config is designed to simplify the access to, and the use of, configuration data within applications.
  *
- * @package Rad
+ * @package Rad\Configure
  */
 class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, Countable
 {

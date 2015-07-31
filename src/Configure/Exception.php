@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Config;
+namespace Rad\Configure;
 
 use Rad\Core\Exception\BaseException;
 
 /**
  * Config Exception
  *
- * @package Rad\Config
+ * @package Rad\Configure
  */
 class Exception extends BaseException
 {

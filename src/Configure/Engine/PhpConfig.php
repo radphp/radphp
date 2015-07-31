@@ -1,14 +1,14 @@
 <?php
 
-namespace Rad\Config\Engine;
+namespace Rad\Configure\Engine;
 
-use Rad\Config\EngineInterface;
-use Rad\Config\Exception;
+use Rad\Configure\EngineInterface;
+use Rad\Configure\Exception;
 
 /**
  * PhpConfig Engine
  *
- * @package Rad\Config\Engine
+ * @package Rad\Configure\Engine
  */
 class PhpConfig implements EngineInterface
 {

@@ -2,7 +2,7 @@
 
 namespace Rad\Routing;
 
-use Rad\Config;
+use Rad\Configure\Config;
 use Rad\Core\Bundles;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;

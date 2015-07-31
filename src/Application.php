@@ -4,6 +4,7 @@ namespace Rad;
 
 use League\CLImate\Argument\Manager;
 use League\CLImate\CLImate;
+use Rad\Configure\Config;
 use Rad\Core\Action;
 use Rad\Core\Action\MissingMethodException;
 use Rad\Core\Bundles;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Rad\Config;
+namespace Rad\Configure;
 
 /**
  * Engine Interface
  *
- * @package Rad\Config
+ * @package Rad\Configure
  */
 interface EngineInterface
 {
