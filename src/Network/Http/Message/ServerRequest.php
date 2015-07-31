@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Http Message ServerRequest
@@ -26,9 +27,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param array                           $serverParams
      * @param array                           $uploadedFiles
-     * @param StreamInterface|resource|string $uri
+     * @param UriInterface|string             $uri
      * @param array                           $method
-     * @param string                          $body
+     * @param StreamInterface|string|resource $body
      * @param array                           $headers
      * @param string                          $protocol
      */
