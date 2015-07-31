@@ -362,7 +362,7 @@ class Uri implements UriInterface
      *
      * @param string $query
      *
-     * @return mixed|string
+     * @return string
      */
     protected function filterQuery($query)
     {

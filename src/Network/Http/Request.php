@@ -309,7 +309,7 @@ class Request extends ServerRequest
     /**
      * Gets preferred mime/type accepted by the browser/client from $_SERVER[‘HTTP_ACCEPT’]
      *
-     * @return array
+     * @return string
      */
     public function getPreferredAccept()
     {

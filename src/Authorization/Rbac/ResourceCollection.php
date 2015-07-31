@@ -64,7 +64,7 @@ class ResourceCollection extends SplObjectStorage
      * Associates data to an resource in the collection
      *
      * @param ResourceInterface $resource The object to associate data with.
-     * @param mixed             $data     The data to associate with the object.
+     * @param string            $data     The data to associate with the object.
      *
      * @return void
      */
@@ -90,7 +90,7 @@ class ResourceCollection extends SplObjectStorage
      *
      * @param ResourceInterface $resource The resource to look for.
      *
-     * @return mixed The data previously associated with the resource in the collection.
+     * @return string The data previously associated with the resource in the collection.
      */
     public function offsetGet($resource)
     {

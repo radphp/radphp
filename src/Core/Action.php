@@ -2,7 +2,6 @@
 
 namespace Rad\Core;
 
-use Rad\Application;
 use Rad\Core\Exception\BaseException;
 use Rad\DependencyInjection\ContainerAware;
 use Rad\Events\Event;

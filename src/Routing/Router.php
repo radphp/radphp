@@ -302,7 +302,7 @@ class Router implements ContainerAwareInterface
     /**
      * Get bundle
      *
-     * @return mixed
+     * @return string
      */
     public function getBundle()
     {
@@ -312,7 +312,7 @@ class Router implements ContainerAwareInterface
     /**
      * Get action
      *
-     * @return mixed
+     * @return string
      */
     public function getAction()
     {
