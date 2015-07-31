@@ -121,6 +121,7 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         $oldRouter = $this->getRouter();
 
         $this->getContainer()->setShared('router', new Router());
+        $this->getRouter()->setPrefix($oldRouter->getPrefix());
         $this->getRouter()->handle($uri);
 
         $dispatcher = new Dispatcher();
