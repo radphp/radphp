@@ -73,7 +73,7 @@ class Router implements ContainerAwareInterface
     /**
      * Handles routing information received from the rewrite engine
      *
-     * @param string $uri
+     * @param string|null $uri
      */
     public function handle($uri = null)
     {
@@ -87,7 +87,7 @@ class Router implements ContainerAwareInterface
 
         $method = ucfirst(strtolower($method)) . 'Method';
 
-        if (!$uri) {
+        if (empty($uri)) {
             $uri = $this->getRewriteUri();
         }
 

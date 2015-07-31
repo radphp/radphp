@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Security\Authentication\OAuth;
+namespace Rad\Authentication\OAuth;
 
 use Rad\Utility\Inflection;
 
 /**
  * OAuth Provider Factory
  *
- * @package Rad\Security\Authentication\OAuth
+ * @package Rad\Authentication\OAuth
  */
 class OAuthProviderFactory
 {

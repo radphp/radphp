@@ -77,7 +77,7 @@ class Stream implements StreamInterface
             }
             restore_error_handler();
 
-            if ($this->connectionErrors) {
+            if (!empty($this->connectionErrors)) {
                 $lastError = end($this->connectionErrors);
                 $exc = new BaseException($lastError['message']);
                 $exc->setFile($lastError['file'])
