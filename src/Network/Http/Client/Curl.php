@@ -113,7 +113,7 @@ class Curl implements ClientInterface
         $rawHeaders = trim(substr($rawResponse, 0, $headerSize));
         $rawHeadersArray = explode("\r\n\r\n", $rawHeaders);
 
-        if ($rawHeadersArray) {
+        if (!empty($rawHeadersArray)) {
             $headerLines = explode("\r\n", $rawHeadersArray[0]);
             foreach ($headerLines as $headerLine) {
                 if (stripos(trim($headerLine), 'http', 0) === 0) {

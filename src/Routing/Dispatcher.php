@@ -218,7 +218,10 @@ class Dispatcher
                     )
                 );
             }
-            $this->getEventManager()->addSubscriber($actionInstance);
+
+            if ($actionInstance instanceof EventSubscriberInterface) {
+                $this->getEventManager()->addSubscriber($actionInstance);
+            }
 
             $this->dispatchEvent(Action::EVENT_BEFORE_WEB_METHOD);
             call_user_func_array($invokeAction, $this->params);

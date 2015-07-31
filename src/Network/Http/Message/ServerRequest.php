@@ -28,7 +28,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array                           $serverParams
      * @param array                           $uploadedFiles
      * @param UriInterface|string             $uri
-     * @param array                           $method
+     * @param string                          $method
      * @param StreamInterface|string|resource $body
      * @param array                           $headers
      * @param string                          $protocol
