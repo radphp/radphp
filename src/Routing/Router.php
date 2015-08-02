@@ -26,6 +26,7 @@ class Router implements ContainerAwareInterface
     protected $isMatched = false;
     protected $container;
     protected $routingPhase;
+    protected $prefix = [];
 
     const ROUTING_PHASE_INDEX = 1;
     const ROUTING_PHASE_METHOD = 2;
@@ -240,6 +241,8 @@ class Router implements ContainerAwareInterface
             $result = array_merge($result, $this->params);
         }
 
+        $result = array_merge($this->prefix, $result);
+
         // add language
         if (isset($options[self::GEN_OPT_LANGUAGE])) {
             $addLanguage = $options[self::GEN_OPT_LANGUAGE];
@@ -387,5 +390,27 @@ class Router implements ContainerAwareInterface
     public function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * Set prefixe for router to prepend to generated URL
+     *
+     * @param array $prefix
+     *
+     * @return Router
+     */
+    public function setPrefix(Array $prefix)
+    {
+        $this->prefix = $prefix;
+    }
+
+    /**
+     * Get prefix array
+     *
+     * @return array
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
     }
 }
