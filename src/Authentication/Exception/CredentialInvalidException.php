@@ -2,14 +2,15 @@
 
 namespace Rad\Authentication\Exception;
 
-use Rad\Authentication\Exception;
+use Exception;
+use Rad\Authentication\Exception as AuthenticationException;
 
 /**
  * Credential Invalid Exception
  *
  * @package Rad\Authentication\Exception
  */
-class CredentialInvalidException extends Exception
+class CredentialInvalidException extends AuthenticationException
 {
     /**
      * Rad\Authentication\Exception\CredentialInvalidException constructor

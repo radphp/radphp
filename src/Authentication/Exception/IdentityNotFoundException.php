@@ -2,14 +2,15 @@
 
 namespace Rad\Authentication\Exception;
 
-use Rad\Authentication\Exception;
+use Exception;
+use Rad\Authentication\Exception as AuthenticationException;
 
 /**
  * Identity Not Found Exception
  *
  * @package Rad\Authentication\Exception
  */
-class IdentityNotFoundException extends Exception
+class IdentityNotFoundException extends AuthenticationException
 {
     /**
      * Rad\Authentication\Exception\IdentityNotFoundException constructor

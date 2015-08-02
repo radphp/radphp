@@ -14,11 +14,11 @@ class BaseException extends Exception
     /**
      * Rad\Core\Exception\BaseException constructor
      *
-     * @param string $message  Exception message
-     * @param int    $code     Exception code
-     * @param null   $previous Previous exception
+     * @param string    $message  Exception message
+     * @param int       $code     Exception code
+     * @param Exception $previous Previous exception
      */
-    public function __construct($message, $code = 500, $previous = null)
+    public function __construct($message, $code = 500, Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
