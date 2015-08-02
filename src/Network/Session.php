@@ -76,14 +76,6 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
     }
 
     /**
-     * Rad\Network\Session destructor
-     */
-    public function __destruct()
-    {
-        return $this->destroy();
-    }
-
-    /**
      * Starts the session (if headers are already sent the session will not be started)
      *
      * @return boolean
