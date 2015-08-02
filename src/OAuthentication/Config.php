@@ -1,11 +1,11 @@
 <?php
 
-namespace Rad\Authentication\OAuth;
+namespace Rad\OAuthentication;
 
 /**
  * OAuth Config
  *
- * @package Rad\Authentication\OAuth
+ * @package Rad\OAuthentication
  */
 class Config
 {
@@ -13,7 +13,7 @@ class Config
     protected $options = [];
 
     /**
-     * Rad\Authentication\OAuth\Config constructor
+     * Rad\OAuthentication\Config constructor
      *
      * @param AbstractOAuthProvider $provider
      * @param array                 $options

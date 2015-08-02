@@ -1,17 +1,17 @@
 <?php
 
-namespace Rad\Authentication\OAuth\Provider;
+namespace Rad\OAuthentication\Provider;
 
 use Rad\Network\Http\Client\Curl;
 use Rad\Network\Http\Message\Request;
-use Rad\Authentication\OAuth\User;
-use Rad\Authentication\OAuth\Exception;
-use Rad\Authentication\OAuth\AbstractOAuthProvider;
+use Rad\OAuthentication\User;
+use Rad\OAuthentication\Exception;
+use Rad\OAuthentication\AbstractOAuthProvider;
 
 /**
  * OAuth Google Provider
  *
- * @package Rad\Authentication\OAuth\Provider
+ * @package Rad\OAuthentication\Provider
  */
 class GoogleProvider extends AbstractOAuthProvider
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Rad\Authentication\OAuth;
+namespace Rad\OAuthentication;
 
 /**
  * OAuth ConfigManager
  *
- * @package Rad\Authentication\OAuth
+ * @package Rad\OAuthentication
  */
 class ConfigManager
 {

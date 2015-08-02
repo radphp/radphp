@@ -1,13 +1,13 @@
 <?php
 
-namespace Rad\Authentication\OAuth;
+namespace Rad\OAuthentication;
 
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Abstract OAuth Provider
  *
- * @package Rad\Authentication\OAuth
+ * @package Rad\OAuthentication
  */
 abstract class AbstractOAuthProvider
 {

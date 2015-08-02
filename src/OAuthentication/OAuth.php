@@ -1,15 +1,11 @@
 <?php
 
-namespace Rad\Authentication;
-
-use Rad\Authentication\OAuth\Config;
-use Rad\Authentication\OAuth\ConfigManager;
-use Rad\Authentication\OAuth\Exception;
+namespace Rad\OAuthentication;
 
 /**
  * OAuth
  *
- * @package Rad\Authentication
+ * @package Rad\OAuthentication
  */
 class OAuth
 {
@@ -19,7 +15,7 @@ class OAuth
     protected $config;
 
     /**
-     * Rad\Authentication\OAuth constructor
+     * Rad\OAuthentication constructor
      *
      * @param string $configId
      *
