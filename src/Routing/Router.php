@@ -42,7 +42,7 @@ class Router implements ContainerAwareInterface
 
     protected $generateDefaultOption = [
         self::GEN_OPT_LANGUAGE => true,
-        self::GEN_OPT_WITH_PARAMS => true,
+        self::GEN_OPT_WITH_PARAMS => false,
         self::GEN_OPT_INC_DOMAIN => true,
     ];
 
@@ -212,7 +212,7 @@ class Router implements ContainerAwareInterface
         $url = [],
         $options = [
             self::GEN_OPT_LANGUAGE => true,
-            self::GEN_OPT_WITH_PARAMS => true,
+            self::GEN_OPT_WITH_PARAMS => false,
             self::GEN_OPT_INC_DOMAIN => true
         ]
     ) {
@@ -221,14 +221,16 @@ class Router implements ContainerAwareInterface
         }
 
         $bundle = strtolower(isset($url[0]) ? array_shift($url) : $this->bundle);
-        $action = strtolower(isset($url[0]) ? array_shift($url) : $this->action);
 
         $result = [$bundle];
 
         // set action only if it is in action routing mode
         if ($this->routingPhase == self::ROUTING_PHASE_ACTION) {
-            $result[] = $action;
+            $result[] = $this->action;
         }
+
+        // add additional parameters
+        $result = array_merge($result, $url);
 
         // add additional parameters
         if (isset($options[self::GEN_OPT_WITH_PARAMS])) {
