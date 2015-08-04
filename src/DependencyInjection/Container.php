@@ -4,6 +4,8 @@ namespace Rad\DependencyInjection;
 
 use ArrayAccess;
 use Rad\Core\SingletonTrait;
+use Rad\DependencyInjection\Exception\ServiceLockedException;
+use Rad\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
  * Container
@@ -32,7 +34,7 @@ class Container implements ArrayAccess
     public static function set($name, $definition, $shared = false, $locked = false)
     {
         if (isset(self::$services[$name]) && self::$services[$name]->isLocked()) {
-            throw new Exception(sprintf('Service "%s" does exist and locked.', $name));
+            throw new ServiceLockedException(sprintf('Service "%s" is locked.', $name));
         }
 
         self::$services[$name] = new Service($name, $definition, $shared, $locked);
@@ -50,7 +52,7 @@ class Container implements ArrayAccess
     public static function setShared($name, $definition, $locked = false)
     {
         if (isset(self::$services[$name]) && self::$services[$name]->isLocked()) {
-            throw new Exception(sprintf('Service "%s" does exist and locked.', $name));
+            throw new ServiceLockedException(sprintf('Service "%s" is locked.', $name));
         }
 
         self::$services[$name] = new Service($name, $definition, true, $locked);
@@ -65,13 +67,13 @@ class Container implements ArrayAccess
      * @return mixed|object
      * @throws Exception
      */
-    public static function get($name, array $args = null)
+    public static function get($name, array $args = [])
     {
         if (!isset(self::$services[$name])) {
-            throw new Exception(sprintf('Service "%s" does not exist.', $name));
+            throw new ServiceNotFoundException(sprintf('Service "%s" does not exist.', $name));
         }
 
-        $instance = self::$services[$name]->resolve($args);
+        $instance = self::$services[$name]->resolve(self::getInstance(), $args);
 
         if ($instance instanceof ContainerAwareInterface) {
             $instance->setContainer(self::getInstance());

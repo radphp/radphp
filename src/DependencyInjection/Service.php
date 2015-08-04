@@ -2,9 +2,6 @@
 
 namespace Rad\DependencyInjection;
 
-use Closure;
-use ReflectionClass;
-
 /**
  * Service
  *
@@ -158,36 +155,20 @@ class Service
     /**
      * Resolve service
      *
-     * @param array $args
+     * @param Container $container
+     * @param array     $args
      *
      * @return mixed|object
      * @throws Exception
      */
-    public function resolve(array $args = null)
+    public function resolve(Container $container, array $args = [])
     {
         if ($this->resolvedDefinition && $this->shared === true) {
             return $this->resolvedDefinition;
         }
 
-        if ($this->definition instanceof Closure) {
-            if ($args) {
-                $this->resolvedDefinition = call_user_func_array($this->definition, $args);
-            } else {
-                $this->resolvedDefinition = call_user_func($this->definition);
-            }
-        } elseif (is_object($this->definition)) {
-            $this->resolvedDefinition = $this->definition;
-        } elseif (is_string($this->definition)) {
-            if (class_exists($this->definition)) {
-                $reflectionObj = new ReflectionClass($this->definition);
-                $this->resolvedDefinition = $reflectionObj->newInstanceArgs($args);
-            } else {
-                throw new Exception(sprintf('Class "%s" does not exist.', $this->definition));
-            }
-        } else {
-            throw new Exception('Class "%s" does not exist.');
-        }
-
+        $definitionResolver = new DefinitionResolver($container);
+        $this->resolvedDefinition = $definitionResolver->resolver($this->definition, $args);
         $this->resolved = true;
 
         return $this->resolvedDefinition;

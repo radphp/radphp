@@ -230,9 +230,9 @@ class Dispatcher
             if ((method_exists($responder, $method) && is_callable([$responder, $method]))
                 || is_callable($invokeResponder)
             ) {
-                $this->dispatchEvent(Application::EVENT_BEFORE_RESPONDER);
+                $this->dispatchEvent('Action.beforeResponder');
                 call_user_func($invokeResponder);
-                $this->dispatchEvent(Application::EVENT_AFTER_RESPONDER);
+                $this->dispatchEvent('Action.afterResponder');
             }
         } else {
             throw new NotFoundException(

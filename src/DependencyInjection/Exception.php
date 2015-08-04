@@ -7,7 +7,7 @@ use Rad\Core\Exception\BaseException;
 /**
  * DependencyInjection Exception
  *
- * @package Rad\DependencyInjection\Service
+ * @package Rad\DependencyInjection
  */
 class Exception extends BaseException
 {

@@ -71,14 +71,15 @@ trait ContainerAwareTrait
      * Get service
      *
      * @param string $serviceName Service name
+     * @param array  $args
      *
      * @return mixed|null|object
-     * @throws Exception
+     * @throws Exception\ServiceNotFoundException
      */
-    public function get($serviceName)
+    public function get($serviceName, array $args = [])
     {
         if ($this->getContainer()->has($serviceName)) {
-            return $this->getContainer()->get($serviceName);
+            return $this->getContainer()->get($serviceName, $args);
         }
 
         return null;

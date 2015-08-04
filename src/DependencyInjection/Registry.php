@@ -14,8 +14,6 @@ use Rad\Core\SingletonTrait;
  */
 class Registry implements ArrayAccess, Serializable, JsonSerializable
 {
-    use SingletonTrait;
-
     protected static $storage = [self::DEFAULT_SCOPE => []];
     const DEFAULT_SCOPE = 'default';
 
