@@ -50,7 +50,7 @@ class Event
     public function stopImmediatePropagation()
     {
         if ($this->isCancelable() === false) {
-            throw new Exception(sprintf('Event "%s" not cancelable.', $this->name));
+            throw new Exception(sprintf('Event "%s" not cancelable.', $this->type));
         }
 
         $this->immediateStopped = true;
