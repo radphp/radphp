@@ -14,7 +14,6 @@ use Rad\Core\Responder;
 use Rad\Core\SingletonTrait;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
-use Rad\DependencyInjection\Registry;
 use Rad\Error\ErrorHandler;
 use Rad\Error\Handler\JsonHandler;
 use Rad\Events\EventManager;
@@ -22,7 +21,6 @@ use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\Exception\NotFoundException;
 use Rad\Network\Http\Request;
 use Rad\Network\Http\Response;
-use Rad\Network\Session;
 use Rad\Routing\MiddlewareCollection;
 use Rad\Routing\Router;
 
@@ -31,7 +29,7 @@ use Rad\Routing\Router;
  *
  * @package Rad
  */
-class Application
+abstract class AbstractApplication
 {
     use SingletonTrait;
 
@@ -44,8 +42,6 @@ class Application
 
     const EVENT_BEFORE_LOAD_BUNDLES = 'App.beforeLoadBundles';
     const EVENT_AFTER_LOAD_BUNDLES = 'App.afterLoadBundles';
-    const EVENT_BEFORE_RESPONDER = 'Action.beforeResponder';
-    const EVENT_AFTER_RESPONDER = 'Action.afterResponder';
 
     /**
      * Init application
@@ -55,39 +51,41 @@ class Application
      */
     protected function init()
     {
-        $error = (new ErrorHandler())
-            ->setHandler(new JsonHandler())
+        $error = new ErrorHandler();
+        $error->setHandler(new JsonHandler())
             ->setDebug(true)
             ->register();
 
         DotEnv::load(ROOT_DIR);
-        if (!getenv('RAD_ENV')) {
-            putenv('RAD_ENV=production');
+        if (!getenv('RAD_ENVIRONMENT')) {
+            putenv('RAD_ENVIRONMENT=production');
         }
 
         $this->container = Container::getInstance();
 
-        $this->container->setShared('error_handler', $error, true);
-        $this->container->setShared('registry', Registry::getInstance(), true);
+        $this->loadConfig();
+        $this->loadServicesFromConfig();
+        $this->loadServices();
+
         $this->container->setShared('router', new Router());
         $this->container->setShared('event_manager', new EventManager(), true);
-        $this->container->setShared(
-            'session',
-            function () {
-                $session = new Session();
-                $session->start();
-
-                return $session;
-            },
-            true
-        );
-
-        $this->loadConfig();
 
         $this->getEventManager()->dispatch(self::EVENT_BEFORE_LOAD_BUNDLES);
         $this->loadBundles();
         $this->getEventManager()->dispatch(self::EVENT_AFTER_LOAD_BUNDLES);
     }
+
+    /**
+     * Load config
+     */
+    abstract public function loadConfig();
+
+    /**
+     * Load Services
+     *
+     * @return void
+     */
+    abstract public function loadServices();
 
     /**
      * Run application in web request
@@ -105,7 +103,6 @@ class Application
         if (!$this->run) {
             $this->container->setShared('request', $request);
             $this->container->setShared('response', $response);
-            $this->container->setShared('cookies', new Response\Cookies(), true);
 
             MiddlewareCollection::getInstance()->resolve($request, $response);
             $response->send();
@@ -238,13 +235,21 @@ class Application
     }
 
     /**
-     * Load config
+     * Load services from config
+     *
+     * @throws DependencyInjection\Exception\ServiceLockedException
      */
-    protected function loadConfig()
+    protected function loadServicesFromConfig()
     {
-        Config::load(CONFIG_DIR . DS . 'config.default.php');
-        Config::load(CONFIG_DIR . DS . sprintf('config.%s.php', getenv('RAD_ENV')));
-        Config::set('env', getenv('RAD_ENV'));
+        foreach (Config::get('services', []) as $name => $service) {
+            $service += [
+                'shared' => false,
+                'locked' => false,
+                'definition' => []
+            ];
+
+            $this->container->set($name, $service['definition'], $service['shared'], $service['locked']);
+        }
     }
 
     /**
@@ -256,28 +261,6 @@ class Application
     public function getRouter()
     {
         return $this->container->get('router');
-    }
-
-    /**
-     * Get Request
-     *
-     * @return Request
-     * @throws DependencyInjection\Exception
-     */
-    public function getRequest()
-    {
-        return $this->container->get('request');
-    }
-
-    /**
-     * Get Response
-     *
-     * @return Response
-     * @throws DependencyInjection\Exception
-     */
-    public function getResponse()
-    {
-        return $this->container->get('response');
     }
 
     /**
