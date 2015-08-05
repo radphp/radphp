@@ -3,7 +3,6 @@
 namespace Rad\Routing;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Rad\Application;
 use Rad\Core\Action;
 use Rad\Core\Action\MissingMethodException;
 use Rad\Core\Exception\BaseException;
