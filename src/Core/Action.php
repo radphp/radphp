@@ -2,10 +2,12 @@
 
 namespace Rad\Core;
 
+use Rad\Core\Action\MissingMethodException;
 use Rad\Core\Exception\BaseException;
 use Rad\DependencyInjection\ContainerAware;
 use Rad\Events\Event;
 use Rad\Events\EventManager;
+use Rad\Events\EventManagerTrait;
 use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\Request;
 use Rad\Network\Http\Response;
@@ -28,6 +30,8 @@ use Rad\Routing\Router;
  */
 abstract class Action extends ContainerAware implements EventSubscriberInterface
 {
+    use EventManagerTrait;
+
     /**
      * @var Responder
      */
@@ -41,22 +45,73 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
     const EVENT_AFTER_CLI_CONFIG = 'Action.afterCliConfig';
 
     /**
-     * Action constructor
+     * Invoke action
      *
-     * @param $responder
+     * @return mixed|null
+     * @throws BaseException
+     * @throws MissingMethodException
      */
-    public function __construct($responder)
+    public function __invoke()
     {
-        $this->responder = $responder;
+        $method = strtolower($this->getRequest()->getMethod()) . 'Method';
+
+        if (method_exists($this, $method) && is_callable([$this, $method])) {
+            $this->getEventManager()->addSubscriber($this);
+
+            $this->dispatchEvent(Action::EVENT_BEFORE_WEB_METHOD, $this, ['request' => $this->getRequest()]);
+            call_user_func_array([$this, $method], func_get_args());
+            $this->dispatchEvent(Action::EVENT_AFTER_WEB_METHOD, $this, ['request' => $this->getRequest()]);
+
+            if ($this->getResponder()) {
+                $responderResponse = call_user_func($this->getResponder());
+
+                if (!$responderResponse instanceof Response) {
+                    throw new BaseException(
+                        sprintf('Responder "%s" must be return Response object.', get_class($this->getResponder()))
+                    );
+                }
+
+                return $responderResponse;
+            }
+
+            return null;
+        } else {
+            throw new MissingMethodException(
+                sprintf(
+                    'Method %s::%s() could not be found, or is not accessible.',
+                    get_class($this),
+                    $method
+                )
+            );
+        }
     }
 
     /**
      * Get responder
      *
-     * @return Responder
+     * @return null|Responder
+     * @throws BaseException
+     * @throws \Rad\DependencyInjection\Exception\ServiceNotFoundException
      */
     public function getResponder()
     {
+        if (null !== $this->responder) {
+            return $this->responder;
+        }
+
+        /** @var Router $router */
+        $router = $this->getContainer()->get('router');
+        $namespace = $router->getResponderNamespace();
+
+        if (class_exists($namespace)) {
+            if (!is_subclass_of($namespace, 'App\Responder\AppResponder')) {
+                throw new BaseException(
+                    sprintf('Your "%s" responder must be extended "App\Responder\AppResponder".', $namespace));
+            }
+
+            $this->responder = new $namespace();
+        }
+
         return $this->responder;
     }
 
@@ -106,6 +161,7 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
      * @param string $uri
      * @param string $method
      *
+     * @return Response
      * @throws BaseException
      */
     public function forward($uri, $method = Request::METHOD_GET)
@@ -125,7 +181,7 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         $this->getRouter()->handle($uri);
 
         $dispatcher = new Dispatcher();
-        $dispatcher->setAction($this->getRouter()->getAction())
+        $response = $dispatcher->setAction($this->getRouter()->getAction())
             ->setActionNamespace($this->getRouter()->getActionNamespace())
             ->setBundle($this->getRouter()->getBundle())
             ->setParams($this->getRouter()->getParams())
@@ -134,6 +190,8 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
             ->dispatch($request);
 
         $this->getContainer()->setShared('router', $oldRouter);
+
+        return $response;
     }
 
     /**
