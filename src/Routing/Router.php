@@ -7,6 +7,7 @@ use Rad\Core\Bundles;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
 use Rad\Network\Http\Request;
+use Rad\Network\Http\RequestStacker;
 use Rad\Utility\Inflection;
 
 /**
@@ -265,7 +266,7 @@ class Router implements ContainerAwareInterface
 
         $result = '/' . implode('/', $result);
 
-        if ($incDomain && $this->container->get('registry')->get('method') != 'cli') {
+        if ($incDomain && 'cli' !== PHP_SAPI) {
             /** @var Request $request */
             $request = $this->getContainer()->get('request');
             $result = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost() . $result;
