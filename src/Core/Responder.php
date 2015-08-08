@@ -2,10 +2,13 @@
 
 namespace Rad\Core;
 
+use Rad\Core\Exception\BaseException;
 use Rad\Events\EventManager;
+use Rad\Events\EventManagerTrait;
 use Rad\Events\EventSubscriberInterface;
 use Rad\DependencyInjection\ContainerAware;
 use Rad\Network\Http\Request;
+use Rad\Network\Http\RequestStacker;
 use Rad\Network\Http\Response;
 use Rad\Network\Http\Response\Cookies;
 use Rad\Network\Session;
@@ -24,7 +27,52 @@ use Rad\Routing\Router;
  */
 abstract class Responder extends ContainerAware implements EventSubscriberInterface
 {
+    use EventManagerTrait;
+
     protected $data = [];
+
+    const EVENT_BEFORE_CALL_METHOD = 'Responder.beforeCallMethod';
+    const EVENT_AFTER_CALL_METHOD = 'Responder.afterCallMethod';
+
+    /**
+     * Invoke responder
+     *
+     * @return mixed
+     * @throws BaseException
+     */
+    public function __invoke()
+    {
+        $method = strtolower($this->getRequest()->getMethod()) . 'Method';
+
+        if (method_exists($this, $method) && is_callable([$this, $method])) {
+            $beforeCallEvent = $this->dispatchEvent(
+                self::EVENT_BEFORE_CALL_METHOD,
+                $this,
+                ['request' => $this->getRequest()]
+            );
+
+            if ($beforeCallEvent->getResult() instanceof Response) {
+                return $beforeCallEvent->getResult();
+            }
+
+            $response = call_user_func([$this, $method]);
+            $this->dispatchEvent(
+                self::EVENT_AFTER_CALL_METHOD,
+                $this,
+                ['request' => $this->getRequest(), 'response' => $response]
+            );
+
+            return $response;
+        } else {
+            throw new BaseException(
+                sprintf(
+                    'Method %s::%s() could not be found, or is not accessible.',
+                    get_class($this),
+                    $method
+                )
+            );
+        }
+    }
 
     /**
      * Set data
@@ -66,21 +114,15 @@ abstract class Responder extends ContainerAware implements EventSubscriberInterf
 
     }
 
-    protected function setRawContent($content)
+    /**
+     * Set content
+     *
+     * @param string $content
+     *
+     * @return Response
+     */
+    protected function setContent($content)
     {
-        $this->getResponse()->setContent($content);
-    }
-
-    protected function setContent($template, $params)
-    {
-        if ($this->getRequest()->isAjax()) {
-            $content = json_encode($params);
-        } else {
-            /** @var \Twig_Environment $twig */
-            $twig = $this->getContainer()->get('twig');
-            $content = $twig->render($template, $params);
-        }
-
-        $this->getResponse()->setContent($content);
+        return new Response($content);
     }
 }
