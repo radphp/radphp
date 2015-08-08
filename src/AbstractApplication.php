@@ -4,6 +4,7 @@ namespace Rad;
 
 use League\CLImate\Argument\Manager;
 use League\CLImate\CLImate;
+use Psr\Http\Message\ServerRequestInterface;
 use Rad\Configure\Config;
 use Rad\Core\Action;
 use Rad\Core\Action\MissingMethodException;
@@ -21,7 +22,7 @@ use Rad\Events\EventSubscriberInterface;
 use Rad\Network\Http\Exception\NotFoundException;
 use Rad\Network\Http\Request;
 use Rad\Network\Http\Response;
-use Rad\Routing\MiddlewareCollection;
+use Rad\Routing\Dispatcher;
 use Rad\Routing\Router;
 
 /**
@@ -88,41 +89,51 @@ abstract class AbstractApplication
     abstract public function loadServices();
 
     /**
-     * Run application in web request
+     * Handle Web Request
      *
-     * @param $request
-     * @param $response
+     * @param ServerRequestInterface $request
      *
      * @throws BaseException
-     * @throws DependencyInjection\Exception
-     * @throws MissingMethodException
+     * @throws DependencyInjection\Exception\ServiceLockedException
+     * @throws DependencyInjection\Exception\ServiceNotFoundException
      * @throws NotFoundException
+     * @throws Response\Exception
      */
-    public function runWeb($request, $response)
+    public function handleWeb(ServerRequestInterface $request)
     {
-        if (!$this->run) {
-            $this->container->setShared('request', $request);
-            $this->container->setShared('response', $response);
+        $this->container->set('request', $request);
 
-            MiddlewareCollection::getInstance()->resolve($request, $response);
-            $response->send();
+        /** @var Router $router */
+        $router = $this->container->get('router');
+        $router->handle();
 
-            $this->run = true;
-        } else {
-            throw new BaseException('Application is run.');
+        $dispatcher = new Dispatcher();
+        $response = $dispatcher->setAction($router->getAction())
+            ->setActionNamespace($router->getActionNamespace())
+            ->setBundle($router->getBundle())
+            ->setParams($router->getParams())
+            ->setResponderNamespace($router->getResponderNamespace())
+            ->setRouteMatched($router->isMatched())
+            ->dispatch($request);
+
+        if (!$response instanceof Response) {
+            $response = new Response();
         }
+
+        $response->send();
     }
 
     /**
      * Run application in cli request
      *
+     * @param $argv
+     *
      * @throws BaseException
+     * @throws MissingMethodException
      */
-    public function runCli()
+    public function handleCli($argv)
     {
         if (!$this->run) {
-            $argv = $_SERVER['argv'];
-
             if (!(count($argv) >= 2)) {
                 return;
             }
