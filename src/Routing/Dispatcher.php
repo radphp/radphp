@@ -2,15 +2,13 @@
 
 namespace Rad\Routing;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Rad\Application;
 use Rad\Core\Action;
-use Rad\Core\Action\MissingMethodException;
-use Rad\Core\Exception\BaseException;
 use Rad\Core\Responder;
-use Rad\DependencyInjection\ContainerAwareInterface;
+use Rad\Network\Http\Response;
 use Rad\Events\EventManagerTrait;
-use Rad\Events\EventSubscriberInterface;
+use Rad\Core\Exception\BaseException;
+use Rad\Core\Action\MissingMethodException;
+use Psr\Http\Message\ServerRequestInterface;
 use Rad\Network\Http\Exception\NotFoundException;
 
 /**
@@ -28,6 +26,9 @@ class Dispatcher
     protected $responderNamespace;
     protected $params = [];
     protected $routeMatched = false;
+
+    const EVENT_BEFORE_DISPATCH = 'Dispatcher.beforeDispatch';
+    const EVENT_AFTER_DISPATCH = 'Dispatcher.afterDispatch';
 
     /**
      * Set bundle
@@ -178,6 +179,7 @@ class Dispatcher
      *
      * @param ServerRequestInterface $request
      *
+     * @return Response
      * @throws BaseException
      * @throws MissingMethodException
      * @throws NotFoundException
@@ -185,55 +187,23 @@ class Dispatcher
     public function dispatch(ServerRequestInterface $request)
     {
         if ($this->routeMatched) {
-            $method = strtolower($request->getMethod()) . 'Method';
-
             if (!is_subclass_of($this->actionNamespace, 'App\Action\AppAction')) {
                 throw new BaseException(
                     sprintf('Action "%s" does not extend App\Action\AppAction', $this->actionNamespace)
                 );
             }
 
-            $responder = null;
-            if (class_exists($this->responderNamespace) &&
-                is_subclass_of($this->responderNamespace, 'App\Responder\AppResponder')
-            ) {
-                $responder = new $this->responderNamespace();
+            $actionInstance = new $this->actionNamespace();
+
+            $beforeDispatchEvent = $this->dispatchEvent(self::EVENT_BEFORE_DISPATCH, $this, ['request' => $request]);
+            if ($beforeDispatchEvent->getResult() instanceof Response) {
+                return $beforeDispatchEvent->getResult();
             }
 
-            /** @var Callable|ContainerAwareInterface|EventSubscriberInterface $actionInstance */
-            $actionInstance = new $this->actionNamespace($responder);
+            $response = call_user_func_array($actionInstance, $this->params);
+            $this->dispatchEvent(self::EVENT_AFTER_DISPATCH, $this, ['request' => $request, 'response' => $response]);
 
-            if (method_exists($actionInstance, $method) && is_callable([$actionInstance, $method])) {
-                $invokeAction = [$actionInstance, $method];
-                $invokeResponder = [$responder, $method];
-            } elseif (is_callable($actionInstance)) {
-                $invokeAction = $actionInstance;
-                $invokeResponder = $responder;
-            } else {
-                throw new MissingMethodException(
-                    sprintf(
-                        'Method %s::%s() could not be found, or is not accessible.',
-                        $this->actionNamespace,
-                        $method
-                    )
-                );
-            }
-
-            if ($actionInstance instanceof EventSubscriberInterface) {
-                $this->getEventManager()->addSubscriber($actionInstance);
-            }
-
-            $this->dispatchEvent(Action::EVENT_BEFORE_WEB_METHOD);
-            call_user_func_array($invokeAction, $this->params);
-            $this->dispatchEvent(Action::EVENT_AFTER_WEB_METHOD);
-
-            if ((method_exists($responder, $method) && is_callable([$responder, $method]))
-                || is_callable($invokeResponder)
-            ) {
-                $this->dispatchEvent('Action.beforeResponder');
-                call_user_func($invokeResponder);
-                $this->dispatchEvent('Action.afterResponder');
-            }
+            return $response;
         } else {
             throw new NotFoundException(
                 sprintf('Route "%s" does not found', $request->getServerParams()['REQUEST_URI'])
