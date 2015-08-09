@@ -40,6 +40,10 @@ class Request extends ServerRequest
         $this->cookieParams = $_COOKIE;
         $this->queryParams = $_GET;
         $this->parsedBody = $this->prepareParsedBody();
+
+        if (isset($this->parsedBody['_method'])) {
+            $this->method = strtoupper($this->parsedBody['_method']);
+        }
     }
 
     /**
@@ -543,7 +547,7 @@ class Request extends ServerRequest
      */
     protected function prepareParsedBody()
     {
-        if ($this->getMethod() == self::METHOD_POST &&
+        if ($this->method == self::METHOD_POST &&
             in_array($this->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
         ) {
             return $_POST;

@@ -15,6 +15,7 @@ use Rad\Network\Http\Response\Cookies;
 use Rad\Network\Session;
 use Rad\Routing\Dispatcher;
 use Rad\Routing\Router;
+use ReflectionMethod;
 
 /**
  * Action
@@ -45,7 +46,7 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
     const EVENT_AFTER_CLI_CONFIG = 'Action.afterCliConfig';
 
     /**
-     * Invoke action
+     * Default action invoke magic method
      *
      * @return mixed|null
      * @throws BaseException
@@ -56,25 +57,7 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         $method = strtolower($this->getRequest()->getMethod()) . 'Method';
 
         if (method_exists($this, $method) && is_callable([$this, $method])) {
-            $this->getEventManager()->addSubscriber($this);
-
-            $this->dispatchEvent(Action::EVENT_BEFORE_WEB_METHOD, $this, ['request' => $this->getRequest()]);
             call_user_func_array([$this, $method], func_get_args());
-            $this->dispatchEvent(Action::EVENT_AFTER_WEB_METHOD, $this, ['request' => $this->getRequest()]);
-
-            if ($this->getResponder()) {
-                $responderResponse = call_user_func($this->getResponder());
-
-                if (!$responderResponse instanceof Response) {
-                    throw new BaseException(
-                        sprintf('Responder "%s" must be return Response object.', get_class($this->getResponder()))
-                    );
-                }
-
-                return $responderResponse;
-            }
-
-            return null;
         } else {
             throw new MissingMethodException(
                 sprintf(
@@ -86,6 +69,40 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         }
     }
 
+    /**
+     * Invoke action
+     *
+     * @return mixed|null
+     * @throws BaseException
+     * @throws MissingMethodException
+     */
+    final public function invoker()
+    {
+        $this->getEventManager()->addSubscriber($this);
+
+        $this->dispatchEvent(Action::EVENT_BEFORE_WEB_METHOD, $this, ['request' => $this->getRequest()]);
+
+        $response = call_user_func_array($this, func_get_args());
+
+        $this->dispatchEvent(Action::EVENT_AFTER_WEB_METHOD, $this, ['request' => $this->getRequest(), 'response' => $response]);
+
+        if ($response instanceof Response) {
+            return $response;
+        }
+
+        if ($this->getResponder()) {
+            $response = call_user_func_array([$this->getResponder(), 'invoker'], func_get_args());
+
+            if (!$response instanceof Response) {
+                throw new BaseException(
+                    sprintf('Responder "%s" must be return Response object.', get_class($this->getResponder()))
+                );
+            }
+
+            return $response;
+        }
+
+    }
     /**
      * Get responder
      *

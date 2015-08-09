@@ -200,7 +200,7 @@ class Dispatcher
                 return $beforeDispatchEvent->getResult();
             }
 
-            $response = call_user_func_array($actionInstance, $this->params);
+            $response = call_user_func_array([$actionInstance, 'invoker'], $this->params);
             $this->dispatchEvent(self::EVENT_AFTER_DISPATCH, $this, ['request' => $request, 'response' => $response]);
 
             return $response;

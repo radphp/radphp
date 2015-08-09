@@ -13,6 +13,7 @@ use Rad\Network\Http\Response;
 use Rad\Network\Http\Response\Cookies;
 use Rad\Network\Session;
 use Rad\Routing\Router;
+use ReflectionMethod;
 
 /**
  * Responder
@@ -35,7 +36,7 @@ abstract class Responder extends ContainerAware implements EventSubscriberInterf
     const EVENT_AFTER_CALL_METHOD = 'Responder.afterCallMethod';
 
     /**
-     * Invoke responder
+     * Default responder invoke magic method
      *
      * @return mixed
      * @throws BaseException
@@ -45,24 +46,7 @@ abstract class Responder extends ContainerAware implements EventSubscriberInterf
         $method = strtolower($this->getRequest()->getMethod()) . 'Method';
 
         if (method_exists($this, $method) && is_callable([$this, $method])) {
-            $beforeCallEvent = $this->dispatchEvent(
-                self::EVENT_BEFORE_CALL_METHOD,
-                $this,
-                ['request' => $this->getRequest()]
-            );
-
-            if ($beforeCallEvent->getResult() instanceof Response) {
-                return $beforeCallEvent->getResult();
-            }
-
-            $response = call_user_func([$this, $method]);
-            $this->dispatchEvent(
-                self::EVENT_AFTER_CALL_METHOD,
-                $this,
-                ['request' => $this->getRequest(), 'response' => $response]
-            );
-
-            return $response;
+            return call_user_func([$this, $method], func_get_args());
         } else {
             throw new BaseException(
                 sprintf(
@@ -74,6 +58,34 @@ abstract class Responder extends ContainerAware implements EventSubscriberInterf
         }
     }
 
+    /**
+     * Invoke responder
+     *
+     * @return mixed
+     * @throws BaseException
+     */
+    final public function invoker()
+    {
+        $beforeCallEvent = $this->dispatchEvent(
+            self::EVENT_BEFORE_CALL_METHOD,
+            $this,
+            ['request' => $this->getRequest()]
+        );
+
+        if ($beforeCallEvent->getResult() instanceof Response) {
+            return $beforeCallEvent->getResult();
+        }
+
+        $response = call_user_func_array($this, func_get_args());
+
+        $this->dispatchEvent(
+            self::EVENT_AFTER_CALL_METHOD,
+            $this,
+            ['request' => $this->getRequest(), 'response' => $response]
+        );
+
+        return $response;
+    }
     /**
      * Set data
      *
