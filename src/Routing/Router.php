@@ -137,23 +137,34 @@ class Router implements ContainerAwareInterface
             // add "Action" to array as second param
             array_splice($dummyCamelizedParts, 1, 0, 'Action');
 
+            $this->routingPhase = self::ROUTING_PHASE_ACTION;
             /**
-             * routingPhase is sequence of three phases
+             * routingPhase is sequence of three phases, in the following order
              * 1- direct call of action
              * 2- direct call of method
              * 3- direct call of index action
              */
-            $this->routingPhase = self::ROUTING_PHASE_INDEX;
 
             // Continue searching till you found any matching
             // Or you have at least three elements in array (Bundle, "Action", Action)
-            for ($i = 0; count($dummyCamelizedParts) >= 3; $i++) {
+            while (count($dummyCamelizedParts) >= 3) {
                 $actionNamespace = implode('\\', $dummyCamelizedParts) . 'Action';
 
                 if (class_exists($actionNamespace)) {
                     array_splice($dummyCamelizedParts, 1, 1, 'Responder');
                     $responderNamespace =
                         implode('\\', $dummyCamelizedParts) . 'Responder';
+
+                    // set required to removed parameters from path
+                    switch($this->routingPhase) {
+                        case self::ROUTING_PHASE_INDEX:
+                        case self::ROUTING_PHASE_METHOD:
+                            $delta = 1;
+                            break;
+                        case self::ROUTING_PHASE_ACTION:
+                        default:
+                            $delta = 2;
+                    }
 
                     $matchedRoute = [
                         'namespace' => $actionNamespace,
@@ -162,7 +173,7 @@ class Router implements ContainerAwareInterface
                             ? $method
                             : $dummyParts[count($dummyCamelizedParts) - 2],
                         'bundle' => strtolower($bundleName),
-                        'params' => array_slice($dummyParts, count($dummyCamelizedParts) - $this->routingPhase, -1)
+                        'params' => array_slice($dummyParts, $delta, -1)
                     ];
 
                     break 2;
@@ -171,19 +182,19 @@ class Router implements ContainerAwareInterface
                 array_pop($dummyCamelizedParts);
 
                 // change router for some other default paths
-                if ($this->routingPhase > self::ROUTING_PHASE_ACTION) {
-                    $this->routingPhase = self::ROUTING_PHASE_INDEX;
+                switch($this->routingPhase) {
+                    case self::ROUTING_PHASE_INDEX:
+                        $this->routingPhase = self::ROUTING_PHASE_ACTION;
+                        break;
+                    case self::ROUTING_PHASE_METHOD:
+                        $dummyCamelizedParts[] = self::DEFAULT_ACTION;
+                        $this->routingPhase--;
+                        break;
+                    case self::ROUTING_PHASE_ACTION:
+                        $dummyCamelizedParts[] = $method;
+                        $this->routingPhase--;
+                        break;
                 }
-
-                if ($this->routingPhase == self::ROUTING_PHASE_METHOD) {
-                    $dummyCamelizedParts[] = self::DEFAULT_ACTION;
-                }
-
-                if ($this->routingPhase == self::ROUTING_PHASE_INDEX) {
-                    $dummyCamelizedParts[] = $method;
-                }
-
-                $this->routingPhase++;
             }
         }
 
