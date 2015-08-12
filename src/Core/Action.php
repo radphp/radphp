@@ -81,10 +81,12 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         $this->getEventManager()->addSubscriber($this);
 
         $this->dispatchEvent(Action::EVENT_BEFORE_WEB_METHOD, $this, ['request' => $this->getRequest()]);
-
         $response = call_user_func_array($this, func_get_args());
-
-        $this->dispatchEvent(Action::EVENT_AFTER_WEB_METHOD, $this, ['request' => $this->getRequest(), 'response' => $response]);
+        $this->dispatchEvent(
+            Action::EVENT_AFTER_WEB_METHOD,
+            $this,
+            ['request' => $this->getRequest(), 'response' => $response]
+        );
 
         if ($response instanceof Response) {
             return $response;
@@ -101,8 +103,8 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
 
             return $response;
         }
-
     }
+
     /**
      * Get responder
      *
