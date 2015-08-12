@@ -7,7 +7,6 @@ use Rad\Core\Bundles;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
 use Rad\Network\Http\Request;
-use Rad\Network\Http\RequestStacker;
 use Rad\Utility\Inflection;
 
 /**
