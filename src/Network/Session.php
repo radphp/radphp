@@ -8,6 +8,7 @@ use Iterator;
 use JsonSerializable;
 use Serializable;
 use SessionHandlerInterface;
+use Rad\Network\Session\Handler\NativeSessionHandler;
 
 /**
  * RadPHP Session
@@ -17,6 +18,7 @@ use SessionHandlerInterface;
 class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, Countable
 {
     protected $started = false;
+    protected $session = [];
 
     /**
      * Rad\Network\Session constructor
@@ -25,54 +27,11 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function __construct(SessionHandlerInterface $handler = null)
     {
-        if ($handler) {
-            session_set_save_handler($handler);
+        if (null === $handler) {
+            $handler = new NativeSessionHandler();
         }
-    }
 
-    /**
-     * Magic sets a session variable
-     *
-     * @param string $key
-     * @param string $value
-     */
-    public function __set($key, $value)
-    {
-        $this->set($key, $value);
-    }
-
-    /**
-     * Magic gets a session variable
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        return $this->get($key);
-    }
-
-    /**
-     * Magic check whether a session variable is set
-     *
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function __isset($key)
-    {
-        return $this->has($key);
-    }
-
-    /**
-     * Magic removes a session variable
-     *
-     * @param string $key
-     */
-    public function __unset($key)
-    {
-        $this->remove($key);
+        session_set_save_handler($handler);
     }
 
     /**
@@ -85,6 +44,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
         if (headers_sent() === false) {
             session_start();
             $this->started = true;
+            $this->session = &$_SESSION;
 
             return true;
         }
@@ -102,8 +62,8 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function get($key, $defaultValue = null)
     {
-        if (isset($_SESSION[$key]) && !empty($_SESSION[$key])) {
-            return $_SESSION[$key];
+        if (isset($this->session[$key]) && !empty($this->session[$key])) {
+            return $this->session[$key];
         }
 
         return $defaultValue;
@@ -117,7 +77,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function set($key, $value)
     {
-        $_SESSION[$key] = $value;
+        $this->session[$key] = $value;
     }
 
     /**
@@ -129,7 +89,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function has($key)
     {
-        return isset($_SESSION[$key]);
+        return isset($this->session[$key]);
     }
 
     /**
@@ -139,7 +99,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function remove($key)
     {
-        unset($_SESSION[$key]);
+        unset($this->session[$key]);
     }
 
     /**
@@ -225,6 +185,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
     {
         if ($this->started === true) {
             $this->started = false;
+
             return session_destroy();
         }
 
@@ -338,7 +299,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function rewind()
     {
-        reset($_SESSION);
+        reset($this->session);
     }
 
     /**
@@ -349,7 +310,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function serialize()
     {
-        return serialize($_SESSION);
+        return serialize($this->session);
     }
 
     /**
@@ -362,7 +323,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function unserialize($serialized)
     {
-        $_SESSION = unserialize($serialized);
+        $this->session = unserialize($serialized);
     }
 
     /**
@@ -373,7 +334,7 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function count()
     {
-        return count($_SESSION);
+        return count($this->session);
     }
 
     /**
@@ -385,6 +346,6 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
      */
     public function jsonSerialize()
     {
-        return $_SESSION;
+        return $this->session;
     }
 }
