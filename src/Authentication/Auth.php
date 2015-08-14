@@ -55,6 +55,16 @@ class Auth
     }
 
     /**
+     * Is authenticate
+     *
+     * @return bool
+     */
+    public function isAuthenticate()
+    {
+        return $this->getStorage()->exist();
+    }
+
+    /**
      * Get storage
      *
      * @return StorageInterface
