@@ -227,17 +227,18 @@ class Router implements ContainerAwareInterface
             self::GEN_OPT_INC_DOMAIN => true
         ]
     ) {
+        $result = [];
         if (!is_array($url)) {
-            $url = [];
+            $url = [$url];
         }
 
-        $bundle = strtolower(isset($url[0]) ? array_shift($url) : $this->bundle);
+        if (!$url) {
+            $result = [$this->bundle];
 
-        $result = [$bundle];
-
-        // set action only if it is in action routing mode
-        if ($this->routingPhase == self::ROUTING_PHASE_ACTION) {
-            $result[] = $this->action;
+            // set action only if it is in action routing mode
+            if ($this->routingPhase == self::ROUTING_PHASE_ACTION) {
+                $result[] = $this->action;
+            }
         }
 
         // add additional parameters
