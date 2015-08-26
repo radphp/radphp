@@ -95,15 +95,9 @@ class Response implements MessageInterface, ResponseInterface
      * @param int                             $status
      * @param string                          $reason
      * @param array                           $headers
-     * @param string                          $version
      */
-    public function __construct(
-        $body = 'php://temp',
-        $status = 200,
-        $reason = '',
-        array $headers = [],
-        $version = '1.1'
-    ) {
+    public function __construct($body = 'php://temp', $status = 200, $reason = '', array $headers = [])
+    {
         if ($body instanceof StreamInterface) {
             $this->stream = $body;
         } else {
@@ -119,7 +113,6 @@ class Response implements MessageInterface, ResponseInterface
         }
 
         $this->setHeaders($headers);
-        $this->protocol = $version;
     }
 
 

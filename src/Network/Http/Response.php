@@ -4,40 +4,18 @@ namespace Rad\Network\Http;
 
 use DateTime;
 use DateTimeZone;
-use InvalidArgumentException;
+use Rad\Network\Http\Message\Stream;
 use Rad\Network\Http\Response\CookiesInterface;
 use Rad\Network\Http\Response\Exception;
-use Rad\Network\Http\Response\Headers;
-use Rad\Network\Http\Response\HeadersInterface;
+use Rad\Network\Http\Message\Response as MessageResponse;
 
 /**
  * Http Response
  *
  * @package Rad\Network\Http
  */
-class Response implements ResponseInterface
+class Response extends MessageResponse
 {
-    /**
-     * Protocol header to send to the client
-     *
-     * @var string
-     */
-    protected $protocol = 'HTTP/1.1';
-
-    /**
-     * Response content
-     *
-     * @var string
-     */
-    protected $content;
-
-    /**
-     * Buffer list of headers
-     *
-     * @var HeadersInterface
-     */
-    protected $headers;
-
     /**
      * Cookies bag
      *
@@ -60,126 +38,35 @@ class Response implements ResponseInterface
     protected $file;
 
     /**
-     * Holds HTTP response statuses
-     *
-     * @var array
-     */
-    protected $statusCodes = [
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        307 => 'Temporary Redirect',
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Time-out',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Large',
-        415 => 'Unsupported Media Type',
-        416 => 'Requested range not satisfiable',
-        417 => 'Expectation Failed',
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Time-out',
-        505 => 'Unsupported Version'
-    ];
-
-    /**
-     * Response constructor
+     * Rad\Network\Http\Response constructor
      *
      * @param string $content
-     * @param int    $code
-     * @param string $status
+     * @param int    $status
+     * @param string $reason
+     * @param array  $headers
      */
-    public function __construct($content = null, $code = 200, $status = null)
+    public function __construct($content = '', $status = 200, $reason = '', array $headers = [])
     {
-        if (!is_null($content)) {
-            $this->content = $content;
-        }
+        $body = new Stream('php://temp');
+        $body->write($content);
 
-        $this->setStatusCode($code, $status);
+        parent::__construct($body, $status, $reason, $headers);
     }
 
     /**
-     * Sets the HTTP response code
+     * Factory method for chain ability.
      *
-     * @param int    $code    Response code
-     * @param string $message Response message
+     * @param string $content
+     * @param int    $status
+     * @param string $reason
+     * @param array  $headers
+     * @param string $version
      *
-     * @return Response|ResponseInterface
+     * @return Response
      */
-    public function setStatusCode($code, $message = null)
+    public static function create($content = '', $status = 200, $reason = '', array $headers = [], $version = '1.1')
     {
-        if (!array_key_exists($code, $this->statusCodes)) {
-            throw new InvalidArgumentException('Status code is not valid.');
-        }
-
-        foreach ($this->getHeaders()->toArray() as $headerName => $headerValue) {
-            if (strpos($headerName, $this->protocol) !== false) {
-                $this->getHeaders()->remove($headerName);
-                break;
-            }
-        }
-
-        if (!$message || empty(trim($message))) {
-            $message = $this->statusCodes[$code];
-        }
-
-        $this->getHeaders()->setRaw("{$this->protocol} {$code} {$message}");
-        $this->getHeaders()->set('Status', "{$code} {$message}");
-
-        return $this;
-    }
-
-    /**
-     * Sets a headers bag for the response externally
-     *
-     * @param HeadersInterface $headers
-     *
-     * @return ResponseInterface
-     */
-    public function setHeaders(HeadersInterface $headers)
-    {
-        $this->headers = $headers;
-
-        return $this;
-    }
-
-    /**
-     * Returns headers set by the user
-     *
-     * @return HeadersInterface
-     */
-    public function getHeaders()
-    {
-        if (!$this->headers) {
-            return $this->headers = new Headers();
-        }
-
-        return $this->headers;
+        return new static($content, $status, $reason, $headers, $version);
     }
 
     /**
@@ -187,7 +74,7 @@ class Response implements ResponseInterface
      *
      * @param CookiesInterface $cookies
      *
-     * @return ResponseInterface
+     * @return Response
      */
     public function setCookies(CookiesInterface $cookies)
     {
@@ -207,72 +94,45 @@ class Response implements ResponseInterface
     }
 
     /**
-     * Overwrites a header in the response
-     *
-     * @param string $name  Http header name
-     * @param string $value Http header value
-     *
-     * @return ResponseInterface
-     */
-    public function setHeader($name, $value)
-    {
-        $this->getHeaders()->set($name, $value);
-
-        return $this;
-    }
-
-    /**
-     * Send a raw header to the response
-     *
-     * @param string $header Http header
-     *
-     * @return ResponseInterface
-     */
-    public function setRawHeader($header)
-    {
-        $this->getHeaders()->setRaw($header);
-
-        return $this;
-    }
-
-    /**
-     * Resets all the established headers
-     *
-     * @return ResponseInterface
-     */
-    public function resetHeaders()
-    {
-        $this->getHeaders()->reset();
-
-        return $this;
-    }
-
-    /**
      * Sets a Expires header to use HTTP cache
      *
      * @param DateTime $datetime Expire time
      *
-     * @return ResponseInterface
+     * @return Response
      */
-    public function setExpires(DateTime $datetime)
+    public function withExpires(DateTime $datetime)
     {
         $datetime->setTimezone(new DateTimeZone('UTC'));
 
-        $this->getHeaders()->set('Expires', $datetime->format('D, d M Y H:i:s') . ' GMT');
+        return $this->withHeader('Expires', $datetime->format('D, d M Y H:i:s') . ' GMT');
+    }
 
-        return $this;
+    /**
+     * Get a Expires header to use HTTP cache
+     *
+     * @return string
+     */
+    public function getExpires()
+    {
+        return $this->getHeaderLine('Expires');
     }
 
     /**
      * Sends a Not-Modified response
      *
-     * @return ResponseInterface
+     * @return Response
      */
-    public function setNotModified()
+    public function withNotModified()
     {
-        $this->setStatusCode(304);
-
-        return $this;
+        return $this->withStatus(304)
+            ->withoutHeader('Allow')
+            ->withoutHeader('Content-Encoding')
+            ->withoutHeader('Content-Language')
+            ->withoutHeader('Content-Length')
+            ->withoutHeader('Content-MD5')
+            ->withoutHeader('Content-Type')
+            ->withoutHeader('Last-Modified')
+            ->withBody(new Stream('php://temp'));
     }
 
     /**
@@ -281,17 +141,15 @@ class Response implements ResponseInterface
      * @param string $contentType
      * @param string $charset
      *
-     * @return ResponseInterface
+     * @return Response
      */
-    public function setContentType($contentType, $charset = null)
+    public function withContentType($contentType, $charset = null)
     {
         if (is_null($charset)) {
-            $this->getHeaders()->set('Content-Type', $contentType);
-        } else {
-            $this->getHeaders()->set('Content-Type', $contentType . '; charset=' . $charset);
+            return $this->withHeader('Content-Type', $contentType);
         }
 
-        return $this;
+        return $this->withHeader('Content-Type', $contentType . '; charset=' . $charset);
     }
 
     /**
@@ -302,78 +160,9 @@ class Response implements ResponseInterface
      *
      * @return Response
      */
-    public function setEtag($hash, $weak = false)
+    public function withEtag($hash, $weak = false)
     {
-        $this->getHeaders()->set('Etag', sprintf('%s"%s"', ($weak) ? 'W/' : null, $hash));
-
-        return $this;
-    }
-
-    /**
-     * Redirect by HTTP to URL
-     *
-     * @param string $location   Location url
-     * @param int    $statusCode Status code
-     *
-     * @return ResponseInterface
-     */
-    public function redirect($location, $statusCode = 302)
-    {
-        $this->setStatusCode($statusCode);
-        $this->getHeaders()->set('Location', $location);
-
-        return $this;
-    }
-
-    /**
-     * Sets HTTP response body
-     *
-     * @param string $content Http response body
-     *
-     * @return ResponseInterface
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * Sets HTTP response body. The parameter is automatically converted to JSON
-     *
-     * @param string|array $content    Http response body
-     * @param int          $jsonOption bitmask consisting on http://www.php.net/manual/en/json.constants.php
-     *
-     * @return ResponseInterface
-     */
-    public function setJsonContent($content, $jsonOption = 0)
-    {
-        if (is_array($content)) {
-            $this->content = json_encode($content, $jsonOption);
-        } elseif (is_string($content)) {
-            $this->content = $content;
-        } else {
-            throw new InvalidArgumentException('Input content type must be json string or array.');
-        }
-
-        $this->setContentType('application/json');
-
-        return $this;
-    }
-
-    /**
-     * Appends a string to the HTTP response body
-     *
-     * @param string $content Http response body
-     *
-     * @return ResponseInterface
-     */
-    public function appendContent($content)
-    {
-        $this->content .= $content;
-
-        return $this;
+        return $this->withHeader('Etag', sprintf('%s"%s"', ($weak) ? 'W/' : null, $hash));
     }
 
     /**
@@ -383,7 +172,7 @@ class Response implements ResponseInterface
      */
     public function getContent()
     {
-        return $this->content;
+        return (string)$this->getBody();
     }
 
     /**
@@ -399,12 +188,14 @@ class Response implements ResponseInterface
     /**
      * Sends headers to the client
      *
-     * @return ResponseInterface
+     * @return Response
      */
     public function sendHeaders()
     {
-        if (is_object($this->headers)) {
-            $this->headers->send();
+        foreach ($this->getHeaders() as $name => $values) {
+            foreach ($values as $value) {
+                header(sprintf('%s: %s', $name, $value), false);
+            }
         }
 
         return $this;
@@ -413,7 +204,7 @@ class Response implements ResponseInterface
     /**
      * Sends cookies to the client
      *
-     * @return ResponseInterface
+     * @return Response
      */
     public function sendCookies()
     {
@@ -428,7 +219,7 @@ class Response implements ResponseInterface
     /**
      * Prints out HTTP response to the client
      *
-     * @return ResponseInterface
+     * @return Response
      * @throws Exception
      */
     public function send()
@@ -437,8 +228,9 @@ class Response implements ResponseInterface
             $this->sendHeaders();
             $this->sendCookies();
 
-            if (!is_null($this->content)) {
-                echo $this->getContent();
+            $content = (string)$this->getBody();
+            if (!empty($content)) {
+                echo $content;
             } else {
                 if (is_string($this->file)) {
                     if (!file_exists($this->file)) {
@@ -468,9 +260,9 @@ class Response implements ResponseInterface
      * @param string $attachmentName
      * @param bool   $attachment
      *
-     * @return ResponseInterface
+     * @return Response
      */
-    public function setFileToSend($filePath, $attachmentName = null, $attachment = false)
+    public function withFileToSend($filePath, $attachmentName = null, $attachment = false)
     {
         if (!is_string($attachmentName)) {
             $basePath = basename($filePath);
@@ -478,13 +270,13 @@ class Response implements ResponseInterface
             $basePath = $attachmentName;
         }
 
-        if ($attachment) {
-            $this->getHeaders()->setRaw('Content-Description: File Transfer');
-            $this->getHeaders()->setRaw('Content-Disposition: attachment; filename="' . $basePath . '"');
-            $this->getHeaders()->setRaw('Content-Transfer-Encoding: binary');
-        }
-
         $this->file = $filePath;
+
+        if ($attachment) {
+            return $this->withHeader('Content-Description', 'File Transfer')
+                ->withHeader('Content-Disposition', 'attachment; filename="' . $basePath . '"')
+                ->withHeader('Content-Transfer-Encoding', 'binary');
+        }
 
         return $this;
     }
