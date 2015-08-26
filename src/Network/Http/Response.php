@@ -60,13 +60,12 @@ class Response extends MessageResponse
      * @param int    $status
      * @param string $reason
      * @param array  $headers
-     * @param string $version
      *
      * @return Response
      */
-    public static function create($content = '', $status = 200, $reason = '', array $headers = [], $version = '1.1')
+    public static function create($content = '', $status = 200, $reason = '', array $headers = [])
     {
-        return new static($content, $status, $reason, $headers, $version);
+        return new static($content, $status, $reason, $headers);
     }
 
     /**

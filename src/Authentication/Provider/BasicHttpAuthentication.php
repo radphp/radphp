@@ -14,22 +14,11 @@ use Rad\Authentication\AbstractAuthenticationProvider;
 class BasicHttpAuthentication extends AbstractAuthenticationProvider
 {
     /**
-     * @var ServerRequest
-     */
-    protected $request;
-
-    /**
-     * @var Response
-     */
-    protected $response;
-
-    /**
      * Rad\Authentication\Provider\BasicHttpAuthentication constructor
      *
      * @param ServerRequest $request
-     * @param Response      $response
      */
-    public function __construct(ServerRequest $request, Response $response)
+    public function __construct(ServerRequest $request)
     {
         if (isset($request->getServerParams()['PHP_AUTH_USER'])) {
             $this->identity = $request->getServerParams()['PHP_AUTH_USER'];
@@ -39,9 +28,6 @@ class BasicHttpAuthentication extends AbstractAuthenticationProvider
             $this->credential = $request->getServerParams()['PHP_AUTH_PW'];
         }
 
-        $this->request = $request;
-        $this->response = $response;
-
         parent::__construct($this->identity, $this->credential);
     }
 
@@ -50,10 +36,7 @@ class BasicHttpAuthentication extends AbstractAuthenticationProvider
      */
     public function authenticate()
     {
-        if (!empty($this->identity)) {
-            $this->response->setHeader('WWW-Authenticate', 'Basic realm="My Realm"')
-                ->setStatusCode(401);
-
+        if (empty($this->identity)) {
             return false;
         }
 
