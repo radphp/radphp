@@ -13,6 +13,7 @@ use Rad\Network\Http\Request;
 use Rad\Network\Http\Response;
 use Rad\Network\Http\Response\Cookies;
 use Rad\Network\Session;
+use Rad\Network\Session\Flash\FlashBag;
 use Rad\Routing\Dispatcher;
 use Rad\Routing\Router;
 use ReflectionMethod;
@@ -26,6 +27,7 @@ use ReflectionMethod;
  * @method Cookies         getCookies()      Get cookies
  * @method Session         getSession()      Get cookies
  * @method EventManager    getEventManager() Get event manager
+ * @method FlashBag        getFlash()        Get flash bag
  *
  * @package Rad\Core
  */
