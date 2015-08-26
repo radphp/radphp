@@ -150,6 +150,7 @@ class SessionBag implements ContainerAwareInterface
      */
     public function destroy()
     {
+        $this->initialize();
         $this->session->remove($this->name);
     }
 
