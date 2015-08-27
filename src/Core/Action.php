@@ -197,6 +197,9 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
 
         $oldRouter = $this->getRouter();
 
+        $oldRequestUri = $_SERVER['REQUEST_URI'];
+        $oldGetUrl = $_GET['_url'];
+        $_GET['_url'] = $_SERVER['REQUEST_URI'] = $uri;
         $this->getContainer()->setShared('router', new Router());
         $this->getRouter()->setPrefix($oldRouter->getPrefix());
         $this->getRouter()->handle($uri);
@@ -210,7 +213,10 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
             ->setRouteMatched($this->getRouter()->isMatched())
             ->dispatch($request);
 
+        // restore latest state
         $this->getContainer()->setShared('router', $oldRouter);
+        $_SERVER['REQUEST_URI'] = $oldRequestUri;
+        $_GET['_url'] = $oldGetUrl;
 
         return $response;
     }
