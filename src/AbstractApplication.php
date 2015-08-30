@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Rad\Configure\Config;
 use Rad\Core\Action;
 use Rad\Core\Action\MissingMethodException;
+use Rad\Core\Bundle;
 use Rad\Core\Bundles;
 use Rad\Core\DotEnv;
 use Rad\Core\Exception\BaseException;
@@ -240,6 +241,10 @@ abstract class AbstractApplication
 
             // check if Bootstrap file is there!
             if (class_exists($bundleBootstrap)) {
+                if (!is_subclass_of($bundleBootstrap, 'Rad\Core\Bundle')) {
+                    throw new BaseException(sprintf('"%s" must be extended "Rad\Core\Bundle".', $bundleBootstrap));
+                }
+
                 (new $bundleBootstrap())->startup();
             }
         }

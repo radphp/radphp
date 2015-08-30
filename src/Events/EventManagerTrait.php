@@ -12,16 +12,16 @@ trait EventManagerTrait
     /**
      * @var EventManager
      */
-    protected $eventManager;
+    protected static $eventManager;
 
     /**
      * Set event manager
      *
      * @param EventManager $eventManager
      */
-    public function setEventManager(EventManager $eventManager)
+    public static function setEventManager(EventManager $eventManager)
     {
-        $this->eventManager = $eventManager;
+        self::$eventManager = $eventManager;
     }
 
     /**
@@ -29,13 +29,13 @@ trait EventManagerTrait
      *
      * @return EventManager
      */
-    public function getEventManager()
+    public static function getEventManager()
     {
-        if (!$this->eventManager) {
-            $this->eventManager = new EventManager();
+        if (!self::$eventManager) {
+            self::$eventManager = new EventManager();
         }
 
-        return $this->eventManager;
+        return self::$eventManager;
     }
 
     /**
@@ -48,12 +48,8 @@ trait EventManagerTrait
      *
      * @return Event
      */
-    public function dispatchEvent($eventType, $subject = null, $data = null, $cancelable = true)
+    public static function dispatchEvent($eventType, $subject = null, $data = null, $cancelable = true)
     {
-        if ($subject === null) {
-            $subject = $this;
-        }
-
-        return $this->getEventManager()->dispatch($eventType, $subject, $data, $cancelable);
+        return self::getEventManager()->dispatch($eventType, $subject, $data, $cancelable);
     }
 }
