@@ -154,17 +154,6 @@ class Router implements ContainerAwareInterface
                     $responderNamespace =
                         implode('\\', $dummyCamelizedParts) . 'Responder';
 
-                    // set required to removed parameters from path
-                    switch($this->routingPhase) {
-                        case self::ROUTING_PHASE_INDEX:
-                        case self::ROUTING_PHASE_METHOD:
-                            $delta = 1;
-                            break;
-                        case self::ROUTING_PHASE_ACTION:
-                        default:
-                            $delta = 2;
-                    }
-
                     $matchedRoute = [
                         'namespace' => $actionNamespace,
                         'responder' => $responderNamespace,
@@ -172,7 +161,7 @@ class Router implements ContainerAwareInterface
                             ? $method
                             : $dummyParts[count($dummyCamelizedParts) - 2],
                         'bundle' => strtolower($bundleName),
-                        'params' => array_slice($dummyParts, $delta, -1)
+                        'params' => array_slice($dummyParts, count($dummyCamelizedParts) - 2, -1)
                     ];
 
                     break 2;

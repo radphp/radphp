@@ -76,11 +76,11 @@ class UploadedFile implements UploadedFileInterface
         }
 
         if ($this->moved === true) {
-            throw new RuntimeException('Can not get the stream for has moved file.');
+            throw new RuntimeException('Cannot get stream of moved file');
         }
 
         if ($this->error !== UPLOAD_ERR_OK) {
-            throw new RuntimeException('Occurred error on file upload.');
+            throw new RuntimeException('Error occurred on file upload');
         }
 
         return $this->stream = new Stream($this->file);
@@ -92,27 +92,31 @@ class UploadedFile implements UploadedFileInterface
     public function moveTo($targetPath)
     {
         if ($this->moved === true) {
-            throw new RuntimeException('File already moved.');
+            throw new RuntimeException('File moved already');
         }
 
         if ($this->error !== UPLOAD_ERR_OK) {
-            throw new RuntimeException('Occurred error on file upload.');
+            throw new RuntimeException('Error occurred on file upload');
         }
 
         if (!is_writable($targetPath)) {
             throw new InvalidArgumentException('Target path is not writable');
         }
 
+        if (!is_file($this->file)) {
+            throw new RuntimeException('Uploaded file doesn\'t exist');
+        }
+
         if (empty(PHP_SAPI) || 'cli' === PHP_SAPI) {
             //non-SAPI environments
             $targetPath = rtrim($targetPath, DIRECTORY_SEPARATOR);
             if (false === rename($this->file, $targetPath . DIRECTORY_SEPARATOR . $this->clientFilename)) {
-                throw new RuntimeException('Cannot be moved file.');
+                throw new RuntimeException('Cannot move file.');
             };
         } else {
             //SAPI environments
-            if (false === move_uploaded_file($this->file, $targetPath)) {
-                throw new RuntimeException('Cannot be moved for some reason.');
+            if (false === move_uploaded_file($this->file, $targetPath . DIRECTORY_SEPARATOR . $this->clientFilename)) {
+                throw new RuntimeException('Cannot move file');
             }
         }
 
