@@ -66,6 +66,9 @@ abstract class AbstractApplication
         $this->container = Container::getInstance();
 
         $this->loadConfig();
+        Config::set('environment', getenv('RAD_ENVIRONMENT'));
+        Config::set('debug', (bool)getenv('RAD_DEBUG'));
+
         $this->loadServicesFromConfig();
         $this->loadServices();
 
