@@ -48,7 +48,7 @@ class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, C
     {
         if ($engine = self::getEngine($engineName)) {
             if ($merge) {
-                self::$container = array_replace_recursive($engine->load($config), self::$container);
+                self::mergeConfig($engine->load($config), self::$container);
             } else {
                 self::$container = $engine->load($config);
             }
@@ -237,6 +237,27 @@ class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, C
         $result = $base;
 
         return $result;
+    }
+
+    /**
+     * Merge config
+     *
+     * @param mixed $newData
+     * @param array $baseConfig
+     */
+    protected static function mergeConfig($newData, &$baseConfig)
+    {
+        if (is_array($newData)) {
+            foreach ($newData as $key => $value) {
+                if (isset($baseConfig[$key])) {
+                    self::mergeConfig($value, $baseConfig[$key]);
+                } else {
+                    $baseConfig[$key] = $value;
+                }
+            }
+        } else {
+            $baseConfig = $newData;
+        }
     }
 
     /**
