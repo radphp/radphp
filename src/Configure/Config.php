@@ -3,7 +3,6 @@
 namespace Rad\Configure;
 
 use ArrayAccess;
-use Countable;
 use Iterator;
 use JsonSerializable;
 use Rad\Configure\Engine\PhpConfig;
@@ -17,7 +16,7 @@ use Serializable;
  *
  * @package Rad\Configure
  */
-class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, Countable
+class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable
 {
     use SingletonTrait;
 
@@ -258,18 +257,6 @@ class Config implements ArrayAccess, Iterator, Serializable, JsonSerializable, C
         } else {
             $baseConfig = $newData;
         }
-    }
-
-    /**
-     * Count elements of an object
-     *
-     * @link http://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * The return value is cast to an integer.
-     */
-    public function count()
-    {
-        return count(self::$container);
     }
 
     /**
