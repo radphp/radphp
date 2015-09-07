@@ -3,9 +3,9 @@
 namespace Rad\Core;
 
 use Composer\Autoload\ClassLoader;
-use Rad\Core\Exception\BaseException;
 use Rad\Core\Exception\MissingBundleException;
 use Rad\Utility\Inflection;
+use RuntimeException;
 
 /**
  * Bundles Loader
@@ -23,37 +23,44 @@ class Bundles
     /**
      * Load bundle
      *
-     * @param string $bundleName Bundle name
-     * @param array  $options    Bundle options
+     * @param BundleInterface $bundle
      *
-     * @throws BaseException
      * @throws MissingBundleException
      */
-    public static function load($bundleName, array $options = [])
+    public static function load(BundleInterface $bundle)
     {
-        $options += [
-            'autoload' => true
-        ];
-
-        $bundlePath = SRC_DIR . DS . $bundleName;
-
-        if (is_dir($bundlePath)) {
-            $namespace = $bundleName . '\\';
-            self::$bundlesLoaded[$bundleName] = [
-                'namespace' => $namespace,
-                'path' => $bundlePath
+        if (is_dir($bundle->getPath())) {
+            self::$bundlesLoaded[$bundle->getName()] = [
+                'namespace' => $bundle->getNamespace(),
+                'path' => $bundle->getPath()
             ];
 
-            if ($options['autoload'] === true) {
-                if (!self::$classLoader) {
-                    self::$classLoader = new ClassLoader();
-                }
-
-                self::$classLoader->addPsr4($namespace, $bundlePath);
-                self::$classLoader->register();
+            if (!self::$classLoader) {
+                self::$classLoader = new ClassLoader();
             }
+
+            self::$classLoader->addPsr4($bundle->getNamespace(), $bundle->getPath());
+            self::$classLoader->register();
         } else {
-            throw new MissingBundleException(sprintf('Bundle "%s" could not be found.', $bundleName));
+            throw new MissingBundleException(sprintf('Bundle "%s" could not be found.', $bundle->getName()));
+        }
+    }
+
+    /**
+     * Load all bundles
+     *
+     * @param array $bundles
+     *
+     * @throws MissingBundleException
+     */
+    public static function loadAll(array $bundles)
+    {
+        foreach ($bundles as $bundle) {
+            if (!$bundle instanceof BundleInterface) {
+                throw new RuntimeException('Bundle must be instance of "Rad\Core\BundleInterface".');
+            }
+
+            self::load($bundle);
         }
     }
 

@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Rad\Configure\Config;
 use Rad\Core\Action;
 use Rad\Core\Action\MissingMethodException;
-use Rad\Core\Bundle;
+use Rad\Core\BundleInterface;
 use Rad\Core\Bundles;
 use Rad\Core\DotEnv;
 use Rad\Core\Exception\BaseException;
@@ -40,10 +40,19 @@ abstract class AbstractApplication
      */
     protected $container;
 
+    /**
+     * @var array
+     */
+    protected $bundles = [];
+
     protected $run = false;
 
-    const EVENT_BEFORE_LOAD_BUNDLES = 'App.beforeLoadBundles';
-    const EVENT_AFTER_LOAD_BUNDLES = 'App.afterLoadBundles';
+    const EVENT_BEFORE_LOAD_CONFIG = 'App.beforeLoadConfig';
+    const EVENT_AFTER_LOAD_CONFIG = 'App.afterLoadConfig';
+    const EVENT_BEFORE_LOAD_SERVICE = 'App.beforeLoadService';
+    const EVENT_AFTER_LOAD_SERVICE = 'App.afterLoadService';
+    const EVENT_BEFORE_BUNDLE_STARTUP = 'App.beforeBundleStartup';
+    const EVENT_AFTER_BUNDLE_STARTUP = 'App.afterBundleStartup';
 
     /**
      * Init application
@@ -65,32 +74,26 @@ abstract class AbstractApplication
 
         $this->container = Container::getInstance();
 
-        $this->loadConfig();
         Config::set('environment', getenv('RAD_ENVIRONMENT'));
         Config::set('debug', (bool)getenv('RAD_DEBUG'));
 
+        Bundles::loadAll($this->registerBundles());
+        $this->loadConfig();
+        $this->loadService();
         $this->loadServicesFromConfig();
-        $this->loadServices();
 
         $this->container->setShared('router', new Router());
         $this->container->setShared('event_manager', new EventManager(), true);
 
-        $this->getEventManager()->dispatch(self::EVENT_BEFORE_LOAD_BUNDLES);
-        $this->loadBundles();
-        $this->getEventManager()->dispatch(self::EVENT_AFTER_LOAD_BUNDLES);
+        $this->bundleStartup();
     }
 
     /**
-     * Load config
-     */
-    abstract public function loadConfig();
-
-    /**
-     * Load Services
+     * Register Bundles
      *
-     * @return void
+     * @return BundleInterface[]
      */
-    abstract public function loadServices();
+    abstract public function registerBundles();
 
     /**
      * Handle Web Request
@@ -233,24 +236,58 @@ abstract class AbstractApplication
     }
 
     /**
-     * Load bundles
+     * Startup bundles
      */
-    protected function loadBundles()
+    private function bundleStartup()
     {
-        foreach (Config::get('bundles', []) as $bundleName => $options) {
-            Bundles::load($bundleName, $options);
+        $this->getEventManager()->dispatch(self::EVENT_BEFORE_BUNDLE_STARTUP, $this);
 
-            $bundleBootstrap = Bundles::getNamespace($bundleName) . 'Bootstrap';
-
-            // check if Bootstrap file is there!
-            if (class_exists($bundleBootstrap)) {
-                if (!is_subclass_of($bundleBootstrap, 'Rad\Core\Bundle')) {
-                    throw new BaseException(sprintf('"%s" must be extended "Rad\Core\Bundle".', $bundleBootstrap));
-                }
-
-                (new $bundleBootstrap())->startup();
-            }
+        foreach ($this->registerBundles() as $bundle) {
+            $bundle->startup();
         }
+
+        $this->getEventManager()->dispatch(self::EVENT_AFTER_BUNDLE_STARTUP, $this);
+    }
+
+    /**
+     * Load config from bundles
+     *
+     * @throws BaseException
+     */
+    private function loadConfig()
+    {
+        $appBundle = null;
+        $this->getEventManager()->dispatch(self::EVENT_BEFORE_LOAD_CONFIG, $this);
+
+        foreach ($this->registerBundles() as $bundle) {
+            if ($bundle instanceof \App\AppBundle) {
+                $appBundle = $bundle;
+                continue;
+            }
+
+            $bundle->loadConfig();
+        }
+
+        if (!$appBundle instanceof \App\AppBundle) {
+            throw new BaseException('AppBundle does not exist.');
+        }
+
+        $appBundle->loadConfig();
+        $this->getEventManager()->dispatch(self::EVENT_AFTER_LOAD_CONFIG, $this);
+    }
+
+    /**
+     * Load services from bundles
+     */
+    private function loadService()
+    {
+        $this->getEventManager()->dispatch(self::EVENT_BEFORE_LOAD_SERVICE, $this);
+
+        foreach ($this->registerBundles() as $bundle) {
+            $bundle->loadService();
+        }
+
+        $this->getEventManager()->dispatch(self::EVENT_AFTER_LOAD_SERVICE, $this);
     }
 
     /**
