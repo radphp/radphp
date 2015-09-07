@@ -78,12 +78,13 @@ abstract class AbstractApplication
         Config::set('debug', (bool)getenv('RAD_DEBUG'));
 
         Bundles::loadAll($this->registerBundles());
+        $this->container->setShared('event_manager', new EventManager(), true);
+
         $this->loadConfig();
         $this->loadService();
         $this->loadServicesFromConfig();
 
         $this->container->setShared('router', new Router());
-        $this->container->setShared('event_manager', new EventManager(), true);
 
         $this->bundleStartup();
     }
