@@ -24,7 +24,7 @@ class PhpConfig implements EngineInterface
     {
         if (is_string($config)) {
             if (!file_exists($config) || !is_readable($config)) {
-                throw new Exception('Input file is not exist or is not readable');
+                throw new Exception(sprintf('Input file "%s" is not exist or is not readable', $config));
             }
 
             $output = include $config;
