@@ -127,11 +127,9 @@ class EventManager
     protected function callListener($callable, Event $event)
     {
         if ($callable instanceof Closure || is_array($callable)) {
-            $result = call_user_func_array($callable, array_filter([$event, $event->getSubject(), $event->getData()]));
-            $event->setResult($result);
+            call_user_func_array($callable, array_filter([$event, $event->getSubject(), $event->getData()]));
         } elseif (is_object($callable)) {
-            $result = $callable->{$event->getType()}($event, $event->getSubject(), $event->getData());
-            $event->setResult($result);
+            $callable->{$event->getType()}($event, $event->getSubject(), $event->getData());
         }
     }
 }

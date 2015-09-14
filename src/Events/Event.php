@@ -67,7 +67,7 @@ class Event
     }
 
     /**
-     * Set the last value returned by an event handler that was triggered by this event.
+     * Set event result.
      *
      * @param mixed $result
      */
