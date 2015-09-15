@@ -55,11 +55,11 @@ class Auth
     }
 
     /**
-     * Is authenticate
+     * Is authenticated
      *
      * @return bool
      */
-    public function isAuthenticate()
+    public function isAuthenticated()
     {
         return $this->getStorage()->exist();
     }
