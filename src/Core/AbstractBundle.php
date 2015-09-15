@@ -73,7 +73,8 @@ abstract class AbstractBundle extends ContainerAware implements BundleInterface
             return $this->name;
         }
 
-        return $this->name = substr(end(explode('\\', get_class($this))), 0, -6);
+        $explodedClassName = explode('\\', get_class($this));
+        return $this->name = substr(end($explodedClassName), 0, -6);
     }
 
     /**
