@@ -16,7 +16,6 @@ use Rad\Network\Session;
 use Rad\Network\Session\Flash\FlashBag;
 use Rad\Routing\Dispatcher;
 use Rad\Routing\Router;
-use ReflectionMethod;
 
 /**
  * Action
@@ -59,7 +58,7 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         $method = strtolower($this->getRequest()->getMethod()) . 'Method';
 
         if (method_exists($this, $method) && is_callable([$this, $method])) {
-            call_user_func_array([$this, $method], func_get_args());
+            return call_user_func_array([$this, $method], func_get_args());
         } else {
             throw new MissingMethodException(
                 sprintf(
