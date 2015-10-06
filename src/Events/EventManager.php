@@ -98,7 +98,7 @@ class EventManager
         $event = new Event($eventType, $subject, $data, $cancelable);
 
         if (isset(self::$listener[$eventType])) {
-            $queue = self::$listener[$eventType];
+            $queue = clone self::$listener[$eventType];
 
             if (!$queue->isEmpty()) {
                 $queue->top();
