@@ -3,9 +3,9 @@
 namespace Rad\Core;
 
 use Composer\Autoload\ClassLoader;
+use InvalidArgumentException;
 use Rad\Core\Exception\MissingBundleException;
 use Rad\Utility\Inflection;
-use RuntimeException;
 
 /**
  * Bundles Loader
@@ -18,6 +18,10 @@ class Bundles
      * @var ClassLoader
      */
     protected static $classLoader;
+
+    /**
+     * @var array
+     */
     protected static $bundlesLoaded = [];
 
     /**
@@ -57,7 +61,7 @@ class Bundles
     {
         foreach ($bundles as $bundle) {
             if (!$bundle instanceof BundleInterface) {
-                throw new RuntimeException('Bundle must be instance of "Rad\Core\BundleInterface".');
+                throw new InvalidArgumentException('Bundle must be instance of "Rad\Core\BundleInterface".');
             }
 
             self::load($bundle);
