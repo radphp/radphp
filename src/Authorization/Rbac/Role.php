@@ -3,7 +3,6 @@
 namespace Rad\Authorization\Rbac;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * Role
@@ -18,6 +17,16 @@ class Role implements RoleInterface
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $title = '';
+
+    /**
+     * @var string
+     */
+    protected $description = '';
+
+    /**
      * @var ResourceCollection
      */
     protected $resources;
@@ -30,12 +39,35 @@ class Role implements RoleInterface
      */
     public function __construct($name, $resources = null)
     {
+        $this->setName($name)
+            ->setResources($resources);
+    }
+
+    /**
+     * Factory method for chain ability.
+     *
+     * @param string                               $name      Role name
+     * @param ResourceCollection|array|string|null $resources Resources
+     *
+     * @return self
+     */
+    public static function create($name, $resources = null)
+    {
+        return new static($name, $resources);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setName($name)
+    {
         if (!is_string($name)) {
             throw new InvalidArgumentException('Role name must be string.');
         }
 
         $this->name = $name;
-        $this->setResources($resources);
+
+        return $this;
     }
 
     /**
@@ -44,6 +76,42 @@ class Role implements RoleInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTitle($title)
+    {
+        $this->title = strval($title);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDescription($description)
+    {
+        $this->description = strval($description);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**

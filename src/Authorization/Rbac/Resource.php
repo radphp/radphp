@@ -17,28 +17,49 @@ class Resource implements ResourceInterface
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $title = '';
+
+    /**
      * @var string|null
      */
-    protected $description;
+    protected $description = '';
 
     /**
      * Rad\Authorization\Rbac\Resource constructor
      *
-     * @param string      $name        Resource name
-     * @param string|null $description Resource description
+     * @param string $name Resource name
      */
-    public function __construct($name, $description = null)
+    public function __construct($name)
+    {
+        $this->setName($name);
+    }
+
+    /**
+     * Factory method for chain ability.
+     *
+     * @param string $name Resource name
+     *
+     * @return self
+     */
+    public static function create($name)
+    {
+        return new static($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setName($name)
     {
         if (!is_string($name)) {
             throw new InvalidArgumentException('Resource name must be string.');
         }
 
-        if (!is_string($description) && !is_null($description)) {
-            throw new InvalidArgumentException('Resource description must be string or null.');
-        }
-
         $this->name = $name;
-        $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -47,6 +68,34 @@ class Resource implements ResourceInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTitle($title)
+    {
+        $this->title = strval($title);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDescription($description)
+    {
+        $this->description = strval($description);
+
+        return $this;
     }
 
     /**

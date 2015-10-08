@@ -10,11 +10,52 @@ namespace Rad\Authorization\Rbac;
 interface RoleInterface
 {
     /**
+     * Set role name
+     *
+     * @param string $name Role name
+     *
+     * @return self
+     */
+    public function setName($name);
+
+    /**
      * Get role name
      *
      * @return string
      */
     public function getName();
+
+    /**
+     * Set role title
+     *
+     * @param string $title Role title
+     *
+     * @return self
+     */
+    public function setTitle($title);
+
+    /**
+     * Get role title
+     *
+     * @return string
+     */
+    public function getTitle();
+
+    /**
+     * Set role description
+     *
+     * @param string $description Role description
+     *
+     * @return self
+     */
+    public function setDescription($description);
+
+    /**
+     * Get role description
+     *
+     * @return string
+     */
+    public function getDescription();
 
     /**
      * Set resources
