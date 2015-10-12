@@ -20,18 +20,22 @@ class Session implements ArrayAccess, Iterator, Serializable, JsonSerializable, 
     protected $started = false;
     protected $session = [];
 
+    const SESSION_NAME = 'RADPHPSESSID';
+
     /**
      * Rad\Network\Session constructor
      *
-     * @param SessionHandlerInterface $handler
+     * @param SessionHandlerInterface $handler Session handler
+     * @param string                  $name    Session name
      */
-    public function __construct(SessionHandlerInterface $handler = null)
+    public function __construct(SessionHandlerInterface $handler = null, $name = self::SESSION_NAME)
     {
         if (null === $handler) {
             $handler = new NativeSessionHandler();
         }
 
         session_set_save_handler($handler);
+        $this->setName($name);
     }
 
     /**
