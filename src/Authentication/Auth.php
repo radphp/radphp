@@ -18,13 +18,20 @@ class Auth
     protected $storage;
 
     /**
+     * @var UserDetails
+     */
+    protected $userDetails;
+
+    /**
      * Rad\Authentication\Auth constructor
      *
      * @param StorageInterface $storage
+     * @param UserDetails      $userDetails
      */
-    public function __construct(StorageInterface $storage)
+    public function __construct(StorageInterface $storage, UserDetails $userDetails = null)
     {
         $this->storage = $storage;
+        $this->userDetails = $userDetails;
     }
 
     /**
@@ -46,6 +53,10 @@ class Auth
         $this->storage->flush();
 
         if (is_array($output)) {
+            if (null !== $this->userDetails) {
+                $output = $this->userDetails->getDetails($output);
+            }
+
             $this->storage->write($output);
 
             return true;
