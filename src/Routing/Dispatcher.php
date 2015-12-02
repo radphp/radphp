@@ -195,7 +195,12 @@ class Dispatcher
 
             $actionInstance = new $this->actionNamespace();
 
-            $beforeDispatchEvent = $this->dispatchEvent(self::EVENT_BEFORE_DISPATCH, $this, ['request' => $request]);
+            $beforeDispatchEvent = $this->dispatchEvent(
+                self::EVENT_BEFORE_DISPATCH,
+                $this,
+                ['request' => $request, 'action' => $actionInstance]
+            );
+
             if ($beforeDispatchEvent->getResult() instanceof Response) {
                 return $beforeDispatchEvent->getResult();
             }
