@@ -1,0 +1,30 @@
+{
+    "name": "radphp/o-authentication",
+    "description": "RadPHP OAuthentication component",
+    "keywords": ["RadPHP", "OAuthentication", "component"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammad Abdoli Rad",
+            "email": "m.abdolirad@gmail.com",
+            "role": "Project Founder"
+        },
+        {
+            "name": "Omid Mottaghi Rad",
+            "email": "omidmr@gmail.com",
+            "role": "Project Founder"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.21",
+        "radphp/utility": "dev-master",
+        "radphp/network": "dev-master",
+        "radphp/core": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rad\\OAuthentication\\": "."
+        }
+    }
+}
