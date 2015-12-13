@@ -1,0 +1,31 @@
+{
+    "name": "radphp/authentication",
+    "description": "RadPHP authentication component",
+    "keywords": ["RadPHP", "authentication", "component"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammad Abdoli Rad",
+            "email": "m.abdolirad@gmail.com",
+            "role": "Project Founder"
+        },
+        {
+            "name": "Omid Mottaghi Rad",
+            "email": "omidmr@gmail.com",
+            "role": "Project Founder"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.21",
+        "radphp/core": "dev-master",
+        "radphp/database": "dev-master",
+        "radphp/network": "dev-master",
+        "radphp/cryptography": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rad\\Authentication\\": "."
+        }
+    }
+}
