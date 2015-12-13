@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RadPHP" default="introduction" basedir="./" description="RadPHP Framework">
+    <property name="components" value="Configure,Core,Logging,DependencyInjection,Utility"/>
+
+    <target name="introduction">
+        <echo message=" _____           _ _____  _    _ _____  "/>
+        <echo message="|  __ \         | |  __ \| |  | |  __ \ "/>
+        <echo message="| |__) |__ _  __| | |__) | |__| | |__) |"/>
+        <echo message="|  _  // _` |/ _` |  ___/|  __  |  ___/ "/>
+        <echo message="| | \ \ (_| | (_| | |    | |  | | |     "/>
+        <echo message="|_|  \_\__,_|\__,_|_|    |_|  |_|_|     "/>
+        <echo message=" "/>
+        <echo message="Available task names are:"/>
+        <echo message="update-components -- Update all components (${components})."/>
+    </target>
+
+    <target name="update-components">
+        <foreach list="${components}" param="component" target="update-component"/>
+    </target>
+
+    <target name="update-component" hidden="true">
+        <php expression="strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', ${component}));" returnProperty="repoName"/>
+        <exec command="git remote rm ${component}" logoutput="true" level="verbose"/>
+        <exec command="git remote add ${component} git@github.com:radphp/${repoName}.git" logoutput="true" level="info"/>
+        <exec command="git subtree push --prefix=src/${component} ${component} master" logoutput="true" level="info"/>
+    </target>
+</project>
