@@ -1,0 +1,32 @@
+{
+    "name": "radphp/routing",
+    "description": "RadPHP routing component",
+    "keywords": ["RadPHP", "routing", "component"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammad Abdoli Rad",
+            "email": "m.abdolirad@gmail.com",
+            "role": "Project Founder"
+        },
+        {
+            "name": "Omid Mottaghi Rad",
+            "email": "omidmr@gmail.com",
+            "role": "Project Founder"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.21",
+        "radphp/events": "dev-master",
+        "radphp/network": "dev-master",
+        "radphp/configure": "dev-master",
+        "radphp/dependency-injection": "dev-master",
+        "radphp/core": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rad\\Routing\\": "."
+        }
+    }
+}
