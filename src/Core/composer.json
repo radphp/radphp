@@ -1,0 +1,33 @@
+{
+    "name": "radphp/core",
+    "description": "RadPHP core component",
+    "keywords": ["RadPHP", "core", "component"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammad Abdoli Rad",
+            "email": "m.abdolirad@gmail.com",
+            "role": "Project Founder"
+        },
+        {
+            "name": "Omid Mottaghi Rad",
+            "email": "omidmr@gmail.com",
+            "role": "Project Founder"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.21",
+        "radphp/core": "dev-master",
+        "radphp/dependency-injection": "dev-master",
+        "radphp/network": "dev-master",
+        "radphp/routing": "dev-master",
+        "radphp/utility": "dev-master",
+        "radphp/events": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rad\\Core\\": "."
+        }
+    }
+}
