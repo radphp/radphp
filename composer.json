@@ -1,7 +1,7 @@
 {
     "name": "radphp/utility",
-    "description": "RadPHP Framework Utility Component",
-    "keywords": ["RadPHP", "Utility", "Component"],
+    "description": "RadPHP utility component",
+    "keywords": ["RadPHP", "utility", "component"],
     "license": "MIT",
     "authors": [
         {
