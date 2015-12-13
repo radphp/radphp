@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="RadPHP" default="introduction" basedir="./" description="RadPHP Framework">
-    <property name="components" value="Configure,Core,Logging,DependencyInjection,Utility"/>
+    <property name="components" value="Authentication,Authorization,Configure,Core,Cryptography,Database,DependencyInjection,Error,Events,Logging,Network,OAuthentication,Routing,Utility"/>
 
     <target name="introduction">
         <echo message=" _____           _ _____  _    _ _____  "/>
