@@ -9,11 +9,11 @@ use Rad\OAuthentication\Exception;
 use Rad\OAuthentication\AbstractOAuthProvider;
 
 /**
- * OAuth GitHub Provider
+ * OAuth Github Provider
  *
  * @package Rad\OAuthentication\Provider
  */
-class GitHubProvider extends AbstractOAuthProvider
+class GithubProvider extends AbstractOAuthProvider
 {
     protected $scopeDelimiter = ',';
 
