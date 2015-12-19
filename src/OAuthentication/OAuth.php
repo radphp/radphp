@@ -55,7 +55,7 @@ class OAuth
      *
      * @param string $token Access token
      *
-     * @return OAuth\User
+     * @return User
      */
     public function getUser($token)
     {
