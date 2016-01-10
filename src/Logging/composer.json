@@ -1,7 +1,7 @@
 {
-    "name": "radphp/utility",
-    "description": "RadPHP utility component",
-    "keywords": ["RadPHP", "utility", "component"],
+    "name": "radphp/logging",
+    "description": "RadPHP logging component",
+    "keywords": ["RadPHP", "logging", "component"],
     "license": "MIT",
     "authors": [
         {
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Rad\\Utility\\": "."
+            "Rad\\Logging\\": "."
         }
     }
 }

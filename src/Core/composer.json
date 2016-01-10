@@ -1,7 +1,7 @@
 {
-    "name": "radphp/utility",
-    "description": "RadPHP utility component",
-    "keywords": ["RadPHP", "utility", "component"],
+    "name": "radphp/core",
+    "description": "RadPHP core component",
+    "keywords": ["RadPHP", "core", "component"],
     "license": "MIT",
     "authors": [
         {
@@ -17,11 +17,17 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.5.21"
+        "php": ">=5.5.21",
+        "radphp/core": "dev-master",
+        "radphp/dependency-injection": "dev-master",
+        "radphp/network": "dev-master",
+        "radphp/routing": "dev-master",
+        "radphp/utility": "dev-master",
+        "radphp/events": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "Rad\\Utility\\": "."
+            "Rad\\Core\\": "."
         }
     }
 }

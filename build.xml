@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RadPHP" default="introduction" basedir="./" description="RadPHP Framework">
+    <property name="allComponents" value="Authentication,Authorization,Configure,Core,Cryptography,Database,DependencyInjection,Error,Events,Logging,Network,OAuthentication,Routing,Utility"/>
+
+    <target name="introduction">
+        <echo message=" _____           _ _____  _    _ _____  "/>
+        <echo message="|  __ \         | |  __ \| |  | |  __ \ "/>
+        <echo message="| |__) |__ _  __| | |__) | |__| | |__) |"/>
+        <echo message="|  _  // _` |/ _` |  ___/|  __  |  ___/ "/>
+        <echo message="| | \ \ (_| | (_| | |    | |  | | |     "/>
+        <echo message="|_|  \_\__,_|\__,_|_|    |_|  |_|_|     "/>
+        <echo message=" "/>
+        <echo message="Available task names are:"/>
+        <echo message="update-components -- Update components."/>
+    </target>
+
+    <target name="update-components">
+        <input propertyName="componentChoice" validArgs="all,${allComponents}" promptChar="?" defaultValue="all" message="Which component would you like to update"/>
+        <if>
+            <equals arg1="${componentChoice}" arg2="all"/>
+            <then>
+                <property name="components" value="${allComponents}" />
+            </then>
+            <else>
+                <property name="components" value="${componentChoice}" />
+            </else>
+        </if>
+        <foreach list="${components}" param="component" target="update-component"/>
+    </target>
+
+    <target name="update-component" hidden="true">
+        <php expression="strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', ${component}));" level="verbose" returnProperty="repoName"/>
+        <echo>Update "${component}" component</echo>
+        <exec command="git remote rm ${component}" logoutput="false" level="verbose"/>
+        <exec command="git remote add ${component} git@github.com:radphp/${repoName}.git" logoutput="false" level="verbose"/>
+        <exec command="git subtree push --prefix=src/${component} ${component} master" logoutput="true" level="info" />
+    </target>
+</project>

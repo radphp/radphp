@@ -39,7 +39,7 @@ class OAuthProviderFactory
             }
         }
 
-        $oAuthClass = 'Rad\\Security\\Authentication\\OAuth\\Provider\\' .
+        $oAuthClass = 'Rad\\OAuthentication\\Provider\\' .
             Inflection::camelize($oAuthProvider) . 'Provider';
 
         if (class_exists($oAuthClass)) {

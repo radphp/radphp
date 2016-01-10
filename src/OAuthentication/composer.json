@@ -1,7 +1,7 @@
 {
-    "name": "radphp/utility",
-    "description": "RadPHP utility component",
-    "keywords": ["RadPHP", "utility", "component"],
+    "name": "radphp/o-authentication",
+    "description": "RadPHP OAuthentication component",
+    "keywords": ["RadPHP", "OAuthentication", "component"],
     "license": "MIT",
     "authors": [
         {
@@ -17,11 +17,14 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.5.21"
+        "php": ">=5.5.21",
+        "radphp/utility": "dev-master",
+        "radphp/network": "dev-master",
+        "radphp/core": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "Rad\\Utility\\": "."
+            "Rad\\OAuthentication\\": "."
         }
     }
 }

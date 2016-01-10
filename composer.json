@@ -25,7 +25,8 @@
         "radphp/composer-installer": "dev-master",
         "psr/log": "1.0",
         "psr/http-message": "~1.0",
-        "ext-mcrypt" : "*"
+        "ext-mcrypt" : "*",
+	"phing/phing": "^2.12.0"
     },
     "autoload": {
         "psr-4": {

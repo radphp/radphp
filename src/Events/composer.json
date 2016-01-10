@@ -1,7 +1,7 @@
 {
-    "name": "radphp/utility",
-    "description": "RadPHP utility component",
-    "keywords": ["RadPHP", "utility", "component"],
+    "name": "radphp/events",
+    "description": "RadPHP events component",
+    "keywords": ["RadPHP", "events", "component"],
     "license": "MIT",
     "authors": [
         {
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Rad\\Utility\\": "."
+            "Rad\\Events\\": "."
         }
     }
 }
