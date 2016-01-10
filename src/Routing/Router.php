@@ -102,7 +102,7 @@ class Router implements ContainerAwareInterface
         }
 
         // check language
-        if (in_array($parts[0], Config::get('languages.possible', ['en']))) {
+        if (!empty($parts) && in_array($parts[0], Config::get('languages.possible', ['en']))) {
             // We found the language, so set it as current language
             $this->language = array_shift($parts);
         } else {
