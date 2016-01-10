@@ -142,7 +142,7 @@ class ErrorHandler
             return $this->handleFatalError($code, $message, $file, $line);
         }
 
-        error_log($message, 0);
+        error_log(sprintf('%s:%s [%s]', $file, $line, $message), 0);
 
         return true;
     }
