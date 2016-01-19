@@ -10,15 +10,15 @@ matrix:
     - php: 7.0
 
 before_script:
-  - pyrus install pear/PHP_CodeSniffer
   - composer self-update
   - composer install --prefer-dist --no-interaction
+  - composer require --dev squizlabs/php_codesniffer:dev-master
   - composer require --dev satooshi/php-coveralls:dev-master
   - mkdir -p ./build/logs
 
 script:
-  - phpcs -p --extensions=php --standard=PSR2,PSR1 ./src
-  - phpdbg -qrr bin/phpunit --coverage-clover build/logs/clover.xml
+  - bin/phpcs -p --extensions=php --standard=PSR2,PSR1 ./src
+  - bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
 - php bin/coveralls -v
