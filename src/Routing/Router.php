@@ -170,7 +170,7 @@ class Router implements ContainerAwareInterface
                 array_pop($dummyCamelizedParts);
 
                 // change router for some other default paths
-                switch($this->routingPhase) {
+                switch ($this->routingPhase) {
                     case self::ROUTING_PHASE_INDEX:
                         $this->routingPhase = self::ROUTING_PHASE_ACTION;
                         break;
@@ -402,7 +402,7 @@ class Router implements ContainerAwareInterface
      *
      * @return Router
      */
-    public function setPrefix(Array $prefix)
+    public function setPrefix(array $prefix)
     {
         $this->prefix = $prefix;
     }

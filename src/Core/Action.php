@@ -126,7 +126,8 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         if (class_exists($namespace)) {
             if (!is_subclass_of($namespace, 'App\Responder\AppResponder')) {
                 throw new BaseException(
-                    sprintf('Your "%s" responder must be extended "App\Responder\AppResponder".', $namespace));
+                    sprintf('Your "%s" responder must be extended "App\Responder\AppResponder".', $namespace)
+                );
             }
 
             $this->responder = new $namespace();
