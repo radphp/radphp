@@ -27,5 +27,8 @@
         "psr-4": {
             "Rad\\Configure\\": "."
         }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
