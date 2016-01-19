@@ -20,6 +20,9 @@
         "php": ">=5.5.21",
         "radphp/core": "dev-master"
     },
+    "require-dev": {
+        "phpunit/phpunit": "~5.1"
+    },
     "autoload": {
         "psr-4": {
             "Rad\\Configure\\": "."
