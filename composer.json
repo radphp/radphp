@@ -28,6 +28,22 @@
         "psr/http-message": "~1.0",
         "ext-mcrypt" : "*"
     },
+    "replace": {
+        "radphp/authentication": "self.version",
+        "radphp/authorization": "self.version",
+        "radphp/configure": "self.version",
+        "radphp/core": "self.version",
+        "radphp/cryptography": "self.version",
+        "radphp/database": "self.version",
+        "radphp/dependency-injection": "self.version",
+        "radphp/error": "self.version",
+        "radphp/events": "self.version",
+        "radphp/logging": "self.version",
+        "radphp/network": "self.version",
+        "radphp/o-authentication": "self.version",
+        "radphp/routing": "self.version",
+        "radphp/utility": "self.version"
+    },
     "autoload": {
         "psr-4": {
             "Rad\\": "src/"
