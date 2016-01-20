@@ -16,9 +16,6 @@
     <testsuites>
         <testsuite name="RadPHP Test Suite">
             <directory>./src/*/Tests</directory>
-            <exclude>
-                <directory>./src/*/Tests/Fixtures</directory>
-            </exclude>
         </testsuite>
     </testsuites>
 
@@ -27,6 +24,7 @@
             <directory>./src/</directory>
             <exclude>
                 <directory>./src/*/vendor</directory>
+                <directory>./src/*/Tests</directory>
             </exclude>
         </whitelist>
     </filter>
