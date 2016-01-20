@@ -4,6 +4,7 @@ namespace Rad\Configure\Engine;
 
 use Rad\Configure\EngineInterface;
 use Rad\Configure\Exception;
+use SplFileInfo;
 
 /**
  * PhpConfig Engine
@@ -48,16 +49,29 @@ class PhpConfig implements EngineInterface
      * @param array  $data Config data
      *
      * @return bool
+     * @throws Exception
      */
     public function dump($file, array $data)
     {
         $dir = dirname($file);
 
         if (!is_dir($dir)) {
-            mkdir($dir);
+            mkdir($dir, 0755, true);
         }
 
-        if (false !== file_put_contents($file, '<?php return ' . var_export($data, true) . ';')) {
+        $fileInfo = new SplFileInfo($file);
+
+        if ($fileInfo->isFile()) {
+            if ($fileInfo->isWritable()) {
+                $fileObject = $fileInfo->openFile('w');
+            } else {
+                throw new Exception(sprintf('File "%s" is not writable.', $file));
+            }
+        } else {
+            $fileObject = $fileInfo->openFile('w');
+        }
+
+        if (null !== $fileObject->fwrite('<?php return ' . var_export($data, true) . ';')) {
             return true;
         }
 
