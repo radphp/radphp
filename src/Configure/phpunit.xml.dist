@@ -14,7 +14,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="RadPHP Configure Component Test Suite">
+        <testsuite name="Configure">
             <directory>./</directory>
         </testsuite>
     </testsuites>
