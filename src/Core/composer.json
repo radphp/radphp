@@ -18,7 +18,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.21",
-        "radphp/core": "dev-master",
         "radphp/dependency-injection": "dev-master",
         "radphp/network": "dev-master",
         "radphp/routing": "dev-master",
