@@ -2,6 +2,9 @@
 
 namespace Rad\OAuthentication;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 /**
  * OAuth
  *
@@ -10,55 +13,109 @@ namespace Rad\OAuthentication;
 class OAuth
 {
     /**
-     * @var Config
+     * @var array
      */
-    protected $config;
+    protected $providers = [];
 
     /**
-     * Rad\OAuthentication constructor
+     * Add provider
      *
-     * @param string $configId
+     * @param string            $name     Provider name
+     * @param ProviderInterface $provider Provider instance
      *
-     * @throws Exception
+     * @return self
      */
-    public function __construct($configId)
+    public function addProvider($name, ProviderInterface $provider)
     {
-        if (ConfigManager::exist($configId)) {
-            $this->config = ConfigManager::get($configId);
-        } else {
-            throw new Exception(sprintf('OAuth config id "%s" does not exist.', $configId));
+        if (!is_string($name) && empty($name)) {
+            throw new InvalidArgumentException('Your provider name must be string and not empty.');
         }
+
+        $this->providers[$name] = $provider;
+
+        return $this;
+    }
+
+    /**
+     * Get provider
+     *
+     * @param string $name Provider name
+     *
+     * @return ProviderInterface
+     */
+    public function getProvider($name)
+    {
+        if (!array_key_exists($name, $this->providers)) {
+            throw new RuntimeException(sprintf('Provider "%s" doesm\'t exist.', (string)$name));
+        }
+
+        return $this->providers[$name];
+    }
+
+    /**
+     * has provider
+     *
+     * @param string $name Provider name
+     *
+     * @return bool
+     */
+    public function hasProvider($name)
+    {
+        return isset($this->providers[$name]);
+    }
+
+    /**
+     * Remove provider
+     *
+     * @param string $name Provider name
+     *
+     * @return bool
+     */
+    public function removeProvider($name)
+    {
+        if ($this->hasProvider($name)) {
+            unset($this->providers[$name]);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Get authorize uri
      *
+     * @param string $providerName Provider name
+     *
      * @return string
      */
-    public function getAuthorizeUri()
+    public function getAuthorizeUri($providerName)
     {
-        return $this->config->getProvider()->getAuthorizeUri();
+        return $this->getProvider($providerName)->getAuthorizeUri();
     }
 
     /**
      * Get access token
      *
-     * @return string
+     * @param string $providerName Provider name
+     *
+     * @return array
      */
-    public function getAccessToken()
+    public function getAccessToken($providerName)
     {
-        return $this->config->getProvider()->getAccessToken();
+        return $this->getProvider($providerName)->getAccessToken();
     }
 
     /**
      * Get user
      *
-     * @param string $token Access token
+     * @param  string $providerName Provider name
+     * @param string  $token        Access token
      *
      * @return User
      */
-    public function getUser($token)
+    public function getUser($providerName, $token)
     {
-        return $this->config->getProvider()->getUser($token);
+        return $this->getProvider($providerName)->getUser($token);
     }
 }

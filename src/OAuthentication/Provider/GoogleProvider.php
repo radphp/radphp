@@ -28,9 +28,9 @@ class GoogleProvider extends AbstractOAuthProvider
     {
         $query = http_build_query(
             [
-                'client_id' => $this->getConfig()->getClientId(),
-                'redirect_uri' => $this->getConfig()->getRedirectUri(),
-                'scope' => implode($this->scopeDelimiter, $this->getConfig()->getScope()),
+                'client_id' => $this->getClientId(),
+                'redirect_uri' => $this->getRedirectUri(),
+                'scope' => implode($this->scopeDelimiter, $this->getScopes()),
                 'response_type' => 'code',
             ]
         );
@@ -53,9 +53,9 @@ class GoogleProvider extends AbstractOAuthProvider
                 [
                     CURLOPT_POSTFIELDS => [
                         'code' => $_GET['code'],
-                        'client_id' => $this->getConfig()->getClientId(),
-                        'client_secret' => $this->getConfig()->getClientSecret(),
-                        'redirect_uri' => $this->getConfig()->getRedirectUri(),
+                        'client_id' => $this->getClientId(),
+                        'client_secret' => $this->getClientSecret(),
+                        'redirect_uri' => $this->getRedirectUri(),
                         'grant_type' => 'authorization_code'
                     ]
                 ]
