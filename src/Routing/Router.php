@@ -43,7 +43,7 @@ class Router implements ContainerAwareInterface
     protected $generateDefaultOption = [
         self::GEN_OPT_LANGUAGE => true,
         self::GEN_OPT_WITH_PARAMS => false,
-        self::GEN_OPT_INC_DOMAIN => true,
+        self::GEN_OPT_INC_DOMAIN => true
     ];
 
     /**

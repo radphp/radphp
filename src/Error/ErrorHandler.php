@@ -32,7 +32,7 @@ class ErrorHandler
         E_USER_NOTICE => 'notice',
         E_STRICT => 'strict',
         E_DEPRECATED => 'deprecated',
-        E_USER_DEPRECATED => 'deprecated',
+        E_USER_DEPRECATED => 'deprecated'
     ];
 
     /**
@@ -167,7 +167,7 @@ class ErrorHandler
         $fatals = [
             E_USER_ERROR,
             E_ERROR,
-            E_PARSE,
+            E_PARSE
         ];
 
         if (!in_array($lastError['type'], $fatals, true)) {
