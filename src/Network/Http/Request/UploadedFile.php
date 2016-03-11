@@ -41,6 +41,4 @@ class UploadedFile extends BaseUploadedFile
     {
         return $this->file;
     }
-
-
 }
