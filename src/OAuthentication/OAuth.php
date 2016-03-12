@@ -97,13 +97,14 @@ class OAuth
     /**
      * Get access token
      *
-     * @param string $providerName Provider name
+     * @param string $providerName  Provider name
+     * @param string $authorizeCode Authorize code
      *
      * @return array
      */
-    public function getAccessToken($providerName)
+    public function getAccessToken($providerName, $authorizeCode)
     {
-        return $this->getProvider($providerName)->getAccessToken();
+        return $this->getProvider($providerName)->getAccessToken($authorizeCode);
     }
 
     /**
