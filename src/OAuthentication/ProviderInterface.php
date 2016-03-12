@@ -100,10 +100,11 @@ interface ProviderInterface
     /**
      * Get access token
      *
+     * @param string $authorizeCode Authorize code
+     *
      * @return array
-     * @throws Exception
      */
-    public function getAccessToken();
+    public function getAccessToken($authorizeCode);
 
     /**
      * Get user detail

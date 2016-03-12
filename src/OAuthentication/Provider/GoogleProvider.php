@@ -43,45 +43,41 @@ class GoogleProvider extends AbstractOAuthProvider
     /**
      * {@inheritdoc}
      */
-    public function getAccessToken()
+    public function getAccessToken($authorizeCode)
     {
-        if (isset($_GET['code'])) {
-            $request = new Request(self::TOKEN_URI, Request::METHOD_POST);
-            $request = $this->request($request);
+        $request = new Request(self::TOKEN_URI, Request::METHOD_POST);
+        $request = $this->request($request);
 
-            $client = new Curl(
-                [
-                    CURLOPT_POSTFIELDS => [
-                        'code' => $_GET['code'],
-                        'client_id' => $this->getClientId(),
-                        'client_secret' => $this->getClientSecret(),
-                        'redirect_uri' => $this->getRedirectUri(),
-                        'grant_type' => 'authorization_code'
-                    ]
+        $client = new Curl(
+            [
+                CURLOPT_POSTFIELDS => [
+                    'code' => $authorizeCode,
+                    'client_id' => $this->getClientId(),
+                    'client_secret' => $this->getClientSecret(),
+                    'redirect_uri' => $this->getRedirectUri(),
+                    'grant_type' => 'authorization_code'
                 ]
-            );
+            ]
+        );
 
-            $response = $client->send($request);
-            $result = json_decode($response->getBody()->getContents(), true);
+        $response = $client->send($request);
+        $result = json_decode($response->getBody()->getContents(), true);
 
-            if (!isset($result['access_token'])) {
-                if (isset($result['error'])) {
-                    throw new Exception(
-                        sprintf(
-                            '[%s] %s',
-                            $result['error'],
-                            $result['error_description']
-                        )
-                    );
-                }
-
-                throw new Exception('Access token not found.');
+        if (!isset($result['access_token'])) {
+            if (isset($result['error'])) {
+                throw new Exception(
+                    sprintf(
+                        '[%s] %s',
+                        $result['error'],
+                        $result['error_description']
+                    )
+                );
             }
 
-            return $result;
-        } else {
-            throw new Exception('Authorize code not found.');
+            throw new Exception('Access token not found.');
         }
+
+        return $result;
     }
 
     /**

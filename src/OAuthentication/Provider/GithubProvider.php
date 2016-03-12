@@ -154,9 +154,9 @@ class GithubProvider extends AbstractOAuthProvider
     /**
      * {@inheritdoc}
      */
-    public function getAccessToken()
+    public function getAccessToken($authorizeCode)
     {
-        if (isset($_GET['code'])) {
+        if (!empty($authorizeCode)) {
             $request = new Request(self::TOKEN_URI, Request::METHOD_POST);
             $request = $this->request($request);
 
@@ -165,7 +165,7 @@ class GithubProvider extends AbstractOAuthProvider
                     CURLOPT_POSTFIELDS => [
                         'client_id' => $this->getClientId(),
                         'client_secret' => $this->getClientSecret(),
-                        'code' => $_GET['code']
+                        'code' => $authorizeCode
                     ]
                 ]
             );
