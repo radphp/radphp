@@ -19,7 +19,7 @@ class Curl implements ClientInterface
         CURLOPT_FRESH_CONNECT => true,
         CURLOPT_HEADER => true,
         CURLOPT_NOPROGRESS => true,
-        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_RETURNTRANSFER => true
     ];
 
     /**

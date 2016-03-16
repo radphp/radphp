@@ -108,7 +108,7 @@ class Stream implements StreamInterface
             'message' => $message,
             'file' => $file,
             'line' => $line,
-            'args' => $args,
+            'args' => $args
         ];
     }
 

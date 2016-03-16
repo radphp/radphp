@@ -9,31 +9,120 @@ use Psr\Http\Message\RequestInterface;
  *
  * @package Rad\OAuthentication
  */
-abstract class AbstractOAuthProvider
+abstract class AbstractOAuthProvider implements ProviderInterface
 {
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected $clientId;
+    protected $clientSecret;
+    protected $scopes = [];
+    protected $redirectUri;
+    protected $state;
 
     /**
-     * Set config
+     * AbstractOAuthProvider constructor.
      *
-     * @param Config $config
+     * @param string $clientId     Client id
+     * @param string $clientSecret Client secret
+     * @param array  $scopes       Scopes
+     * @param string $redirectUri  Redirect uri
+     * @param string $state        State
      */
-    public function setConfig(Config $config)
+    public function __construct($clientId, $clientSecret, array $scopes = [], $redirectUri = null, $state = null)
     {
-        $this->config = $config;
+        $this->setClientId($clientId)
+            ->setClientSecret($clientSecret)
+            ->setScopes($scopes)
+            ->setRedirectUri($redirectUri)
+            ->setState($state);
     }
 
     /**
-     * Get config
-     *
-     * @return Config
+     * {@inheritdoc}
      */
-    public function getConfig()
+    public function setClientId($clientId)
     {
-        return $this->config;
+        $this->clientId = strval($clientId);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = strval($clientSecret);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientSecret()
+    {
+        return $this->clientSecret;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setScopes(array $scopes)
+    {
+        $this->scopes = $scopes;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getScopes()
+    {
+        return $this->scopes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRedirectUri($redirectUri)
+    {
+        $this->redirectUri = strval($redirectUri);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRedirectUri()
+    {
+        return $this->redirectUri;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setState($state)
+    {
+        $this->state = strval($state);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getState()
+    {
+        return $this->state;
     }
 
     /**
@@ -48,29 +137,4 @@ abstract class AbstractOAuthProvider
         return $request->withHeader('Accept', 'application/json')
             ->withHeader('User-Agent', 'RadPHP-OAuth');
     }
-
-    /**
-     * Get authorize uri
-     *
-     * @return string
-     */
-    abstract public function getAuthorizeUri();
-
-    /**
-     * Get access token
-     *
-     * @return string
-     * @throws Exception
-     */
-    abstract public function getAccessToken();
-
-    /**
-     * Get user detail
-     *
-     * @param string $token Access token
-     *
-     * @return User
-     * @throws Exception
-     */
-    abstract public function getUser($token);
 }

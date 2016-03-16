@@ -33,4 +33,12 @@ class UploadedFile extends BaseUploadedFile
     {
         return pathinfo($this->clientFilename, PATHINFO_EXTENSION);
     }
+
+    /**
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
 }

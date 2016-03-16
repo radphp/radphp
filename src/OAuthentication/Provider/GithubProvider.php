@@ -140,9 +140,9 @@ class GithubProvider extends AbstractOAuthProvider
     {
         $query = http_build_query(
             [
-                'client_id' => $this->getConfig()->getClientId(),
-                'redirect_uri' => $this->getConfig()->getRedirectUri(),
-                'scope' => implode($this->scopeDelimiter, $this->getConfig()->getScope()),
+                'client_id' => $this->getClientId(),
+                'redirect_uri' => $this->getRedirectUri(),
+                'scope' => implode($this->scopeDelimiter, $this->getScopes()),
             ]
         );
 
@@ -154,18 +154,18 @@ class GithubProvider extends AbstractOAuthProvider
     /**
      * {@inheritdoc}
      */
-    public function getAccessToken()
+    public function getAccessToken($authorizeCode)
     {
-        if (isset($_GET['code'])) {
+        if (!empty($authorizeCode)) {
             $request = new Request(self::TOKEN_URI, Request::METHOD_POST);
             $request = $this->request($request);
 
             $client = new Curl(
                 [
                     CURLOPT_POSTFIELDS => [
-                        'client_id' => $this->getConfig()->getClientId(),
-                        'client_secret' => $this->getConfig()->getClientSecret(),
-                        'code' => $_GET['code']
+                        'client_id' => $this->getClientId(),
+                        'client_secret' => $this->getClientSecret(),
+                        'code' => $authorizeCode
                     ]
                 ]
             );
@@ -245,7 +245,7 @@ class GithubProvider extends AbstractOAuthProvider
      */
     protected function getEmail($token)
     {
-        if (in_array(self::SCOPE_USER_EMAIL, $this->getConfig()->getScope())) {
+        if (in_array(self::SCOPE_USER_EMAIL, $this->getScopes())) {
             $request = new Request(self::USER_API_URI . '/emails?access_token=' . $token, Request::METHOD_GET);
             $request = $this->request($request);
 
