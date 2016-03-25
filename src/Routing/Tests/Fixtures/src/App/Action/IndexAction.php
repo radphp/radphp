@@ -9,4 +9,5 @@ namespace App\Action;
  */
 class IndexAction extends AppAction
 {
+
 }

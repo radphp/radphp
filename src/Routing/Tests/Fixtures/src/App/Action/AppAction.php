@@ -11,4 +11,5 @@ use Rad\Core\Action;
  */
 class AppAction extends Action
 {
+
 }
