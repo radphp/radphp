@@ -26,10 +26,10 @@ class Rbac
     /**
      * Add role override if exists
      *
-     * @param RoleInterface|string                 $role      Role name or object
-     * @param ResourceCollection|array|string|null $resources Role resources
+     * @param RoleInterface|string     $role      Role name or object
+     * @param ResourceCollection|array $resources Role resources
      */
-    public static function addRole($role, $resources = null)
+    public static function addRole($role, array $resources = [])
     {
         if ($role instanceof RoleInterface) {
             self::$roles[$role->getName()] = $role;

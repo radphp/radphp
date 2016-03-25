@@ -60,7 +60,7 @@ interface RoleInterface
     /**
      * Set resources
      *
-     * @param ResourceCollection|array|null $resources Resources
+     * @param ResourceCollection|array $resources Resources
      *
      * @return self
      */

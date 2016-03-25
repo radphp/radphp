@@ -29,29 +29,29 @@ class Role implements RoleInterface
     /**
      * @var ResourceCollection
      */
-    protected $resources;
+    protected $resourceCollection;
 
     /**
      * Rad\Authorization\Rbac\Role constructor
      *
-     * @param string                               $name      Role name
-     * @param ResourceCollection|array|string|null $resources Resources
+     * @param string                   $name      Role name
+     * @param ResourceCollection|array $resources Resources
      */
-    public function __construct($name, $resources = null)
+    public function __construct($name, $resources = [])
     {
-        $this->setName($name)
-            ->setResources($resources);
+        $this->setResources($resources)
+            ->setName($name);
     }
 
     /**
      * Factory method for chain ability.
      *
-     * @param string                               $name      Role name
-     * @param ResourceCollection|array|string|null $resources Resources
+     * @param string                   $name      Role name
+     * @param ResourceCollection|array $resources Resources
      *
      * @return self
      */
-    public static function create($name, $resources = null)
+    public static function create($name, $resources = [])
     {
         return new static($name, $resources);
     }
@@ -119,29 +119,10 @@ class Role implements RoleInterface
      */
     public function setResources($resources)
     {
-        $collection = new ResourceCollection();
-
-        if (is_array($resources)) {
-            foreach ($resources as $resource) {
-                if ($resource instanceof ResourceInterface) {
-                    $collection->attach($resource);
-                } elseif (is_string($resource)) {
-                    $collection->attach(new Resource($resource));
-                } else {
-                    throw new InvalidArgumentException(
-                        'Resource must be string or an object implemented "Rad\Authorization\Rbac\ResourceInterface".'
-                    );
-                }
-            }
-
-            $this->resources = $collection;
-        } elseif ($resources instanceof ResourceCollection) {
-            $this->resources = $resources;
-        } elseif (is_string($resources)) {
-            $collection->attach(new Resource($resources));
-            $this->resources = $collection;
+        if ($resources instanceof ResourceCollection) {
+            $this->resourceCollection = $resources;
         } else {
-            $this->resources = $collection;
+            $this->getResources()->setResources($resources);
         }
 
         return $this;
@@ -152,7 +133,11 @@ class Role implements RoleInterface
      */
     public function getResources()
     {
-        return $this->resources;
+        if (!$this->resourceCollection) {
+            $this->resourceCollection = new ResourceCollection();
+        }
+
+        return $this->resourceCollection;
     }
 
     /**
@@ -164,7 +149,7 @@ class Role implements RoleInterface
             $resource = new Resource($resource);
         }
 
-        $this->resources->attach($resource);
+        $this->getResources()->add($resource);
 
         return $this;
     }
@@ -174,10 +159,6 @@ class Role implements RoleInterface
      */
     public function hasResource($resource)
     {
-        if (!$resource instanceof ResourceInterface) {
-            $resource = new Resource($resource);
-        }
-
-        return $this->resources->contains($resource);
+        return $this->getResources()->contains($resource);
     }
 }
