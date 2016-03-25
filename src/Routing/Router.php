@@ -52,18 +52,18 @@ class Router implements ContainerAwareInterface
      *
      * @return string
      */
-    public function getRewriteUri()
+    protected function getRewriteUri()
     {
-        if ($this->uriSource !== self::URI_SOURCE_SERVER_REQUEST_URI) {
-            if (isset($_GET['_url']) && !empty($_GET['_url'])) {
-                return $_GET['_url'];
-            }
-        } else {
+        if ($this->uriSource === self::URI_SOURCE_SERVER_REQUEST_URI) {
             if (isset($_SERVER['REQUEST_URI'])) {
                 $requestUri = explode('?', $_SERVER['REQUEST_URI']);
                 if (!empty($requestUri[0])) {
                     return $requestUri[0];
                 }
+            }
+        } else {
+            if (isset($_GET['_url']) && !empty($_GET['_url'])) {
+                return $_GET['_url'];
             }
         }
 
@@ -271,6 +271,8 @@ class Router implements ContainerAwareInterface
             $request = $this->getContainer()->get('request');
             $result = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost() . $result;
         }
+
+        $result = preg_replace('#/+#', '/', $result);
 
         return $result;
     }
