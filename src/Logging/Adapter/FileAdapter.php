@@ -20,6 +20,15 @@ class FileAdapter extends AbstractAdapter
      */
     public function __construct($filePath)
     {
+        $dirPath = dirname($filePath);
+        if (false === is_dir($dirPath)) {
+            mkdir($dirPath, 0775, true);
+        }
+
+        if (substr($filePath, -4) !== '.log') {
+            $filePath .= '.log';
+        }
+
         $this->handle = fopen($filePath, 'ab+');
     }
 
