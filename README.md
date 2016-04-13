@@ -6,3 +6,13 @@ RadPHP is a rapid RESTful application development PHP framework based on [ADR](h
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/radphp/radphp/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+## Installing RadPHP via Composer
+
+You can install RadPHP into your project using
+[Composer](http://getcomposer.org).  If you're starting a new project, we
+recommend using the [app skeleton](https://github.com/radphp/radphp-app) as
+a starting point. For existing applications you can run the following:
+
+``` bash
+$ composer require radphp/radphp:"dev-master"
+```
