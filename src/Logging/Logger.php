@@ -22,10 +22,8 @@ class Logger implements LoggerInterface
 
     /**
      * Rad\Logging\Logger constructor
-     *
-     * @param string $name Logger name
      */
-    public function __construct($name)
+    public function __construct()
     {
         $this->adapters = new SplObjectStorage();
     }
