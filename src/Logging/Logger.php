@@ -14,11 +14,6 @@ use Psr\Log\LoggerInterface;
 class Logger implements LoggerInterface
 {
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * @var SplObjectStorage
      */
     protected $adapters;
@@ -32,20 +27,7 @@ class Logger implements LoggerInterface
      */
     public function __construct($name)
     {
-        LoggerRegistry::register($name, $this);
-
-        $this->name = $name;
         $this->adapters = new SplObjectStorage();
-    }
-
-    /**
-     * Get logger name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
