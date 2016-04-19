@@ -56,7 +56,6 @@ use Rad\Logging\Logger;
 use Rad\Logging\Adapter\FileAdapter;
 
 $logger = new Logger();
-
 $logger->attachAdapter(new FileAdapter('/path/to/file.log'));
 
 $logger->begin();
