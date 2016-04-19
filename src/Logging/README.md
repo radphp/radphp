@@ -47,6 +47,20 @@ The log output is below:
 09/Apr/2016 11:18:55 UTC [DEBUG] Something did not work
 ```
 
+The log message may contain placeholders. Placeholder names must correspond to keys in the context array.
+Placeholder names must be delimited with a single opening brace `{` and a single closing brace `}`. There must not be any whitespace between the delimiters and the placeholder name.
+Placeholder names should be composed only of the characters `A-Z`, `a-z`, `0-9`, underscore `_`, and period `.`. The use of other characters is reserved for future modifications of the placeholders specification.
+
+The following is an example uses placeholder in log message:
+
+```PHP
+use Rad\Logging\Logger;
+use Rad\Logging\Adapter\FileAdapter;
+
+$logger = new Logger();
+$logger->attachAdapter(new FileAdapter('/path/to/file.log'));
+$logger->info('User "{user_id}" successfully logged in.', ['user_id' => 2]);
+```
 ### Transactions
 
 Transactions store log data temporarily in memory and later on write the data to all adapters.
