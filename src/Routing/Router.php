@@ -7,7 +7,6 @@ use Rad\Core\Bundles;
 use Rad\DependencyInjection\Container;
 use Rad\DependencyInjection\ContainerAwareInterface;
 use Rad\Network\Http\Request;
-use Rad\Utility\Inflection;
 
 /**
  * RadPHP Router
@@ -28,6 +27,11 @@ class Router implements ContainerAwareInterface
     protected $routingPhase;
     protected $prefix = [];
 
+    /**
+     * @var array List of REST prefixes to manipulate requests by REST standard
+     */
+    protected $restPrefixes = ['_'];
+
     const ROUTING_PHASE_INDEX = 1;
     const ROUTING_PHASE_METHOD = 2;
     const ROUTING_PHASE_ACTION = 3;
@@ -39,11 +43,13 @@ class Router implements ContainerAwareInterface
     const GEN_OPT_LANGUAGE = 'gen_opt_language';
     const GEN_OPT_WITH_PARAMS = 'gen_opt_with_params';
     const GEN_OPT_INC_DOMAIN = 'gen_opt_inc_domain';
+    const GEN_OPT_IS_REST = 'gen_opt_is_rest';
 
     protected $generateDefaultOption = [
         self::GEN_OPT_LANGUAGE => true,
         self::GEN_OPT_WITH_PARAMS => false,
-        self::GEN_OPT_INC_DOMAIN => true
+        self::GEN_OPT_INC_DOMAIN => true,
+        self::GEN_OPT_IS_REST => false
     ];
 
     /**
@@ -77,15 +83,7 @@ class Router implements ContainerAwareInterface
      */
     public function handle($uri = null)
     {
-        if (PHP_SAPI === 'cli') {
-            $method = 'cli';
-        } else {
-            /** @var Request $request */
-            $request = $this->getContainer()->get('request');
-            $method = $request->getMethod();
-        }
-
-        $method = ucfirst(strtolower($method)) . 'Method';
+        $method = $this->prepareMethodName();
 
         if (empty($uri)) {
             $uri = $this->getRewriteUri();
@@ -101,13 +99,10 @@ class Router implements ContainerAwareInterface
             }
         }
 
-        // check language
-        if (!empty($parts) && in_array($parts[0], Config::get('languages.possible', ['en']))) {
-            // We found the language, so set it as current language
-            $this->language = array_shift($parts);
-        } else {
-            $this->language = Config::get('languages.default', 'en');
-        }
+        $this->extractLanguage($parts);
+
+        // check if it is REST or not, then do what is required
+        $this->prepareRestRequest($parts);
 
         // Cleaning route parts & Rebase array keys
         $parts[] = strtolower(self::DEFAULT_ACTION);
@@ -115,7 +110,6 @@ class Router implements ContainerAwareInterface
 
         $camelizedParts = array_values(array_map('Rad\Utility\Inflection::camelize', $camelizedParts));
         $bundle = reset($camelizedParts);
-        Inflection::camelize($bundle);
         $bundles = array_intersect([$bundle, 'App'], Bundles::getLoaded());
 
         $matchedRoute = null;
@@ -150,19 +144,13 @@ class Router implements ContainerAwareInterface
                 $actionNamespace = implode('\\', $dummyCamelizedParts) . 'Action';
 
                 if (class_exists($actionNamespace)) {
-                    array_splice($dummyCamelizedParts, 1, 1, 'Responder');
-                    $responderNamespace =
-                        implode('\\', $dummyCamelizedParts) . 'Responder';
-
-                    $matchedRoute = [
-                        'namespace' => $actionNamespace,
-                        'responder' => $responderNamespace,
-                        'action' => ($this->routingPhase == self::ROUTING_PHASE_METHOD)
-                            ? $method
-                            : $dummyParts[count($dummyCamelizedParts) - 2],
-                        'bundle' => strtolower($bundleName),
-                        'params' => array_slice($dummyParts, count($dummyCamelizedParts) - 2, -1)
-                    ];
+                    $this->finalizeRouterArguments(
+                        $dummyParts,
+                        $dummyCamelizedParts,
+                        $actionNamespace,
+                        $bundleName,
+                        $method
+                    );
 
                     break 2;
                 }
@@ -185,16 +173,6 @@ class Router implements ContainerAwareInterface
                 }
             }
         }
-
-        if ($matchedRoute) {
-            $this->action = $matchedRoute['action'];
-            $this->bundle = $matchedRoute['bundle'];
-            $this->actionNamespace = $matchedRoute['namespace'];
-            $this->responderNamespace = $matchedRoute['responder'];
-            $this->params = $matchedRoute['params'];
-
-            $this->isMatched = true;
-        }
     }
 
     /**
@@ -213,7 +191,8 @@ class Router implements ContainerAwareInterface
         $options = [
             self::GEN_OPT_LANGUAGE => true,
             self::GEN_OPT_WITH_PARAMS => false,
-            self::GEN_OPT_INC_DOMAIN => true
+            self::GEN_OPT_INC_DOMAIN => true,
+            self::GEN_OPT_IS_REST => false
         ]
     ) {
         $result = [];
@@ -234,11 +213,9 @@ class Router implements ContainerAwareInterface
         $result = array_merge($result, $url);
 
         // add additional parameters
-        if (isset($options[self::GEN_OPT_WITH_PARAMS])) {
-            $addParams = $options[self::GEN_OPT_WITH_PARAMS];
-        } else {
-            $addParams = $this->generateDefaultOption[self::GEN_OPT_WITH_PARAMS];
-        }
+        $addParams = isset($options[self::GEN_OPT_WITH_PARAMS]) ?
+            $options[self::GEN_OPT_WITH_PARAMS] :
+            $this->generateDefaultOption[self::GEN_OPT_WITH_PARAMS];
 
         if ($addParams) {
             $result = array_merge($result, $this->params);
@@ -246,33 +223,37 @@ class Router implements ContainerAwareInterface
 
         $result = array_merge($this->prefix, $result);
 
-        // add language
-        if (isset($options[self::GEN_OPT_LANGUAGE])) {
-            $addLanguage = $options[self::GEN_OPT_LANGUAGE];
-        } else {
-            $addLanguage = $this->generateDefaultOption[self::GEN_OPT_LANGUAGE];
+        // add rest prefix
+        $isRest = isset($options[self::GEN_OPT_IS_REST]) ?
+            $options[self::GEN_OPT_IS_REST] :
+            $this->generateDefaultOption[self::GEN_OPT_IS_REST];
+
+        if ($isRest && isset($this->restPrefixes[0])) {
+            array_unshift($result, $this->restPrefixes[0]);
         }
+
+        // add language
+        $addLanguage = isset($options[self::GEN_OPT_LANGUAGE]) ?
+            $options[self::GEN_OPT_LANGUAGE] :
+            $this->generateDefaultOption[self::GEN_OPT_LANGUAGE];
 
         if ($addLanguage) {
             array_unshift($result, $this->language);
         }
 
         // include domain
-        if (isset($options[self::GEN_OPT_INC_DOMAIN])) {
-            $incDomain = $options[self::GEN_OPT_INC_DOMAIN];
-        } else {
-            $incDomain = $this->generateDefaultOption[self::GEN_OPT_INC_DOMAIN];
-        }
+        $incDomain = isset($options[self::GEN_OPT_INC_DOMAIN]) ?
+            $options[self::GEN_OPT_INC_DOMAIN] :
+            $this->generateDefaultOption[self::GEN_OPT_INC_DOMAIN];
 
         $result = '/' . implode('/', $result);
+        $result = preg_replace('#/+#', '/', $result);
 
         if ($incDomain && 'cli' !== PHP_SAPI) {
             /** @var Request $request */
             $request = $this->getContainer()->get('request');
             $result = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost() . $result;
         }
-
-        $result = preg_replace('#/+#', '/', $result);
 
         return $result;
     }
@@ -418,4 +399,157 @@ class Router implements ContainerAwareInterface
     {
         return $this->prefix;
     }
+
+    /**
+     * @return array
+     */
+    public function getRestPrefixes()
+    {
+        return $this->restPrefixes;
+    }
+
+    /**
+     * @param string|string[] $restPrefixes
+     */
+    public function setRestPrefixes($restPrefixes)
+    {
+        if (!is_array($restPrefixes)) {
+            $restPrefixes = [$restPrefixes];
+        }
+
+        $this->checkRestPrefixValidity($restPrefixes);
+
+        $this->restPrefixes = $restPrefixes;
+    }
+
+    /**
+     * @param string|string[] $restPrefixes
+     */
+    public function appendRestPrefixes($restPrefixes)
+    {
+        if (!is_array($restPrefixes)) {
+            $restPrefixes = [$restPrefixes];
+        }
+
+        $this->checkRestPrefixValidity($restPrefixes);
+
+        $this->restPrefixes = array_unique(array_merge($restPrefixes, $this->restPrefixes));
+    }
+
+    /**
+     * Check if REST prefixes are valid or not. It will throw exception on error
+     *
+     * @param array $restPrefixes REST prefixes
+     * @throws DomainException
+     */
+    private function checkRestPrefixValidity(array $restPrefixes) {
+        foreach ($restPrefixes as $prefix) {
+            if (!is_string($prefix)) {
+                throw new DomainException('All provided prefixes for REST must be string');
+            }
+
+            // if it has "/" in it
+            if (strpos('/', $prefix)) {
+                throw new DomainException('Prefixes must not contain "/"');
+            }
+        }
+    }
+
+    /**
+     * Prepare method name, choose between CLI and all other HTTP methods
+     *
+     * @return string Method name + "Method"
+     */
+    protected function prepareMethodName()
+    {
+        if (PHP_SAPI === 'cli') {
+            $method = 'cli';
+        } else {
+            /** @var Request $request */
+            $request = $this->getContainer()->get('request');
+            $method = $request->getMethod();
+        }
+
+        return ucfirst(strtolower($method)) . 'Method';
+    }
+
+    /**
+     * If route is prefixed with language, extract it
+     *
+     * @param array $parts router parts
+     */
+    protected function extractLanguage(array &$parts)
+    {
+        if (!empty($parts) && in_array($parts[0], Config::get('languages.possible', ['en']))) {
+            // We found the language, so set it as current language
+            $this->language = array_shift($parts);
+        } else {
+            $this->language = Config::get('languages.default', 'en');
+        }
+    }
+
+    /**
+     * Prepare REST requests
+     *
+     * @param array $parts router parts
+     */
+    protected function prepareRestRequest(array &$parts)
+    {
+        if (!empty($parts) && in_array($parts[0], $this->restPrefixes)) {
+            /*
+             * if the request is something like /_/posts/1/comments/2
+             * it will convert it to something like /posts/comments/1/2
+             */
+
+            // first remove the REST prefix
+            array_shift($parts);
+
+            $restRoute = $restParams = [];
+            $i = 1;
+
+            foreach ($parts as $part) {
+                if ($i % 2) {
+                    $restRoute[] = $part;
+                } else {
+                    $restParams[] = $part;
+                }
+
+                $i++;
+            }
+
+            $parts = array_merge($restRoute, $restParams);
+        }
+    }
+
+    /**
+     * Finalize and set all route parameters
+     *
+     * @param array  $parts           Router parts
+     * @param array  $camelizedParts  Camelized router parts
+     * @param string $actionNamespace Namespace
+     * @param string $bundleName      Bundle
+     * @param string $method          Method
+     */
+    private function finalizeRouterArguments(
+        array $parts,
+        array $camelizedParts,
+        $actionNamespace,
+        $bundleName,
+        $method
+    ) {
+        array_splice($camelizedParts, 1, 1, 'Responder');
+        $responderNamespace = implode('\\', $camelizedParts) . 'Responder';
+
+        $delta = ($this->routingPhase == self::ROUTING_PHASE_METHOD) ? 2 : 1;
+
+        $this->action = ($this->routingPhase == self::ROUTING_PHASE_METHOD)
+            ? $method
+            : $parts[count($camelizedParts) - 2];
+        $this->bundle = strtolower($bundleName);
+        $this->actionNamespace = $actionNamespace;
+        $this->responderNamespace = $responderNamespace;
+        $this->params = array_slice($parts, count($camelizedParts) - $delta, -1);
+
+        $this->isMatched = true;
+}
 }
