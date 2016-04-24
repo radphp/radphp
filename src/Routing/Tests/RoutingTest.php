@@ -57,7 +57,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->router->getResponderNamespace(), 'App\Responder\IndexResponder');
         $this->assertEquals($this->router->getAction(), 'index');
         $this->assertEquals($this->router->getBundle(), 'app');
-        //$this->assertEquals($this->router->getParams(), []);
+        $this->assertEquals($this->router->getParams(), []);
     }
 
     /**
@@ -71,7 +71,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\IndexResponder');
         $this->assertEquals($this->router->getAction(), 'index');
         $this->assertEquals($this->router->getBundle(), 'test');
-        //$this->assertEquals($this->router->getParams(), []);
+        $this->assertEquals($this->router->getParams(), []);
     }
 
     /**
@@ -79,13 +79,13 @@ class RoutingTest extends PHPUnit_Framework_TestCase
      */
     public function testBundleMethodUrlHandler()
     {
-        $this->router->handle('/test/method/');
+        $this->router->handle('/test/method/param1');
 
         $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Method\CliMethodAction');
         $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Method\CliMethodResponder');
         $this->assertEquals($this->router->getAction(), 'CliMethod');
         $this->assertEquals($this->router->getBundle(), 'test');
-        //$this->assertEquals($this->router->getParams(), []);
+        $this->assertEquals($this->router->getParams(), ['param1']);
     }
 
     /**
@@ -99,7 +99,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\TestResponder');
         $this->assertEquals($this->router->getAction(), 'test');
         $this->assertEquals($this->router->getBundle(), 'test');
-        //$this->assertEquals($this->router->getParams(), []);
+        $this->assertEquals($this->router->getParams(), []);
     }
 
     /**
@@ -113,6 +113,174 @@ class RoutingTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\TestResponder');
         $this->assertEquals($this->router->getAction(), 'test');
         $this->assertEquals($this->router->getBundle(), 'test');
-        //$this->assertEquals($this->router->getParams(), ['param1', 'param2']);
+        $this->assertEquals($this->router->getParams(), ['param1', 'param2']);
+    }
+
+    /**
+     * Test bundle with method URL handler behaviours
+     */
+    public function testBundleMethodParamsUrlHandler()
+    {
+        $this->router->handle('/test/method/param1/param2');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Method\CliMethodAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Method\CliMethodResponder');
+        $this->assertEquals($this->router->getAction(), 'CliMethod');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), ['param1', 'param2']);
+    }
+
+    /**
+     * Test bundle only in subdirectory URL handler behaviours
+     */
+    public function testBundleSubdirUrlHandler()
+    {
+        $this->router->handle('/test/subdir/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Subdir\IndexAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Subdir\IndexResponder');
+        $this->assertEquals($this->router->getAction(), 'index');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), []);
+    }
+
+    /**
+     * Test bundle in subdirectory with method URL handler behaviours
+     */
+    public function testBundleSubdirMethodUrlHandler()
+    {
+        $this->router->handle('/test/subdir/method/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Subdir\Method\CliMethodAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Subdir\Method\CliMethodResponder');
+        $this->assertEquals($this->router->getAction(), 'CliMethod');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), []);
+    }
+
+    /**
+     * Test bundle and action in subdirectory URL handler behaviours
+     */
+    public function testBundleSubdirActionUrlHandler()
+    {
+        $this->router->handle('/test/subdir/test/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Subdir\TestAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Subdir\TestResponder');
+        $this->assertEquals($this->router->getAction(), 'test');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), []);
+    }
+
+    /**
+     * Test bundle and action in subdirectory and params URL handler behaviours
+     */
+    public function testBundleSubdirActionParamsUrlHandler()
+    {
+        $this->router->handle('/test/subdir/test/param1/param2/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Subdir\TestAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Subdir\TestResponder');
+        $this->assertEquals($this->router->getAction(), 'test');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), ['param1', 'param2']);
+    }
+
+    /**
+     * Test bundle with method in subdirectory URL handler behaviours
+     */
+    public function testBundleSubdirMethodParamsUrlHandler()
+    {
+        $this->router->handle('/test/subdir/method/param1/param2');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Subdir\Method\CliMethodAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Subdir\Method\CliMethodResponder');
+        $this->assertEquals($this->router->getAction(), 'CliMethod');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), ['param1', 'param2']);
+    }
+
+    /**
+     * Test root URL handler behaviours + language
+     */
+    public function testLangRootUrlHandler()
+    {
+        $this->router->handle('/en/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'App\Action\IndexAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'App\Responder\IndexResponder');
+        $this->assertEquals($this->router->getAction(), 'index');
+        $this->assertEquals($this->router->getBundle(), 'app');
+        $this->assertEquals($this->router->getParams(), []);
+    }
+
+    /**
+     * Test bundle only URL handler behaviours + language
+     */
+    public function testLangBundleUrlHandler()
+    {
+        $this->router->handle('/en/test/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\IndexAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\IndexResponder');
+        $this->assertEquals($this->router->getAction(), 'index');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), []);
+    }
+
+    /**
+     * Test bundle with method URL handler behaviours + language
+     */
+    public function testLangBundleMethodUrlHandler()
+    {
+        $this->router->handle('/en/test/method/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Method\CliMethodAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Method\CliMethodResponder');
+        $this->assertEquals($this->router->getAction(), 'CliMethod');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), []);
+    }
+
+    /**
+     * Test bundle and action URL handler behaviours + language
+     */
+    public function testLangBundleActionUrlHandler()
+    {
+        $this->router->handle('/en/test/test/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\TestAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\TestResponder');
+        $this->assertEquals($this->router->getAction(), 'test');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), []);
+    }
+
+    /**
+     * Test bundle and action and params URL handler behaviours + language
+     */
+    public function testLangBundleActionParamsUrlHandler()
+    {
+        $this->router->handle('/en/test/test/param1/param2/');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\TestAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\TestResponder');
+        $this->assertEquals($this->router->getAction(), 'test');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), ['param1', 'param2']);
+    }
+
+    /**
+     * Test bundle with method URL handler behaviours
+     */
+    public function testLangBundleMethodParamsUrlHandler()
+    {
+        $this->router->handle('/en/test/method/param1/param2');
+
+        $this->assertEquals($this->router->getActionNamespace(), 'Test\Action\Method\CliMethodAction');
+        $this->assertEquals($this->router->getResponderNamespace(), 'Test\Responder\Method\CliMethodResponder');
+        $this->assertEquals($this->router->getAction(), 'CliMethod');
+        $this->assertEquals($this->router->getBundle(), 'test');
+        $this->assertEquals($this->router->getParams(), ['param1', 'param2']);
     }
 }
