@@ -179,15 +179,12 @@ class Request extends ServerRequest
             $address = $this->getServer('REMOTE_ADDR');
         }
 
-        if (is_string($address)) {
-            if ($addresses = explode(',', $address)) {
-                return $addresses[0];
-            }
-
-            return $address;
+        if ($address) {
+            $addresses = explode(',', $address);
+            return $addresses[0];
         }
 
-        return false;
+        return '';
     }
 
     /**
