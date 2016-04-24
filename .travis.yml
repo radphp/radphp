@@ -21,8 +21,7 @@ script:
   - bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_script:
-- php bin/coveralls -v
-- echo "all" | bin/phing update-components 
+- php bin/coveralls -v 
 
 notifications:
   email: false
