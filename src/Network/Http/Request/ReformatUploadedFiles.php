@@ -49,6 +49,6 @@ class ReformatUploadedFiles extends ArrayObject
             return new self($files);
         }
 
-        return $entry;
+        return new self($entry);
     }
 }

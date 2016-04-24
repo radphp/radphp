@@ -170,7 +170,7 @@ class Uri implements UriInterface
         $newInstance = clone $this;
 
         if ($user) {
-            if ($password) {
+            if (is_string($password) && $password) {
                 $newInstance->userInfo = $user . ':' . $password;
             } else {
                 $newInstance->userInfo = $user;

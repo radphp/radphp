@@ -16,6 +16,7 @@ use Rad\Network\Session;
 use Rad\Network\Session\Flash\FlashBag;
 use Rad\Routing\Dispatcher;
 use Rad\Routing\Router;
+use ReflectionClass;
 
 /**
  * Action
@@ -124,9 +125,10 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
         $namespace = $router->getResponderNamespace();
 
         if (class_exists($namespace)) {
-            if (!is_subclass_of($namespace, 'App\Responder\AppResponder')) {
+            $reflection = new ReflectionClass($namespace);
+            if (!$reflection->implementsInterface('App\Responder\AppResponder')) {
                 throw new BaseException(
-                    sprintf('Your "%s" responder must be extended "App\Responder\AppResponder".', $namespace)
+                    sprintf('"%s" responder must extend "App\Responder\AppResponder".', $namespace)
                 );
             }
 

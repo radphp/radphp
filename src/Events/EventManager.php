@@ -86,10 +86,10 @@ class EventManager
     /**
      * Dispatch event
      *
-     * @param string $eventType
-     * @param null   $subject
-     * @param null   $data
-     * @param bool   $cancelable
+     * @param string      $eventType
+     * @param null|object $subject
+     * @param mixed       $data
+     * @param bool        $cancelable
      *
      * @return Event
      */

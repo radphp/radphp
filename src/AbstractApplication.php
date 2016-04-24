@@ -25,6 +25,7 @@ use Rad\Network\Http\Request;
 use Rad\Network\Http\Response;
 use Rad\Routing\Dispatcher;
 use Rad\Routing\Router;
+use ReflectionClass;
 
 /**
  * RadPHP Application
@@ -172,9 +173,10 @@ abstract class AbstractApplication
             $cliConfig = 'cliConfig';
             $actionNamespace = $this->getRouter()->getActionNamespace();
 
-            if (!is_subclass_of($actionNamespace, 'App\Action\AppAction')) {
+            $reflection = new ReflectionClass($actionNamespace);
+            if (!$reflection->implementsInterface('App\Action\AppAction')) {
                 throw new BaseException(
-                    sprintf('Action "%s" does not extend App\Action\AppAction', $actionNamespace)
+                    sprintf('"%s" action must extend "App\Action\AppAction"', $actionNamespace)
                 );
             }
 
@@ -182,9 +184,10 @@ abstract class AbstractApplication
             if (method_exists($actionNamespace, $cliMethod) && is_callable([$actionNamespace, $cliMethod])) {
                 $responderNamespace = $this->getRouter()->getResponderNamespace();
                 $responder = null;
-
+                
+                $reflection = new ReflectionClass($responderNamespace);
                 if (class_exists($responderNamespace) &&
-                    is_subclass_of($responderNamespace, 'App\Responder\AppResponder')
+                    $reflection->implementsInterface('App\Responder\AppResponder')
                 ) {
                     $responder = new $responderNamespace();
                 }
