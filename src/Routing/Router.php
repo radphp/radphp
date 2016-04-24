@@ -441,7 +441,8 @@ class Router implements ContainerAwareInterface
      * @param array $restPrefixes REST prefixes
      * @throws DomainException
      */
-    private function checkRestPrefixValidity(array $restPrefixes) {
+    private function checkRestPrefixValidity(array $restPrefixes)
+    {
         foreach ($restPrefixes as $prefix) {
             if (!is_string($prefix)) {
                 throw new DomainException('All provided prefixes for REST must be string');
@@ -550,5 +551,5 @@ class Router implements ContainerAwareInterface
         $this->params = array_slice($parts, count($camelizedParts) - $delta, -1);
 
         $this->isMatched = true;
-}
+    }
 }
