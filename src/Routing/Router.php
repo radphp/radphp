@@ -199,7 +199,7 @@ class Router implements ContainerAwareInterface
             $url = [$url];
         }
 
-        if (!$url) {
+        if (empty($url)) {
             $result = [$this->bundle];
 
             // set action only if it is in action routing mode
@@ -212,47 +212,21 @@ class Router implements ContainerAwareInterface
         $result = array_merge($result, $url);
 
         // add additional parameters
-        $addParams = isset($options[self::GEN_OPT_WITH_PARAMS]) ?
-            $options[self::GEN_OPT_WITH_PARAMS] :
-            $this->generateDefaultOption[self::GEN_OPT_WITH_PARAMS];
-
-        if ($addParams) {
-            $result = array_merge($result, $this->params);
-        }
+        $this->genAddParameters($options, $result);
 
         $result = array_merge($this->prefix, $result);
 
         // add rest prefix
-        $isRest = isset($options[self::GEN_OPT_IS_REST]) ?
-            $options[self::GEN_OPT_IS_REST] :
-            $this->generateDefaultOption[self::GEN_OPT_IS_REST];
-
-        if ($isRest && isset($this->restPrefixes[0])) {
-            array_unshift($result, $this->restPrefixes[0]);
-        }
+        $this->genRestPrefix($options, $result);
 
         // add language
-        $addLanguage = isset($options[self::GEN_OPT_LANGUAGE]) ?
-            $options[self::GEN_OPT_LANGUAGE] :
-            $this->generateDefaultOption[self::GEN_OPT_LANGUAGE];
-
-        if ($addLanguage) {
-            array_unshift($result, $this->language);
-        }
-
-        // include domain
-        $incDomain = isset($options[self::GEN_OPT_INC_DOMAIN]) ?
-            $options[self::GEN_OPT_INC_DOMAIN] :
-            $this->generateDefaultOption[self::GEN_OPT_INC_DOMAIN];
+        $this->genAddLanguage($options, $result);
 
         $result = '/' . implode('/', $result);
         $result = preg_replace('#/+#', '/', $result);
 
-        if ($incDomain && 'cli' !== PHP_SAPI) {
-            /** @var Request $request */
-            $request = $this->getContainer()->get('request');
-            $result = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost() . $result;
-        }
+        // include domain
+        $this->genAddDomain($options, $result);
 
         return $result;
     }
@@ -551,5 +525,67 @@ class Router implements ContainerAwareInterface
         $this->params = array_slice($parts, count($camelizedParts) - $delta, -1);
 
         $this->isMatched = true;
+    }
+
+    /**
+     * @param $options
+     * @param $result
+     */
+    private function genAddParameters(&$options, &$result)
+    {
+        $addParams = isset($options[self::GEN_OPT_WITH_PARAMS]) ?
+            $options[self::GEN_OPT_WITH_PARAMS] :
+            $this->generateDefaultOption[self::GEN_OPT_WITH_PARAMS];
+
+        if ($addParams) {
+            $result = array_merge($result, $this->params);
+        }
+    }
+
+    /**
+     * @param $options
+     * @param $result
+     */
+    private function genRestPrefix(&$options, &$result)
+    {
+        $isRest = isset($options[self::GEN_OPT_IS_REST]) ?
+            $options[self::GEN_OPT_IS_REST] :
+            $this->generateDefaultOption[self::GEN_OPT_IS_REST];
+
+        if ($isRest && isset($this->restPrefixes[0])) {
+            array_unshift($result, $this->restPrefixes[0]);
+        }
+    }
+
+    /**
+     * @param $options
+     * @param $result
+     */
+    private function genAddLanguage(&$options, &$result)
+    {
+        $addLanguage = isset($options[self::GEN_OPT_LANGUAGE]) ?
+            $options[self::GEN_OPT_LANGUAGE] :
+            $this->generateDefaultOption[self::GEN_OPT_LANGUAGE];
+
+        if ($addLanguage) {
+            array_unshift($result, $this->language);
+        }
+    }
+
+    /**
+     * @param $options
+     * @param $result
+     */
+    private function genAddDomain($options, &$result)
+    {
+        $incDomain = isset($options[self::GEN_OPT_INC_DOMAIN]) ?
+            $options[self::GEN_OPT_INC_DOMAIN] :
+            $this->generateDefaultOption[self::GEN_OPT_INC_DOMAIN];
+
+        if ($incDomain && 'cli' !== PHP_SAPI) {
+            /** @var Request $request */
+            $request = $this->getContainer()->get('request');
+            $result = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost() . $result;
+        }
     }
 }
