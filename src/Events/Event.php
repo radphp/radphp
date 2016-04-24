@@ -19,10 +19,10 @@ class Event
     /**
      * Rad\Event\Event constructor
      *
-     * @param string $type       Event type
-     * @param null   $subject    Subject
-     * @param mixed  $data       Data
-     * @param bool   $cancelable Event is cancelable
+     * @param string      $type       Event type
+     * @param null|object $subject    Subject
+     * @param mixed       $data       Data
+     * @param bool        $cancelable Event is cancelable
      */
     public function __construct($type, $subject = null, $data = null, $cancelable = true)
     {

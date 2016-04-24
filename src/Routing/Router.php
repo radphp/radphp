@@ -112,7 +112,6 @@ class Router implements ContainerAwareInterface
         $bundle = reset($camelizedParts);
         $bundles = array_intersect([$bundle, 'App'], Bundles::getLoaded());
 
-        $matchedRoute = null;
         foreach ($bundles as $bundleName) {
             // reset manipulation parameters
             $dummyCamelizedParts = $camelizedParts;
