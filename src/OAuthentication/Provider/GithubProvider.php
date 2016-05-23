@@ -143,6 +143,7 @@ class GithubProvider extends AbstractOAuthProvider
                 'client_id' => $this->getClientId(),
                 'redirect_uri' => $this->getRedirectUri(),
                 'scope' => implode($this->scopeDelimiter, $this->getScopes()),
+                'state' => $this->getState()
             ]
         );
 
