@@ -25,7 +25,7 @@ guard-%:
 	fi
 
 components: $(foreach COMPONENT, $(COMPONENTS), component-$(COMPONENT))
-.components-tag: $(foreach COMPONENT, $(COMPONENTS), tag-component-$(COMPONENT))
+components-tag: $(foreach COMPONENT, $(COMPONENTS), tag-component-$(COMPONENT))
 
 component-%:
 	$(eval BRANCH_NAME=subtree-$*)
