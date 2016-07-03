@@ -30,6 +30,7 @@ components-tag: $(foreach COMPONENT, $(COMPONENTS), tag-component-$(COMPONENT))
 component-%:
 	$(eval BRANCH_NAME=subtree-$*)
 
+	@git checkout $(DEFAULT_BRANCH) > /dev/null
 	@echo 'Split "$*" into "subtree-$*" branch'
 	git subtree split --prefix=src/$(shell php -r "echo str_replace('-', '', ucwords('$*', '-'));") -b $(BRANCH_NAME)
 	@echo ''
