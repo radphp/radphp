@@ -55,7 +55,7 @@ tag-component-%: guard-VERSION guard-GPG_KEY_ID component-%
 	git push $* --tags
 
 	# Delete tag to create on other subtree
-	git tag -d $(VERSION)
+	git tag -d v$(VERSION)
 
 tag-release: guard-VERSION
 	@echo "Tagging $(VERSION)"
