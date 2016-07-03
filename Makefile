@@ -63,4 +63,4 @@ tag-release: guard-VERSION
 	git push origin
 	git push origin --tags
 
-release: guard-VERSION guard-GPG_KEY_ID tag-release components-tag
+release: guard-VERSION guard-GPG_KEY_ID components-tag tag-release
