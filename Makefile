@@ -58,6 +58,8 @@ tag-component-%: guard-VERSION guard-GPG_KEY_ID component-%
 	# Delete tag to create on other subtree
 	git tag -d v$(VERSION)
 
+	@git checkout $(DEFAULT_BRANCH) > /dev/null
+
 tag-release: guard-VERSION
 	@echo "Tagging $(VERSION)"
 	git tag -s -u $(GPG_KEY_ID) v$(VERSION) -m "RadPHP version $(VERSION)"
