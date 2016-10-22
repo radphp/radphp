@@ -3,9 +3,6 @@
 namespace Rad\Configure;
 
 use ArrayAccess;
-use JsonSerializable;
-use Rad\Configure\Engine\PhpConfig;
-use Rad\Core\SingletonTrait;
 use Serializable;
 
 /**
@@ -15,147 +12,33 @@ use Serializable;
  *
  * @package Rad\Configure
  */
-class Config implements ArrayAccess, Serializable, JsonSerializable
+class Config implements ArrayAccess, Serializable
 {
-    use SingletonTrait;
-
-    /**
-     * Store config
-     *
-     * @var array
-     */
-    protected static $container = [];
-
-    /**
-     * Store registered engine
-     *
-     * @var EngineInterface[]
-     */
-    protected static $engines = [];
+    use ConfigurableTrait {
+        load as private internalLoad;
+    }
 
     /**
      * Load config
      *
-     * @param mixed  $config     Config data for passed to engine load method
-     * @param string $engineName Engine registered name
-     * @param bool   $merge      Is config merged or overwrite
-     *
-     * @return bool
+     * @param LoaderInterface $loader Config loader
+     * @param bool            $merge  Is config merged or overwrite
      */
-    public static function load($config, $engineName = 'default', $merge = true)
+    public function load(LoaderInterface $loader, $merge = true)
     {
-        if ($engine = self::getEngine($engineName)) {
-            if ($merge) {
-                self::mergeConfig($engine->load($config), self::$container);
-            } else {
-                self::$container = $engine->load($config);
-            }
-
-            return true;
-        } else {
-            return false;
-        }
+        $this->internalLoad($loader->load(), $merge);
     }
 
     /**
      * Dump config
      *
-     * @param  string $file       File path for save config
-     * @param string  $engineName Engine name for use in dump
+     * @param DumperInterface $dumper Config dumper
      *
      * @return bool
      */
-    public static function dump($file, $engineName = 'default')
+    public function dump(DumperInterface $dumper)
     {
-        if ($engine = self::getEngine($engineName)) {
-            return $engine->dump($file, self::$container);
-        }
-
-        return false;
-    }
-
-    /**
-     * Set config
-     *
-     * @param string $identifier Parameter name.
-     * @param mixed  $value      Value to set
-     */
-    public static function set($identifier, $value)
-    {
-        $ids = explode('.', $identifier);
-        $base = &self::$container;
-
-        while ($current = array_shift($ids)) {
-            if (is_array($base) && array_key_exists($current, $base)) {
-                $base = &$base[$current];
-            } else {
-                $base[$current] = [];
-                $base = &$base[$current];
-            }
-        }
-
-        $base = $value;
-    }
-
-    /**
-     * Get config
-     *
-     * @param string $identifier Parameter name.
-     * @param null   $default    Default value
-     *
-     * @return array|null
-     */
-    public static function get($identifier, $default = null)
-    {
-        $value = self::getInternal($identifier);
-
-        if (is_null($value)) {
-            return $default;
-        }
-
-        return $value;
-    }
-
-    /**
-     * Indicates whether parameter exists or not
-     *
-     * @param string $identifier Parameter name.
-     *
-     * @return bool
-     */
-    public static function has($identifier)
-    {
-        return self::getInternal($identifier) !== null;
-    }
-
-    /**
-     * Register engine
-     *
-     * @param string          $name   Engine name
-     * @param EngineInterface $engine Engine instance
-     */
-    public static function registerEngine($name, EngineInterface $engine)
-    {
-        self::$engines[$name] = $engine;
-    }
-
-    /**
-     * Get engine
-     *
-     * @param string $name Engine name
-     *
-     * @return bool|EngineInterface
-     */
-    protected static function getEngine($name)
-    {
-        if (!isset(self::$engines[$name])) {
-            if ($name !== 'default') {
-                return false;
-            }
-            self::registerEngine($name, new PhpConfig());
-        }
-
-        return self::$engines[$name];
+        return $dumper->dump($this->configsContainer);
     }
 
     /**
@@ -182,7 +65,7 @@ class Config implements ArrayAccess, Serializable, JsonSerializable
      */
     public function offsetGet($offset)
     {
-        return $this->getInternal($offset);
+        return $this->get($offset);
     }
 
     /**
@@ -196,7 +79,7 @@ class Config implements ArrayAccess, Serializable, JsonSerializable
      */
     public function offsetSet($offset, $value)
     {
-        self::set($offset, $value);
+        $this->set($offset, $value);
     }
 
     /**
@@ -213,52 +96,6 @@ class Config implements ArrayAccess, Serializable, JsonSerializable
     }
 
     /**
-     * Retrieves parameter
-     *
-     * @param string $identifier Parameter name.
-     *
-     * @return array|null
-     */
-    protected static function getInternal($identifier)
-    {
-        $ids = explode('.', $identifier);
-        $base = &self::$container;
-
-        while ($current = array_shift($ids)) {
-            if (is_array($base) && array_key_exists($current, $base)) {
-                $base = &$base[$current];
-            } else {
-                return null;
-            }
-        }
-
-        $result = $base;
-
-        return $result;
-    }
-
-    /**
-     * Merge config
-     *
-     * @param mixed $newData
-     * @param array $baseConfig
-     */
-    protected static function mergeConfig($newData, &$baseConfig)
-    {
-        if (is_array($newData)) {
-            foreach ($newData as $key => $value) {
-                if (isset($baseConfig[$key])) {
-                    self::mergeConfig($value, $baseConfig[$key]);
-                } else {
-                    $baseConfig[$key] = $value;
-                }
-            }
-        } else {
-            $baseConfig = $newData;
-        }
-    }
-
-    /**
      * String representation of object
      *
      * @link http://php.net/manual/en/serializable.serialize.php
@@ -266,7 +103,7 @@ class Config implements ArrayAccess, Serializable, JsonSerializable
      */
     public function serialize()
     {
-        return serialize(self::$container);
+        return serialize($this->configsContainer);
     }
 
     /**
@@ -279,18 +116,6 @@ class Config implements ArrayAccess, Serializable, JsonSerializable
      */
     public function unserialize($serialized)
     {
-        self::$container = unserialize($serialized);
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     *
-     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by "json_encode",
-     *       which is a value of any type other than a resource.
-     */
-    public function jsonSerialize()
-    {
-        return self::$container;
+        $this->configsContainer = unserialize($serialized);
     }
 }

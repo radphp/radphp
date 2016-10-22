@@ -4,6 +4,9 @@ namespace Rad\Configure\Tests;
 
 use PHPUnit_Framework_TestCase;
 use Rad\Configure\Config;
+use Rad\Configure\Dumper\PhpDumper;
+use Rad\Configure\Exception;
+use Rad\Configure\Loader\PhpLoader;
 
 /**
  * Config Test
@@ -23,110 +26,185 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test load config file
-     */
-    public function testLoad()
-    {
-        $this->assertTrue(Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php'));
-        $this->assertEquals(Config::get('foo'), 'bar');
-
-        Config::load(self::$fixtures . '/Engine/PhpConfig/other_config.php');
-        $this->assertEquals(Config::get('key2.sub-key1.sub-sub-key2'), 'changed-val2');
-
-        Config::load(self::$fixtures . '/Engine/PhpConfig/other_config.php', 'default', false);
-        $this->assertNotEquals(Config::get('foo'), 'bar');
-
-        $this->assertFalse(Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php', 'not_exists_engine'));
-    }
-
-    /**
-     * Test dump config file
-     */
-    public function testDump()
-    {
-        Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php');
-        $tmpFile = tempnam(sys_get_temp_dir(), 'TestConfigure');
-
-        $this->assertFalse(Config::dump($tmpFile, 'not_exists_engine'));
-        $this->assertTrue(Config::dump($tmpFile));
-
-        Config::load($tmpFile, 'default', false);
-        $this->assertEquals(Config::get('key2.sub-key1.sub-sub-key2'), 'val2');
-    }
-
-    /**
-     * Test set config
+     * testSet
      */
     public function testSet()
     {
-        Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php');
-        Config::set('foo', 'new-bar');
-        $this->assertEquals(Config::get('foo'), 'new-bar');
+        $config = new Config();
 
-        Config::set('key1.sub-key1', 'new-val1');
-        $this->assertEquals(Config::get('key1.sub-key1'), 'new-val1');
+        $config->set('key.exists', 'ok');
+        $this->assertEquals('ok', $config->get('key.exists'));
 
-        Config::set('key1.sub-new-key1', 'val1');
-        $this->assertEquals(Config::get('key1.sub-new-key1'), 'val1');
+        $config['debug'] = true;
+        $this->assertTrue($config->get('debug'));
+
+        $expected = [
+            'key1' => [
+                'sub-key1' => [
+                    'sub-sub-key1' => [
+                        'sub-sub-sub-key1' => [
+                            'sub-sub-sub-sub-key1' => 'Hi!!!'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $config->set('key', $expected);
+        $result = $config->get('key');
+        $this->assertEquals($expected, $result);
+        $this->assertEquals($expected['key1'], $config->get('key.key1'));
+        $this->assertEquals($expected['key1']['sub-key1'], $config->get('key.key1.sub-key1'));
+        $this->assertEquals(
+            'Hi!!!',
+            $config->get('key.key1.sub-key1.sub-sub-key1.sub-sub-sub-key1.sub-sub-sub-sub-key1')
+        );
     }
 
     /**
-     * Test get config
+     * testGet
      */
     public function testGet()
     {
-        Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php');
-        $this->assertEquals(Config::get('foo'), 'bar');
-        $this->assertEquals(Config::get('key0', 'defaultValue'), 'defaultValue');
+        $config = new Config();
+
+        $config->set('key1.sub-key1.sub-sub-key1', 'ok');
+        $config->set('key1.sub-key1.sub-sub-key2', 'something_else');
+        $this->assertEquals($config->get('key1.sub-key1.sub-sub-key1'), 'ok');
+        $this->assertEquals('something_else', $config->get('key1.sub-key1.sub-sub-key2'));
+
+        $this->assertTrue(is_array($config['key1']));
+        $this->assertTrue(isset($config['key1']));
+
+        $this->assertNull($config->get('key2'), 'Missing key should return null.');
     }
 
     /**
-     * Test has exist identifier
+     * testLoad
+     */
+    public function testLoad()
+    {
+        $config = new Config();
+        $config->load(new PhpLoader(['debug' => true]));
+
+        $this->assertEquals($config->get('debug'), true, 'Should load PHP array.');
+        $this->assertNotEquals($config->get('debug'), 'true', 'Should not change value type.');
+    }
+
+    /**
+     * testLoadWithMerge
+     */
+    public function testLoadWithMerge()
+    {
+        $config = new Config();
+
+        $config->load(new PhpLoader(self::$fixtures . '/base_config.php'));
+        $this->assertEquals('val2', $config->get('key2.sub-key1.sub-sub-key2'), 'Should load PHP config file.');
+
+        $config->load(new PhpLoader(self::$fixtures . '/other_config.php'));
+        $this->assertEquals(
+            $config->get('key2.sub-key1.sub-sub-key2'),
+            'changed-val2',
+            'Should merge new config with old config.'
+        );
+    }
+
+    /**
+     * testLoadWithoutMerge
+     */
+    public function testLoadWithoutMerge()
+    {
+        $config = new Config();
+
+        $config->load(new PhpLoader(self::$fixtures . '/base_config.php'));
+        $this->assertEquals('bar', $config->get('foo'));
+
+        $config->load(new PhpLoader(self::$fixtures . '/other_config.php'), false);
+        $this->assertNull($config->get('foo'));
+    }
+
+    /**
+     * testDump
+     */
+    public function testDump()
+    {
+        $config = new Config();
+        $tmpFile = tempnam(sys_get_temp_dir(), 'TestConfigure');
+
+        $config->load(new PhpLoader(self::$fixtures . '/base_config.php'));
+        $this->assertTrue($config->dump(new PhpDumper($tmpFile)));
+
+        $config->load(new PhpLoader($tmpFile), false);
+        $this->assertEquals('val2', $config->get('key2.sub-key1.sub-sub-key2'));
+    }
+
+    /**
+     * testHas
      */
     public function testHas()
     {
-        Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php');
-        $this->assertTrue(Config::has('foo'));
-        $this->assertFalse(Config::has('not-exists-key'));
+        $config = new Config();
+        $config->load(new PhpLoader(self::$fixtures . '/base_config.php'));
+        $this->assertTrue($config->has('foo'));
+        $this->assertFalse($config->has('not-exists-key'));
     }
 
     /**
-     * Test array access interface
+     * testHasSavedEmpty
      */
-    public function testArrayAccessInterface()
+    public function testHasSavedEmpty()
     {
-        Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php');
-        $configObject = Config::getInstance();
+        $config = new Config();
 
-        $this->assertTrue(isset($configObject['foo']));
-        $this->assertEquals($configObject['foo'], 'bar');
+        $config->set('key', 0);
+        $this->assertTrue($config->has('key'));
 
-        $configObject['foo'] = 'new-bar';
-        $this->assertEquals($configObject['foo'], 'new-bar');
+        $config->set('key', '0');
+        $this->assertTrue($config->has('key'));
 
-        $this->setExpectedExceptionRegExp('Rad\Configure\Exception', '/Can not unset value/');
-        unset($configObject['foo']);
+        $config->set('key', false);
+        $this->assertTrue($config->has('key'));
+
+        $config->set('key', null);
+        $this->assertFalse($config->has('key'));
     }
 
     /**
-     * Test serializable interface
+     * testHasKeyWithSpaces
+     */
+    public function testHasKeyWithSpaces()
+    {
+        $config = new Config();
+
+        $config->set('config key', 'value');
+        $this->assertTrue($config->has('config key'));
+
+        $config->set('config key.test KEY', 'test value');
+        $this->assertTrue($config->has('config key.test KEY'));
+    }
+
+    /**
+     * testUnsetIdentifierThrowingException
+     *
+     * @expectedException Exception
+     * @expectedExceptionMessage Can not unset value
+     */
+    public function testUnsetIdentifierThrowingException()
+    {
+        $config = new Config();
+
+        $config->set('foo', 'bar');
+        unset($config['foo']);
+    }
+
+    /**
+     * testSerializableInterface
      */
     public function testSerializableInterface()
     {
-        Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php');
-        $configObject = unserialize(serialize(Config::getInstance()));
+        $config = new Config();
+        $config->load(new PhpLoader(self::$fixtures . '/base_config.php'));
+        $config = unserialize(serialize($config));
 
-        $this->assertEquals($configObject['foo'], 'bar');
-    }
-
-    /**
-     * Test json serialize interface
-     */
-    public function testJsonSerializeInterface()
-    {
-        Config::load(self::$fixtures . '/Engine/PhpConfig/base_config.php');
-        $configArray = json_decode(json_encode(Config::getInstance()), true);
-
-        $this->assertEquals($configArray['foo'], 'bar');
+        $this->assertEquals($config['foo'], 'bar');
     }
 }
