@@ -18,7 +18,6 @@
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "~5.1",
-        "phing/phing": "^2.12.0",
         "squizlabs/php_codesniffer": "dev-master"
     },
     "require": {
