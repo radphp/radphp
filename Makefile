@@ -69,13 +69,13 @@ tag-release: guard-VERSION
 release: guard-VERSION guard-GPG_KEY_ID components-tag tag-release
 
 generate-api:
-	REPOSITORY='https://${GH_TOKEN}@github.com/radphp/radphp.git'
-	API_BRANCH=gh-pages
-	BUILD_DIR=./gh-pages
-	GIT_AUTHOR_NAME=Travis
-	GIT_AUTHOR_EMAIL='travis@travis-ci.org'
-	curl -SLO http://www.apigen.org/apigen.phar
+	$(eval REPOSITORY=https://${GH_TOKEN}@github.com/radphp/radphp.git)
+	$(eval API_BRANCH=gh-pages)
+	$(eval BUILD_DIR=./gh-pages)
+	$(eval GIT_AUTHOR_NAME=Travis)
+	$(eval GIT_AUTHOR_EMAIL=travis@travis-ci.org)
 
+	curl -SLO http://www.apigen.org/apigen.phar
 	git clone $(REPOSITORY) $(BUILD_DIR) --branch $(API_BRANCH) --depth 1
 	php apigen.phar generate -s ./src -d $(BUILD_DIR)
 
