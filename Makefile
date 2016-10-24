@@ -77,7 +77,7 @@ generate-api:
 
 	curl -SLO http://www.apigen.org/apigen.phar
 	git clone $(REPOSITORY) $(BUILD_DIR) --branch $(API_BRANCH) --depth 1
-	php apigen.phar generate -s ./src -d $(BUILD_DIR)
+	yes | php apigen.phar generate -s ./src -d $(BUILD_DIR)
 
 	cd $(BUILD_DIR) || exit 1
 	git add .
