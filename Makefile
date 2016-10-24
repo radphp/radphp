@@ -79,8 +79,9 @@ generate-api:
 	cat $(BUILD_DIR)/.git/config
 
 	cd $(BUILD_DIR) || exit 1 \
-	&& git config user.email "travis@travis-ci.org" \
-	&& git config user.name "Travis" \
+	&& git remote set-url origin https://${GH_TOKEN}@github.com/radphp/radphp.git \
+	&& git config user.email "m.abdolirad@gmail.com" \
+	&& git config user.name "Mohammad Abdoli Rad" \
 	&& git add . \
 	&& git commit -m "Generate API" \
 	&& git push origin $(API_BRANCH) -fq > /dev/null
