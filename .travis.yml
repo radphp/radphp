@@ -18,9 +18,15 @@ script:
 - bin/phpunit --coverage-clover build/logs/clover.xml
 after_script:
 - php bin/coveralls -v
-- if  [ $TRAVIS_PHP_VERSION = '5.6' ] && [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ]; then make generate-api; fi
+deploy:
+  provider: script
+  script: make generate-api
+  on:
+    branch: master
+    php: 5.6
 notifications:
   email: false
 env:
   global:
+    GITHUB_REPO: "radphp/radphp"
     secure: XKxQXP7Fk4PeFeHrv69RsSu82G9XkPgXcHGJ4lmnDdR92k2xw5iXRPx+7/u9Nt2Xn3T7ixt+m33emPD3/Yv3Lwlrmx5ySPFkjpf2r1/NC8J0WK4l2F38kCKInlHQCnnOEYUCJ+P3fRs/BOoJFmqAAVwyzBW+yYLas/UDlt48e1w=
