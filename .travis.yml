@@ -1,27 +1,27 @@
 language: php
 php:
-  - 5.6
-  - 7.0
-  - hhvm
-
+- 5.6
+- 7.0
+- hhvm
 matrix:
   allow_failures:
-    - php: hhvm
-    - php: 7.0
-
+  - php: hhvm
+  - php: 7.0
 before_script:
-  - composer self-update
-  - composer install --prefer-dist --no-interaction
-  - composer require --dev squizlabs/php_codesniffer:dev-master
-  - composer require --dev satooshi/php-coveralls:dev-master
-  - mkdir -p ./build/logs
-
+- composer self-update
+- composer install --prefer-dist --no-interaction
+- composer require --dev squizlabs/php_codesniffer:dev-master
+- composer require --dev satooshi/php-coveralls:dev-master
+- mkdir -p ./build/logs
 script:
-  - bin/phpcs -p --extensions=php --standard=PSR2,PSR1 ./src
-  - bin/phpunit --coverage-clover build/logs/clover.xml
-
+- bin/phpcs -p --extensions=php --standard=PSR2,PSR1 ./src
+- bin/phpunit --coverage-clover build/logs/clover.xml
 after_script:
-- php bin/coveralls -v 
-
+- php bin/coveralls -v
+after_success:
+- if  [ $TRAVIS_PHP_VERSION = '5.6' ] && [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ]; then make generate-api; fi
 notifications:
   email: false
+env:
+  global:
+    secure: XKxQXP7Fk4PeFeHrv69RsSu82G9XkPgXcHGJ4lmnDdR92k2xw5iXRPx+7/u9Nt2Xn3T7ixt+m33emPD3/Yv3Lwlrmx5ySPFkjpf2r1/NC8J0WK4l2F38kCKInlHQCnnOEYUCJ+P3fRs/BOoJFmqAAVwyzBW+yYLas/UDlt48e1w=
