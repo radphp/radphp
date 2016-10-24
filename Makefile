@@ -72,14 +72,14 @@ generate-api:
 	$(eval REPOSITORY=https://${GH_TOKEN}@github.com/radphp/radphp.git)
 	$(eval API_BRANCH=gh-pages)
 	$(eval BUILD_DIR=./gh-pages)
-	$(eval GIT_AUTHOR_NAME=Travis)
-	$(eval GIT_AUTHOR_EMAIL=travis@travis-ci.org)
 
 	curl -SLO http://www.apigen.org/apigen.phar
-	git clone $(REPOSITORY) $(BUILD_DIR) --branch $(API_BRANCH) --depth 1
+	git clone -q $(REPOSITORY) $(BUILD_DIR) --branch $(API_BRANCH) --depth 1 > /dev/null
 	yes | php apigen.phar generate -s ./src -d $(BUILD_DIR)
 
 	cd $(BUILD_DIR) || exit 1
+	git config user.email "travis@travis-ci.org"
+	git config user.name "Travis"
 	git add .
 	git commit -m "Generate API"
 	git push origin $(API_BRANCH) -fq > /dev/null
