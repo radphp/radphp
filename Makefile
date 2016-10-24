@@ -76,6 +76,7 @@ generate-api:
 	curl -SLO http://www.apigen.org/apigen.phar
 	git clone -q $(REPOSITORY) $(BUILD_DIR) --branch $(API_BRANCH) --depth 1 > /dev/null
 	yes | php apigen.phar generate -s ./src -d $(BUILD_DIR)
+	cat $(BUILD_DIR)/.git/config
 
 	cd $(BUILD_DIR) || exit 1 \
 	&& git config user.email "travis@travis-ci.org" \
