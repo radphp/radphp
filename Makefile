@@ -69,7 +69,7 @@ tag-release: guard-VERSION
 release: guard-VERSION guard-GPG_KEY_ID components-tag tag-release
 
 generate-api:
-	$(eval REPOSITORY=https://${GH_TOKEN}@github.com/radphp/radphp.git)
+	$(eval REPOSITORY=https://$(GH_TOKEN)@github.com/radphp/radphp.git)
 	$(eval API_BRANCH=gh-pages)
 	$(eval BUILD_DIR=./gh-pages)
 
@@ -78,7 +78,6 @@ generate-api:
 	yes | php apigen.phar generate -s ./src -d $(BUILD_DIR)
 
 	cd $(BUILD_DIR) || exit 1 \
-	&& git remote set-url origin https://${GH_TOKEN}@github.com/radphp/radphp.git \
 	&& git config user.email "m.abdolirad@gmail.com" \
 	&& git config user.name "Mohammad Abdoli Rad" \
 	&& git add . \
