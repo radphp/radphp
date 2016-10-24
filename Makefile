@@ -1,6 +1,7 @@
 COMPONENTS=authentication authorization configure core cryptography database dependency-injection error events logging network o-authentication routing utility
 DEFAULT_BRANCH=master
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+GH_TOKEN=$(GH_TOKEN)
 
 help:
 	@echo ' _____           _ _____  _    _ _____  '
