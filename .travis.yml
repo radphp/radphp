@@ -18,7 +18,7 @@ script:
 - bin/phpunit --coverage-clover build/logs/clover.xml
 after_script:
 - php bin/coveralls -v
-- if [ $TRAVIS_PHP_VERSION = '5.6' ] && [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ]; then make generate-api; fi
+- if [ $TRAVIS_PHP_VERSION = '5.6' ] && [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_PULL_REQUEST = 'false' ]; then make generate-api GH_TOKEN=$GH_TOKEN; fi
 notifications:
   email: false
 env:
