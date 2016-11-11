@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="robots" content="noindex">
+
+	<title>File Logging/AbstractAdapter.php</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li>
+					<a href="namespace-App.html">
+						App<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-App.Action.html">
+						Action					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.html">
+						Rad<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authentication.html">
+						Authentication<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authentication.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Provider.html">
+						Provider					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Repository.html">
+						Repository					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Storage.html">
+						Storage					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Authorization.html">
+						Authorization<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authorization.Rbac.html">
+						Rbac					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authorization.Tests.html">
+						Tests<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authorization.Tests.Rbac.html">
+						Rbac					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.Configure.html">
+						Configure<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Configure.Engine.html">
+						Engine					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Configure.Tests.html">
+						Tests<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Configure.Tests.Engine.html">
+						Engine					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.Core.html">
+						Core<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Core.Action.html">
+						Action					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Core.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Core.Responder.html">
+						Responder					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Cryptography.html">
+						Cryptography<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Cryptography.Password.html">
+						Password					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Database.html">
+						Database<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Database.Driver.html">
+						Driver					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.DependencyInjection.html">
+						DependencyInjection<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.DependencyInjection.Exception.html">
+						Exception					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Error.html">
+						Error<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Error.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Events.html">
+						Events					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Logging.html">
+						Logging<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Logging.Adapter.html">
+						Adapter					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Logging.Formatter.html">
+						Formatter					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.html">
+						Network<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.html">
+						Http<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.Client.html">
+						Client<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.Client.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Cookie.html">
+						Cookie					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Message.html">
+						Message					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Request.html">
+						Request					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Response.html">
+						Response					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.Session.html">
+						Session<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Session.Flash.html">
+						Flash					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Session.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.OAuthentication.html">
+						OAuthentication<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.OAuthentication.Provider.html">
+						Provider					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Routing.html">
+						Routing<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Routing.Tests.html">
+						Tests					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Utility.html">
+						Utility					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Test.html">
+						Test<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.html">
+						Action<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.Method.html">
+						Method					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Test.Action.Subdir.html">
+						Subdir<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.Subdir.Method.html">
+						Method					</a>
+
+						</li>
+							</ul></li></ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-App.Action.AppAction.html">App\Action\AppAction</a></li>
+				<li><a href="class-App.Action.IndexAction.html">App\Action\IndexAction</a></li>
+				<li><a href="class-App.AppBundle.html">App\AppBundle</a></li>
+				<li><a href="class-Rad.AbstractApplication.html">Rad\AbstractApplication</a></li>
+				<li><a href="class-Rad.Authentication.AbstractAuthenticationProvider.html">Rad\Authentication\AbstractAuthenticationProvider</a></li>
+				<li><a href="class-Rad.Authentication.AbstractRepository.html">Rad\Authentication\AbstractRepository</a></li>
+				<li><a href="class-Rad.Authentication.Auth.html">Rad\Authentication\Auth</a></li>
+				<li><a href="class-Rad.Authentication.Provider.BasicHttpAuthentication.html">Rad\Authentication\Provider\BasicHttpAuthentication</a></li>
+				<li><a href="class-Rad.Authentication.Provider.SimpleAuthentication.html">Rad\Authentication\Provider\SimpleAuthentication</a></li>
+				<li><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></li>
+				<li><a href="class-Rad.Authentication.Storage.SessionStorage.html">Rad\Authentication\Storage\SessionStorage</a></li>
+				<li><a href="class-Rad.Authentication.UserDetails.html">Rad\Authentication\UserDetails</a></li>
+				<li><a href="class-Rad.Authorization.Rbac.html">Rad\Authorization\Rbac</a></li>
+				<li><a href="class-Rad.Authorization.Rbac.Resource.html">Rad\Authorization\Rbac\Resource</a></li>
+				<li><a href="class-Rad.Authorization.Rbac.ResourceCollection.html">Rad\Authorization\Rbac\ResourceCollection</a></li>
+				<li><a href="class-Rad.Authorization.Rbac.Role.html">Rad\Authorization\Rbac\Role</a></li>
+				<li><a href="class-Rad.Authorization.Tests.Rbac.ResourceCollectionTest.html">Rad\Authorization\Tests\Rbac\ResourceCollectionTest</a></li>
+				<li><a href="class-Rad.Authorization.Tests.Rbac.RoleTest.html">Rad\Authorization\Tests\Rbac\RoleTest</a></li>
+				<li><a href="class-Rad.Authorization.Tests.RbacTest.html">Rad\Authorization\Tests\RbacTest</a></li>
+				<li><a href="class-Rad.Configure.Config.html">Rad\Configure\Config</a></li>
+				<li><a href="class-Rad.Configure.Engine.PhpConfig.html">Rad\Configure\Engine\PhpConfig</a></li>
+				<li><a href="class-Rad.Configure.Tests.ConfigTest.html">Rad\Configure\Tests\ConfigTest</a></li>
+				<li><a href="class-Rad.Configure.Tests.Engine.PhpConfigTest.html">Rad\Configure\Tests\Engine\PhpConfigTest</a></li>
+				<li><a href="class-Rad.Core.AbstractBundle.html">Rad\Core\AbstractBundle</a></li>
+				<li><a href="class-Rad.Core.Action.html">Rad\Core\Action</a></li>
+				<li><a href="class-Rad.Core.Bundles.html">Rad\Core\Bundles</a></li>
+				<li><a href="class-Rad.Core.DotEnv.html">Rad\Core\DotEnv</a></li>
+				<li><a href="class-Rad.Core.Responder.html">Rad\Core\Responder</a></li>
+				<li><a href="class-Rad.Cryptography.Password.DefaultPassword.html">Rad\Cryptography\Password\DefaultPassword</a></li>
+				<li><a href="class-Rad.Database.AbstractDriver.html">Rad\Database\AbstractDriver</a></li>
+				<li><a href="class-Rad.Database.Connection.html">Rad\Database\Connection</a></li>
+				<li><a href="class-Rad.Database.ConnectionManager.html">Rad\Database\ConnectionManager</a></li>
+				<li><a href="class-Rad.Database.Driver.Mysql.html">Rad\Database\Driver\Mysql</a></li>
+				<li><a href="class-Rad.Database.Driver.Postgres.html">Rad\Database\Driver\Postgres</a></li>
+				<li><a href="class-Rad.Database.DriverFactory.html">Rad\Database\DriverFactory</a></li>
+				<li><a href="class-Rad.DependencyInjection.Container.html">Rad\DependencyInjection\Container</a></li>
+				<li><a href="class-Rad.DependencyInjection.ContainerAware.html">Rad\DependencyInjection\ContainerAware</a></li>
+				<li><a href="class-Rad.DependencyInjection.DefinitionResolver.html">Rad\DependencyInjection\DefinitionResolver</a></li>
+				<li><a href="class-Rad.DependencyInjection.Registry.html">Rad\DependencyInjection\Registry</a></li>
+				<li><a href="class-Rad.DependencyInjection.Service.html">Rad\DependencyInjection\Service</a></li>
+				<li><a href="class-Rad.Error.AbstractHandler.html">Rad\Error\AbstractHandler</a></li>
+				<li><a href="class-Rad.Error.ErrorHandler.html">Rad\Error\ErrorHandler</a></li>
+				<li><a href="class-Rad.Error.Handler.JsonHandler.html">Rad\Error\Handler\JsonHandler</a></li>
+				<li><a href="class-Rad.Events.Event.html">Rad\Events\Event</a></li>
+				<li><a href="class-Rad.Events.EventManager.html">Rad\Events\EventManager</a></li>
+				<li><a href="class-Rad.Logging.AbstractAdapter.html">Rad\Logging\AbstractAdapter</a></li>
+				<li><a href="class-Rad.Logging.AbstractFormatter.html">Rad\Logging\AbstractFormatter</a></li>
+				<li><a href="class-Rad.Logging.Adapter.FileAdapter.html">Rad\Logging\Adapter\FileAdapter</a></li>
+				<li><a href="class-Rad.Logging.Adapter.NullAdapter.html">Rad\Logging\Adapter\NullAdapter</a></li>
+				<li><a href="class-Rad.Logging.Formatter.LineFormatter.html">Rad\Logging\Formatter\LineFormatter</a></li>
+				<li><a href="class-Rad.Logging.Logger.html">Rad\Logging\Logger</a></li>
+				<li><a href="class-Rad.Network.Http.Client.html">Rad\Network\Http\Client</a></li>
+				<li><a href="class-Rad.Network.Http.Client.Curl.html">Rad\Network\Http\Client\Curl</a></li>
+				<li><a href="class-Rad.Network.Http.Client.Handler.CurlHandler.html">Rad\Network\Http\Client\Handler\CurlHandler</a></li>
+				<li><a href="class-Rad.Network.Http.Cookie.html">Rad\Network\Http\Cookie</a></li>
+				<li><a href="class-Rad.Network.Http.Message.Request.html">Rad\Network\Http\Message\Request</a></li>
+				<li><a href="class-Rad.Network.Http.Message.Response.html">Rad\Network\Http\Message\Response</a></li>
+				<li><a href="class-Rad.Network.Http.Message.ServerRequest.html">Rad\Network\Http\Message\ServerRequest</a></li>
+				<li><a href="class-Rad.Network.Http.Message.Stream.html">Rad\Network\Http\Message\Stream</a></li>
+				<li><a href="class-Rad.Network.Http.Message.UploadedFile.html">Rad\Network\Http\Message\UploadedFile</a></li>
+				<li><a href="class-Rad.Network.Http.Message.Uri.html">Rad\Network\Http\Message\Uri</a></li>
+				<li><a href="class-Rad.Network.Http.Request.html">Rad\Network\Http\Request</a></li>
+				<li><a href="class-Rad.Network.Http.Request.ReformatUploadedFiles.html">Rad\Network\Http\Request\ReformatUploadedFiles</a></li>
+				<li><a href="class-Rad.Network.Http.Request.UploadedFile.html">Rad\Network\Http\Request\UploadedFile</a></li>
+				<li><a href="class-Rad.Network.Http.Response.html">Rad\Network\Http\Response</a></li>
+				<li><a href="class-Rad.Network.Http.Response.Cookies.html">Rad\Network\Http\Response\Cookies</a></li>
+				<li><a href="class-Rad.Network.Http.Response.JsonResponse.html">Rad\Network\Http\Response\JsonResponse</a></li>
+				<li><a href="class-Rad.Network.Http.Response.RedirectResponse.html">Rad\Network\Http\Response\RedirectResponse</a></li>
+				<li><a href="class-Rad.Network.Session.html">Rad\Network\Session</a></li>
+				<li><a href="class-Rad.Network.Session.Flash.FlashBag.html">Rad\Network\Session\Flash\FlashBag</a></li>
+				<li><a href="class-Rad.Network.Session.Handler.EncryptedSessionHandler.html">Rad\Network\Session\Handler\EncryptedSessionHandler</a></li>
+				<li><a href="class-Rad.Network.Session.Handler.NativeSessionHandler.html">Rad\Network\Session\Handler\NativeSessionHandler</a></li>
+				<li><a href="class-Rad.Network.Session.SessionBag.html">Rad\Network\Session\SessionBag</a></li>
+				<li><a href="class-Rad.OAuthentication.AbstractOAuthProvider.html">Rad\OAuthentication\AbstractOAuthProvider</a></li>
+				<li><a href="class-Rad.OAuthentication.OAuth.html">Rad\OAuthentication\OAuth</a></li>
+				<li><a href="class-Rad.OAuthentication.OAuthProviderFactory.html">Rad\OAuthentication\OAuthProviderFactory</a></li>
+				<li><a href="class-Rad.OAuthentication.Provider.GithubProvider.html">Rad\OAuthentication\Provider\GithubProvider</a></li>
+				<li><a href="class-Rad.OAuthentication.Provider.GoogleProvider.html">Rad\OAuthentication\Provider\GoogleProvider</a></li>
+				<li><a href="class-Rad.OAuthentication.User.html">Rad\OAuthentication\User</a></li>
+				<li><a href="class-Rad.Routing.Dispatcher.html">Rad\Routing\Dispatcher</a></li>
+				<li><a href="class-Rad.Routing.Router.html">Rad\Routing\Router</a></li>
+				<li><a href="class-Rad.Routing.Tests.EtcTest.html">Rad\Routing\Tests\EtcTest</a></li>
+				<li><a href="class-Rad.Routing.Tests.GenerateUrlTest.html">Rad\Routing\Tests\GenerateUrlTest</a></li>
+				<li><a href="class-Rad.Routing.Tests.RestRoutingTest.html">Rad\Routing\Tests\RestRoutingTest</a></li>
+				<li><a href="class-Rad.Routing.Tests.RoutingTest.html">Rad\Routing\Tests\RoutingTest</a></li>
+				<li><a href="class-Rad.Utility.Inflection.html">Rad\Utility\Inflection</a></li>
+				<li><a href="class-Test.Action.IndexAction.html">Test\Action\IndexAction</a></li>
+				<li><a href="class-Test.Action.Method.CliMethodAction.html">Test\Action\Method\CliMethodAction</a></li>
+				<li><a href="class-Test.Action.Subdir.IndexAction.html">Test\Action\Subdir\IndexAction</a></li>
+				<li><a href="class-Test.Action.Subdir.Method.CliMethodAction.html">Test\Action\Subdir\Method\CliMethodAction</a></li>
+				<li><a href="class-Test.Action.Subdir.TestAction.html">Test\Action\Subdir\TestAction</a></li>
+				<li><a href="class-Test.Action.TestAction.html">Test\Action\TestAction</a></li>
+				<li><a href="class-Test.TestBundle.html">Test\TestBundle</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-Rad.Authentication.AuthenticationProviderInterface.html">Rad\Authentication\AuthenticationProviderInterface</a></li>
+				<li><a href="class-Rad.Authentication.RepositoryInterface.html">Rad\Authentication\RepositoryInterface</a></li>
+				<li><a href="class-Rad.Authentication.StorageInterface.html">Rad\Authentication\StorageInterface</a></li>
+				<li><a href="class-Rad.Authorization.Rbac.ResourceInterface.html">Rad\Authorization\Rbac\ResourceInterface</a></li>
+				<li><a href="class-Rad.Authorization.Rbac.RoleInterface.html">Rad\Authorization\Rbac\RoleInterface</a></li>
+				<li><a href="class-Rad.Configure.EngineInterface.html">Rad\Configure\EngineInterface</a></li>
+				<li><a href="class-Rad.Core.BundleInterface.html">Rad\Core\BundleInterface</a></li>
+				<li><a href="class-Rad.Cryptography.PasswordInterface.html">Rad\Cryptography\PasswordInterface</a></li>
+				<li><a href="class-Rad.Database.Driver.DriverInterface.html">Rad\Database\Driver\DriverInterface</a></li>
+				<li><a href="class-Rad.DependencyInjection.ContainerAwareInterface.html">Rad\DependencyInjection\ContainerAwareInterface</a></li>
+				<li><a href="class-Rad.Error.HandlerInterface.html">Rad\Error\HandlerInterface</a></li>
+				<li><a href="class-Rad.Events.EventSubscriberInterface.html">Rad\Events\EventSubscriberInterface</a></li>
+				<li><a href="class-Rad.Logging.AdapterInterface.html">Rad\Logging\AdapterInterface</a></li>
+				<li><a href="class-Rad.Logging.FormatterInterface.html">Rad\Logging\FormatterInterface</a></li>
+				<li><a href="class-Rad.Network.Http.Client.HandlerInterface.html">Rad\Network\Http\Client\HandlerInterface</a></li>
+				<li><a href="class-Rad.Network.Http.ClientInterface.html">Rad\Network\Http\ClientInterface</a></li>
+				<li><a href="class-Rad.Network.Http.Response.CookiesInterface.html">Rad\Network\Http\Response\CookiesInterface</a></li>
+				<li><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></li>
+			</ul>
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-Rad.Core.SingletonTrait.html">Rad\Core\SingletonTrait</a></li>
+				<li><a href="class-Rad.DependencyInjection.ContainerAwareTrait.html">Rad\DependencyInjection\ContainerAwareTrait</a></li>
+				<li><a href="class-Rad.Events.EventManagerTrait.html">Rad\Events\EventManagerTrait</a></li>
+				<li><a href="class-Rad.Network.Http.Message.MessageTrait.html">Rad\Network\Http\Message\MessageTrait</a></li>
+			</ul>
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Rad.Authentication.Exception.html">Rad\Authentication\Exception</a></li>
+				<li><a href="class-Rad.Authentication.Exception.CredentialInvalidException.html">Rad\Authentication\Exception\CredentialInvalidException</a></li>
+				<li><a href="class-Rad.Authentication.Exception.IdentityNotFoundException.html">Rad\Authentication\Exception\IdentityNotFoundException</a></li>
+				<li><a href="class-Rad.Configure.Exception.html">Rad\Configure\Exception</a></li>
+				<li><a href="class-Rad.Core.Action.MissingMethodException.html">Rad\Core\Action\MissingMethodException</a></li>
+				<li><a href="class-Rad.Core.Exception.BaseException.html">Rad\Core\Exception\BaseException</a></li>
+				<li><a href="class-Rad.Core.Exception.BaseNetworkException.html">Rad\Core\Exception\BaseNetworkException</a></li>
+				<li><a href="class-Rad.Core.Exception.MissingBundleException.html">Rad\Core\Exception\MissingBundleException</a></li>
+				<li><a href="class-Rad.Core.Responder.MissingResponderException.html">Rad\Core\Responder\MissingResponderException</a></li>
+				<li><a href="class-Rad.Database.Exception.html">Rad\Database\Exception</a></li>
+				<li><a href="class-Rad.DependencyInjection.Exception.html">Rad\DependencyInjection\Exception</a></li>
+				<li><a href="class-Rad.DependencyInjection.Exception.ServiceLockedException.html">Rad\DependencyInjection\Exception\ServiceLockedException</a></li>
+				<li><a href="class-Rad.DependencyInjection.Exception.ServiceNotFoundException.html">Rad\DependencyInjection\Exception\ServiceNotFoundException</a></li>
+				<li><a href="class-Rad.Error.FatalErrorException.html">Rad\Error\FatalErrorException</a></li>
+				<li><a href="class-Rad.Events.Exception.html">Rad\Events\Exception</a></li>
+				<li><a href="class-Rad.Network.Http.Cookie.Exception.html">Rad\Network\Http\Cookie\Exception</a></li>
+				<li><a href="class-Rad.Network.Http.Exception.BadRequestException.html">Rad\Network\Http\Exception\BadRequestException</a></li>
+				<li><a href="class-Rad.Network.Http.Exception.Forbidden.html">Rad\Network\Http\Exception\Forbidden</a></li>
+				<li><a href="class-Rad.Network.Http.Exception.ForbiddenException.html">Rad\Network\Http\Exception\ForbiddenException</a></li>
+				<li><a href="class-Rad.Network.Http.Exception.MethodNotAllowedException.html">Rad\Network\Http\Exception\MethodNotAllowedException</a></li>
+				<li><a href="class-Rad.Network.Http.Exception.NotFoundException.html">Rad\Network\Http\Exception\NotFoundException</a></li>
+				<li><a href="class-Rad.Network.Http.Exception.UnauthorizedException.html">Rad\Network\Http\Exception\UnauthorizedException</a></li>
+				<li><a href="class-Rad.Network.Http.Request.Exception.html">Rad\Network\Http\Request\Exception</a></li>
+				<li><a href="class-Rad.Network.Http.Response.Exception.html">Rad\Network\Http\Response\Exception</a></li>
+				<li><a href="class-Rad.Network.Session.Exception.html">Rad\Network\Session\Exception</a></li>
+				<li><a href="class-Rad.OAuthentication.Exception.html">Rad\OAuthentication\Exception</a></li>
+				<li><a href="class-Rad.Routing.DomainException.html">Rad\Routing\DomainException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+<span>Namespace</span>			</li>
+			<li>
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<pre><code><span id="1" class="l"><a href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a href="#2"> 2: </a>
+</span><span id="3" class="l"><a href="#3"> 3: </a><span class="php-keyword1">namespace</span> Rad\Logging;
+</span><span id="4" class="l"><a href="#4"> 4: </a>
+</span><span id="5" class="l"><a href="#5"> 5: </a><span class="php-keyword1">use</span> Rad\Logging\Formatter\LineFormatter;
+</span><span id="6" class="l"><a href="#6"> 6: </a>
+</span><span id="7" class="l"><a href="#7"> 7: </a><span class="php-comment">/**
+</span></span><span id="8" class="l"><a href="#8"> 8: </a><span class="php-comment"> * Abstract Adapter
+</span></span><span id="9" class="l"><a href="#9"> 9: </a><span class="php-comment"> *
+</span></span><span id="10" class="l"><a href="#10">10: </a><span class="php-comment"> * @package Rad\Logging
+</span></span><span id="11" class="l"><a href="#11">11: </a><span class="php-comment"> */</span>
+</span><span id="12" class="l"><a href="#12">12: </a><span class="php-keyword1">abstract</span> <span class="php-keyword1">class</span> AbstractAdapter <span class="php-keyword1">implements</span> AdapterInterface
+</span><span id="13" class="l"><a href="#13">13: </a>{
+</span><span id="14" class="l"><a href="#14">14: </a>    <span class="php-comment">/**
+</span></span><span id="15" class="l"><a href="#15">15: </a><span class="php-comment">     * @var FormatterInterface
+</span></span><span id="16" class="l"><a href="#16">16: </a><span class="php-comment">     */</span>
+</span><span id="17" class="l"><a href="#17">17: </a>    <span class="php-keyword1">protected</span> <span class="php-var">$formatter</span>;
+</span><span id="18" class="l"><a href="#18">18: </a>
+</span><span id="19" class="l"><a href="#19">19: </a>    <span class="php-comment">/**
+</span></span><span id="20" class="l"><a href="#20">20: </a><span class="php-comment">     * {@inheritdoc}
+</span></span><span id="21" class="l"><a href="#21">21: </a><span class="php-comment">     */</span>
+</span><span id="22" class="l"><a href="#22">22: </a>    <span class="php-keyword1">abstract</span> <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <span class="php-keyword2">log</span>(<span class="php-var">$level</span>, <span class="php-var">$message</span>, <span class="php-var">$time</span>, <span class="php-keyword1">array</span> <span class="php-var">$context</span> = []);
+</span><span id="23" class="l"><a href="#23">23: </a>
+</span><span id="24" class="l"><a href="#24">24: </a>    <span class="php-comment">/**
+</span></span><span id="25" class="l"><a href="#25">25: </a><span class="php-comment">     * Set formatter
+</span></span><span id="26" class="l"><a href="#26">26: </a><span class="php-comment">     *
+</span></span><span id="27" class="l"><a href="#27">27: </a><span class="php-comment">     * @param FormatterInterface $formatter
+</span></span><span id="28" class="l"><a href="#28">28: </a><span class="php-comment">     */</span>
+</span><span id="29" class="l"><a href="#29">29: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> setFormatter(FormatterInterface <span class="php-var">$formatter</span>)
+</span><span id="30" class="l"><a href="#30">30: </a>    {
+</span><span id="31" class="l"><a href="#31">31: </a>        <span class="php-var">$this</span>-&gt;formatter = <span class="php-var">$formatter</span>;
+</span><span id="32" class="l"><a href="#32">32: </a>    }
+</span><span id="33" class="l"><a href="#33">33: </a>
+</span><span id="34" class="l"><a href="#34">34: </a>    <span class="php-comment">/**
+</span></span><span id="35" class="l"><a href="#35">35: </a><span class="php-comment">     * Get formatter
+</span></span><span id="36" class="l"><a href="#36">36: </a><span class="php-comment">     *
+</span></span><span id="37" class="l"><a href="#37">37: </a><span class="php-comment">     * @return FormatterInterface
+</span></span><span id="38" class="l"><a href="#38">38: </a><span class="php-comment">     */</span>
+</span><span id="39" class="l"><a href="#39">39: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> getFormatter()
+</span><span id="40" class="l"><a href="#40">40: </a>    {
+</span><span id="41" class="l"><a href="#41">41: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$this</span>-&gt;formatter) {
+</span><span id="42" class="l"><a href="#42">42: </a>            <span class="php-var">$this</span>-&gt;formatter = <span class="php-keyword1">new</span> LineFormatter();
+</span><span id="43" class="l"><a href="#43">43: </a>        }
+</span><span id="44" class="l"><a href="#44">44: </a>
+</span><span id="45" class="l"><a href="#45">45: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;formatter;
+</span><span id="46" class="l"><a href="#46">46: </a>    }
+</span><span id="47" class="l"><a href="#47">47: </a>}
+</span><span id="48" class="l"><a href="#48">48: </a></span></code></pre>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js?5c6eb07c03055277097d6e9fcfc32b87a3350e6e"></script>
+<script src="elementlist.js?56814eded9beecccd3460487c96ed98a8f9ebbfd"></script>
+</body>
+</html>

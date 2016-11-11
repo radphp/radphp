@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Rad\Authentication\Repository\DatabaseRepository</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li>
+					<a href="namespace-App.html">
+						App<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-App.Action.html">
+						Action					</a>
+
+						</li>
+							</ul></li>
+				<li class="active">
+					<a href="namespace-Rad.html">
+						Rad<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-Rad.Authentication.html">
+						Authentication<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authentication.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Provider.html">
+						Provider					</a>
+
+						</li>
+				<li class="active">
+					<a href="namespace-Rad.Authentication.Repository.html">
+						Repository					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Storage.html">
+						Storage					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Authorization.html">
+						Authorization<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authorization.Rbac.html">
+						Rbac					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authorization.Tests.html">
+						Tests<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authorization.Tests.Rbac.html">
+						Rbac					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.Configure.html">
+						Configure<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Configure.Engine.html">
+						Engine					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Configure.Tests.html">
+						Tests<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Configure.Tests.Engine.html">
+						Engine					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.Core.html">
+						Core<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Core.Action.html">
+						Action					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Core.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Core.Responder.html">
+						Responder					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Cryptography.html">
+						Cryptography<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Cryptography.Password.html">
+						Password					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Database.html">
+						Database<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Database.Driver.html">
+						Driver					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.DependencyInjection.html">
+						DependencyInjection<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.DependencyInjection.Exception.html">
+						Exception					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Error.html">
+						Error<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Error.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Events.html">
+						Events					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Logging.html">
+						Logging<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Logging.Adapter.html">
+						Adapter					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Logging.Formatter.html">
+						Formatter					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.html">
+						Network<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.html">
+						Http<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.Client.html">
+						Client<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.Client.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Cookie.html">
+						Cookie					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Message.html">
+						Message					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Request.html">
+						Request					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Response.html">
+						Response					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.Session.html">
+						Session<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Session.Flash.html">
+						Flash					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Session.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.OAuthentication.html">
+						OAuthentication<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.OAuthentication.Provider.html">
+						Provider					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Routing.html">
+						Routing<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Routing.Tests.html">
+						Tests					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Utility.html">
+						Utility					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Test.html">
+						Test<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.html">
+						Action<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.Method.html">
+						Method					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Test.Action.Subdir.html">
+						Subdir<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.Subdir.Method.html">
+						Method					</a>
+
+						</li>
+							</ul></li></ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">DatabaseRepository</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Rad.Authentication.Repository.html" title="Summary of Rad\Authentication\Repository"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class DatabaseRepository</h1>
+
+
+	<div class="description">
+	<p>Database Repository</p>
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Rad.Authentication.AbstractRepository.html"><span>Rad\Authentication\AbstractRepository</span></a>
+			
+			 implements 
+				<a href="class-Rad.Authentication.RepositoryInterface.html"><span>Rad\Authentication\RepositoryInterface</span></a>
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Rad\Authentication\Repository\DatabaseRepository</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Rad.html">Rad</a>\<a href="namespace-Rad.Authentication.html">Authentication</a>\<a href="namespace-Rad.Authentication.Repository.html">Repository</a><br>
+		<b>Package:</b> Rad\Authentication\Repository<br>
+
+			<b>Located at</b> <a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#12-151" title="Go to source code">Authentication/Repository/DatabaseRepository.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#44-54" title="Go to source code">__construct</a>( <span><code><a href="class-Rad.Database.Connection.html">Rad\Database\Connection</a></code> <var>$connection</var></span> )</code>
+
+		<div class="description short">
+			<p>Rad\Authentication\Repository\DatabaseRepository constructor</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Rad\Authentication\Repository\DatabaseRepository constructor</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$connection</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rad.Authentication.AbstractRepository.html#___construct">Rad\Authentication\AbstractRepository::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findUser" id="_findUser">
+
+		<td class="attributes"><code>
+			 public 
+
+			array|boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findUser">#</a>
+		<code><a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#56-94" title="Go to source code">findUser</a>( <span>string <var>$identity</var></span>, <span>string <var>$credential</var></span> )</code>
+
+		<div class="description short">
+			<p>Find user</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Find user</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$identity</var></dt>
+					<dd></dd>
+					<dt><var>$credential</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array|boolean<br>Return false when user not false, return array on authenticated
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-Rad.Authentication.Exception.html">Rad\Authentication\Exception</a></code><br>
+					<code><a href="class-Rad.Authentication.Exception.CredentialInvalidException.html">Rad\Authentication\Exception\CredentialInvalidException</a></code><br>
+					<code><a href="class-Rad.Authentication.Exception.IdentityNotFoundException.html">Rad\Authentication\Exception\IdentityNotFoundException</a></code>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setTableName" id="_setTableName">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setTableName">#</a>
+		<code><a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#96-108" title="Go to source code">setTableName</a>( <span>string <var>$tableName</var></span> )</code>
+
+		<div class="description short">
+			<p>Set table name</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set table name</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$tableName</var></dt>
+					<dd>Users table name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setIdentityColumn" id="_setIdentityColumn">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setIdentityColumn">#</a>
+		<code><a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#110-122" title="Go to source code">setIdentityColumn</a>( <span>string <var>$identityColumn</var></span> )</code>
+
+		<div class="description short">
+			<p>Set identity column</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set identity column</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$identityColumn</var></dt>
+					<dd>Identity column</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setCredentialColumn" id="_setCredentialColumn">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setCredentialColumn">#</a>
+		<code><a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#124-136" title="Go to source code">setCredentialColumn</a>( <span>string <var>$credentialColumn</var></span> )</code>
+
+		<div class="description short">
+			<p>Set credential column</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set credential column</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$credentialColumn</var></dt>
+					<dd>Credential column</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setConditions" id="_setConditions">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setConditions">#</a>
+		<code><a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#138-150" title="Go to source code">setConditions</a>( <span>string <var>$conditions</var></span> )</code>
+
+		<div class="description short">
+			<p>Set conditions</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set conditions</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$conditions</var></dt>
+					<dd>Query condition</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.Authentication.Repository.DatabaseRepository.html">Rad\Authentication\Repository\DatabaseRepository</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Rad.Authentication.AbstractRepository.html#methods">Rad\Authentication\AbstractRepository</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rad.Authentication.AbstractRepository.html#_setPasswordCrypt">setPasswordCrypt()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="connection" id="$connection">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Rad.Database.Connection.html">Rad\Database\Connection</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#19-22" title="Go to source code"><var>$connection</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$connection" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="tableName" id="$tableName">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#24-27" title="Go to source code"><var>$tableName</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$tableName" class="anchor">#</a>
+				<code><span class="php-quote">'users'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="identityColumn" id="$identityColumn">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#29-32" title="Go to source code"><var>$identityColumn</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$identityColumn" class="anchor">#</a>
+				<code><span class="php-quote">'username'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="credentialColumn" id="$credentialColumn">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#34-37" title="Go to source code"><var>$credentialColumn</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$credentialColumn" class="anchor">#</a>
+				<code><span class="php-quote">'password'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="conditions" id="$conditions">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Rad.Authentication.Repository.DatabaseRepository.html#39-42" title="Go to source code"><var>$conditions</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$conditions" class="anchor">#</a>
+				<code><span class="php-quote">''</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Rad.Authentication.AbstractRepository.html#properties">Rad\Authentication\AbstractRepository</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rad.Authentication.AbstractRepository.html#$passwordCrypt"><var>$passwordCrypt</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

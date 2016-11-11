@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Interface Rad\OAuthentication\ProviderInterface</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li>
+					<a href="namespace-App.html">
+						App<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-App.Action.html">
+						Action					</a>
+
+						</li>
+							</ul></li>
+				<li class="active">
+					<a href="namespace-Rad.html">
+						Rad<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authentication.html">
+						Authentication<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authentication.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Provider.html">
+						Provider					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Repository.html">
+						Repository					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authentication.Storage.html">
+						Storage					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Authorization.html">
+						Authorization<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authorization.Rbac.html">
+						Rbac					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Authorization.Tests.html">
+						Tests<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Authorization.Tests.Rbac.html">
+						Rbac					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.Configure.html">
+						Configure<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Configure.Engine.html">
+						Engine					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Configure.Tests.html">
+						Tests<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Configure.Tests.Engine.html">
+						Engine					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li>
+					<a href="namespace-Rad.Core.html">
+						Core<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Core.Action.html">
+						Action					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Core.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Core.Responder.html">
+						Responder					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Cryptography.html">
+						Cryptography<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Cryptography.Password.html">
+						Password					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Database.html">
+						Database<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Database.Driver.html">
+						Driver					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.DependencyInjection.html">
+						DependencyInjection<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.DependencyInjection.Exception.html">
+						Exception					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Error.html">
+						Error<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Error.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Events.html">
+						Events					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Logging.html">
+						Logging<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Logging.Adapter.html">
+						Adapter					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Logging.Formatter.html">
+						Formatter					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.html">
+						Network<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.html">
+						Http<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.Client.html">
+						Client<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Http.Client.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Cookie.html">
+						Cookie					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Exception.html">
+						Exception					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Message.html">
+						Message					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Request.html">
+						Request					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Http.Response.html">
+						Response					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Network.Session.html">
+						Session<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Network.Session.Flash.html">
+						Flash					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Rad.Network.Session.Handler.html">
+						Handler					</a>
+
+						</li>
+							</ul></li></ul></li>
+				<li class="active">
+					<a href="namespace-Rad.OAuthentication.html">
+						OAuthentication<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.OAuthentication.Provider.html">
+						Provider					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Routing.html">
+						Routing<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Rad.Routing.Tests.html">
+						Tests					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Rad.Utility.html">
+						Utility					</a>
+
+						</li>
+							</ul></li>
+				<li>
+					<a href="namespace-Test.html">
+						Test<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.html">
+						Action<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.Method.html">
+						Method					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Test.Action.Subdir.html">
+						Subdir<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Test.Action.Subdir.Method.html">
+						Method					</a>
+
+						</li>
+							</ul></li></ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Rad.OAuthentication.AbstractOAuthProvider.html">AbstractOAuthProvider</a></li>
+				<li><a href="class-Rad.OAuthentication.OAuth.html">OAuth</a></li>
+				<li><a href="class-Rad.OAuthentication.OAuthProviderFactory.html">OAuthProviderFactory</a></li>
+				<li><a href="class-Rad.OAuthentication.User.html">User</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li class="active"><a href="class-Rad.OAuthentication.ProviderInterface.html">ProviderInterface</a></li>
+			</ul>
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Rad.OAuthentication.Exception.html">Exception</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Rad.OAuthentication.html" title="Summary of Rad\OAuthentication"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Interface ProviderInterface</h1>
+
+
+	<div class="description">
+	<p>Provider Interface</p>
+	</div>
+
+
+
+
+
+	<div>
+		<h4>Direct known implementers</h4>
+			<a href="class-Rad.OAuthentication.AbstractOAuthProvider.html">Rad\OAuthentication\AbstractOAuthProvider</a>
+	</div>
+
+	<div>
+		<h4>Indirect known implementers</h4>
+			<a href="class-Rad.OAuthentication.Provider.GithubProvider.html">Rad\OAuthentication\Provider\GithubProvider</a>, 
+			<a href="class-Rad.OAuthentication.Provider.GoogleProvider.html">Rad\OAuthentication\Provider\GoogleProvider</a>
+	</div>
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Rad.html">Rad</a>\<a href="namespace-Rad.OAuthentication.html">OAuthentication</a><br>
+		<b>Package:</b> Rad\OAuthentication<br>
+
+			<b>Located at</b> <a href="source-class-Rad.OAuthentication.ProviderInterface.html#5-118" title="Go to source code">OAuthentication/ProviderInterface.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="setClientId" id="_setClientId">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setClientId">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#12-19" title="Go to source code">setClientId</a>( <span>string <var>$clientId</var></span> )</code>
+
+		<div class="description short">
+			<p>Set client id</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set client id</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$clientId</var></dt>
+					<dd>Client id</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getClientId" id="_getClientId">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getClientId">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#21-26" title="Go to source code">getClientId</a>( )</code>
+
+		<div class="description short">
+			<p>Get client id</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get client id</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setClientSecret" id="_setClientSecret">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setClientSecret">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#28-35" title="Go to source code">setClientSecret</a>( <span>string <var>$clientSecret</var></span> )</code>
+
+		<div class="description short">
+			<p>Get client secret</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get client secret</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$clientSecret</var></dt>
+					<dd>Client secret</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getClientSecret" id="_getClientSecret">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getClientSecret">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#37-42" title="Go to source code">getClientSecret</a>( )</code>
+
+		<div class="description short">
+			<p>Get client secret</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get client secret</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setScopes" id="_setScopes">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setScopes">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#44-51" title="Go to source code">setScopes</a>( <span>array <var>$scopes</var></span> )</code>
+
+		<div class="description short">
+			<p>Set scopes</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Set scopes</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$scopes</var></dt>
+					<dd>Scopes</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getScopes" id="_getScopes">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getScopes">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#53-58" title="Go to source code">getScopes</a>( )</code>
+
+		<div class="description short">
+			<p>Get scopes</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get scopes</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setRedirectUri" id="_setRedirectUri">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setRedirectUri">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#60-67" title="Go to source code">setRedirectUri</a>( <span>string <var>$redirectUri</var></span> )</code>
+
+		<div class="description short">
+			<p>Get redirect uri</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get redirect uri</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$redirectUri</var></dt>
+					<dd>Redirect uri</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getRedirectUri" id="_getRedirectUri">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getRedirectUri">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#69-74" title="Go to source code">getRedirectUri</a>( )</code>
+
+		<div class="description short">
+			<p>Get redirect uri</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get redirect uri</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setState" id="_setState">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setState">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#76-83" title="Go to source code">setState</a>( <span>string <var>$state</var></span> )</code>
+
+		<div class="description short">
+			<p>Get state</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get state</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$state</var></dt>
+					<dd>State</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.OAuthentication.ProviderInterface.html">Rad\OAuthentication\ProviderInterface</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getState" id="_getState">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getState">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#85-90" title="Go to source code">getState</a>( )</code>
+
+		<div class="description short">
+			<p>Get state</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get state</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAuthorizeUri" id="_getAuthorizeUri">
+
+		<td class="attributes"><code>
+			 public 
+
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAuthorizeUri">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#93-98" title="Go to source code">getAuthorizeUri</a>( )</code>
+
+		<div class="description short">
+			<p>Get authorize uri</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get authorize uri</p>
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					string
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAccessToken" id="_getAccessToken">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAccessToken">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#100-107" title="Go to source code">getAccessToken</a>( <span>string <var>$authorizeCode</var></span> )</code>
+
+		<div class="description short">
+			<p>Get access token</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get access token</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$authorizeCode</var></dt>
+					<dd>Authorize code</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getUser" id="_getUser">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Rad.OAuthentication.User.html">Rad\OAuthentication\User</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getUser">#</a>
+		<code><a href="source-class-Rad.OAuthentication.ProviderInterface.html#109-117" title="Go to source code">getUser</a>( <span>string <var>$token</var></span> )</code>
+
+		<div class="description short">
+			<p>Get user detail</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Get user detail</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$token</var></dt>
+					<dd>Access token</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Rad.OAuthentication.User.html">Rad\OAuthentication\User</a></code>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-Rad.OAuthentication.Exception.html">Rad\OAuthentication\Exception</a></code>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
