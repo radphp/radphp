@@ -17,10 +17,10 @@
     ],
     "require": {
         "php": ">=5.5.21",
-        "radphp/core": "dev-master",
-        "radphp/database": "dev-master",
-        "radphp/network": "dev-master",
-        "radphp/cryptography": "dev-master"
+        "radphp/core": "~0.2",
+        "radphp/database": "~0.2",
+        "radphp/network": "~0.2",
+        "radphp/cryptography": "~0.2"
     },
     "autoload": {
         "psr-4": {

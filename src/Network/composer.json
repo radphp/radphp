@@ -18,8 +18,8 @@
     "require": {
         "php": ">=5.5.21",
         "psr/http-message": "~1.0",
-        "radphp/dependency-injection": "dev-master",
-        "radphp/core": "dev-master"
+        "radphp/dependency-injection": "~0.2",
+        "radphp/core": "~0.2"
     },
     "autoload": {
         "psr-4": {

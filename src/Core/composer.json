@@ -17,11 +17,11 @@
     ],
     "require": {
         "php": ">=5.5.21",
-        "radphp/dependency-injection": "dev-master",
-        "radphp/network": "dev-master",
-        "radphp/routing": "dev-master",
-        "radphp/utility": "dev-master",
-        "radphp/events": "dev-master"
+        "radphp/dependency-injection": "~0.2",
+        "radphp/network": "~0.2",
+        "radphp/routing": "~0.2",
+        "radphp/utility": "~0.2",
+        "radphp/events": "~0.2"
     },
     "autoload": {
         "psr-4": {

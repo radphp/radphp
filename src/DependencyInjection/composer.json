@@ -17,8 +17,8 @@
     ],
     "require": {
         "php": ">=5.5.21",
-        "radphp/utility": "dev-master",
-        "radphp/core": "dev-master"
+        "radphp/utility": "~0.2",
+        "radphp/core": "~0.2"
     },
     "autoload": {
         "psr-4": {
