@@ -15,7 +15,6 @@
             "role": "Project Founder"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.6",
         "radphp/core": "dev-master"
@@ -30,5 +29,11 @@
     },
     "config": {
         "bin-dir": "bin"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.2-dev"
+        }
     }
 }

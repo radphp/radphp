@@ -15,7 +15,6 @@
             "role": "Project Founder"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.21",
         "radphp/core": "dev-master",
@@ -26,6 +25,12 @@
     "autoload": {
         "psr-4": {
             "Rad\\Authentication\\": "."
+        }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.2-dev"
         }
     }
 }
