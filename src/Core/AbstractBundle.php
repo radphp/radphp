@@ -45,7 +45,6 @@ abstract class AbstractBundle extends ContainerAware implements BundleInterface
      */
     public function startup()
     {
-
     }
 
     /**
@@ -53,7 +52,6 @@ abstract class AbstractBundle extends ContainerAware implements BundleInterface
      */
     public function loadConfig()
     {
-
     }
 
     /**
@@ -61,7 +59,6 @@ abstract class AbstractBundle extends ContainerAware implements BundleInterface
      */
     public function loadService()
     {
-
     }
 
     /**

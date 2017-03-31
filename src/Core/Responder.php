@@ -123,7 +123,6 @@ abstract class Responder extends ContainerAware implements EventSubscriberInterf
      */
     public function subscribe(EventManager $eventManager)
     {
-
     }
 
     /**
