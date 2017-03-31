@@ -145,7 +145,6 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
      */
     public function beforeWebMethod(Event $event)
     {
-
     }
 
     /**
@@ -155,7 +154,6 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
      */
     public function afterWebMethod(Event $event)
     {
-
     }
 
     /**
@@ -165,7 +163,6 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
      */
     public function beforeCliMethod(Event $event)
     {
-
     }
 
     /**
@@ -175,7 +172,6 @@ abstract class Action extends ContainerAware implements EventSubscriberInterface
      */
     public function afterCliMethod(Event $event)
     {
-
     }
 
     /**
