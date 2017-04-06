@@ -2,7 +2,6 @@
 
 namespace Rad\Authorization;
 
-use RuntimeException;
 use InvalidArgumentException;
 use Rad\Authorization\Rbac\Role;
 use Rad\Authorization\Rbac\RoleInterface;
@@ -21,7 +20,7 @@ class Rbac
     /**
      * @var RoleInterface[]
      */
-    protected static $roles = [];
+    protected $roles = [];
 
     /**
      * Add role override if exists
@@ -29,31 +28,27 @@ class Rbac
      * @param RoleInterface|string     $role      Role name or object
      * @param ResourceCollection|array $resources Role resources
      */
-    public static function addRole($role, array $resources = [])
+    public function addRole($role, array $resources = [])
     {
         if ($role instanceof RoleInterface) {
-            self::$roles[$role->getName()] = $role;
+            $this->roles[$role->getName()] = $role;
         } else {
             $role = new Role($role, $resources);
-            self::$roles[$role->getName()] = $role;
+            $this->roles[$role->getName()] = $role;
         }
     }
 
     /**
      * Get role
      *
-     * @param string $roleName Role name
+     * @param string $name The role name
      *
      * @return null|RoleInterface
      */
-    public static function getRole($roleName)
+    public function getRole($name)
     {
-        if (!is_string($roleName)) {
-            throw new InvalidArgumentException('Role name argument must be string.');
-        }
-
-        if (isset(self::$roles[$roleName])) {
-            return self::$roles[$roleName];
+        if (isset($this->roles[$name])) {
+            return $this->roles[$name];
         }
 
         return null;
@@ -66,7 +61,7 @@ class Rbac
      *
      * @return bool
      */
-    public static function hasRole($role)
+    public function hasRole($role)
     {
         if ($role instanceof RoleInterface) {
             $role = $role->getName();
@@ -78,32 +73,24 @@ class Rbac
             );
         }
 
-        return isset(self::$roles[$role]);
+        return isset($this->roles[$role]);
     }
 
     /**
-     * Role is granted
+     * User is granted
      *
-     * @param RoleInterface|string     $role     Role name or object
      * @param ResourceInterface|string $resource Resource name or object
      *
      * @return bool
      */
-    public static function isGranted($role, $resource)
+    public function isGranted($resource)
     {
-        if (self::hasRole($role)) {
-            if ($role instanceof RoleInterface) {
-                $role = $role->getName();
+        foreach ($this->roles as $role) {
+            if (true === $role->hasResource($resource)) {
+                return true;
             }
-
-            return self::$roles[$role]->hasResource($resource);
         }
 
-        throw new RuntimeException(
-            sprintf(
-                'Role "%s" does not exists.',
-                gettype($role) === 'string' ? $role : $role->getName()
-            )
-        );
+        return false;
     }
 }

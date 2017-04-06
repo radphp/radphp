@@ -98,14 +98,14 @@ class RbacTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($adminRole->hasResource('comments.edit'));
         $this->assertFalse($adminRole->hasResource('posts.add'));
 
-        $this->assertFalse($this->rbac->isGranted('admin', 'list_user'));
-        $this->assertFalse($this->rbac->isGranted($adminRole, 'delete_user'));
+        $this->assertFalse($this->rbac->isGranted('list_user'));
+        $this->assertFalse($this->rbac->isGranted('delete_user'));
 
         $notExistsRole = new Rbac\Role('notExistsRole');
         $this->setExpectedExceptionRegExp(
             'RuntimeException',
             sprintf('/Role "%s" does not exists./', preg_quote($notExistsRole->getName(), '/'))
         );
-        $this->assertTrue($this->rbac->isGranted($notExistsRole->getName(), 'delete_user'));
+        $this->assertTrue($this->rbac->isGranted('delete_user'));
     }
 }
