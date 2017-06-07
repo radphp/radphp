@@ -184,7 +184,9 @@ class Logger implements LoggerInterface
         while ($this->adapters->valid()) {
             /** @var AdapterInterface $adapter */
             $adapter = $this->adapters->current();
-            $adapter->log($level, $message, $time, $context);
+            if (empty($adapter->getLogLevels()) || in_array($level, $adapter->getLogLevels(), true)) {
+                $adapter->log($level, $message, $time, $context);
+            }
 
             $this->adapters->next();
         }

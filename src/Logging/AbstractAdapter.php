@@ -17,6 +17,11 @@ abstract class AbstractAdapter implements AdapterInterface
     protected $formatter;
 
     /**
+     * @var array
+     */
+    protected $logLevels = [];
+
+    /**
      * {@inheritdoc}
      */
     abstract public function log($level, $message, $time, array $context = []);
@@ -43,5 +48,21 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         return $this->formatter;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogLevels()
+    {
+        return $this->logLevels;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogLevels(array $logLevels = [])
+    {
+        $this->logLevels = $logLevels;
     }
 }

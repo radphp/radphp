@@ -20,4 +20,18 @@ interface AdapterInterface
      * @return null
      */
     public function log($level, $message, $time, array $context = []);
+
+    /**
+     * Sets the levels the adapter should log.
+     *
+     * @param array $logLevels Log levels
+     */
+    public function setLogLevels(array $logLevels = []);
+
+    /**
+     * Get the levels the adapter should log.
+     *
+     * @return array
+     */
+    public function getLogLevels();
 }
